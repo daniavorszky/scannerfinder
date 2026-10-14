@@ -38,7 +38,15 @@ for (const p of MASTERS) {
   haveMaster = true;
   for (const r of parseCsv(fs.readFileSync(p, 'utf8'))) if (r.cid) master.set(r.cid, r);
 }
-if (!haveMaster) console.warn('[claim-data] master CSVs not found: building without ownership hints or found prices');
+// In CI (GitHub Actions) the internal master CSVs are not there: keep the committed claim-data.json and
+// benchmark-data.json, generated on the Mac mini where /data is linked. Regenerate them there after any data change.
+if (!haveMaster) {
+  if (fs.existsSync(OUT) && fs.existsSync('functions/_data/benchmark-data.json')) {
+    console.log('[claim-data] master CSVs not found: keeping the committed functions/_data files');
+    process.exit(0);
+  }
+  console.warn('[claim-data] master CSVs not found: building without ownership hints or found prices');
+}
 
 const { listings } = loadDirectory();
 const csvRows = new Map(parseCsv(fs.readFileSync('src/data/listings.csv', 'utf8')).map((r) => [r.slug, r]));

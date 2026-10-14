@@ -11,8 +11,7 @@ dist.nosync
 .env*
 !.env.example
 .DS_Store
-# generated at build (claim-data has email hashes)
-apps/directory-blueprint/output/*/site/functions/_data/
+# functions/_data/ is committed: GitHub Actions has no /data to rebuild it (email hashes only, private repo)
 # caches and raw pulls
 apps/directory-blueprint/output/*/03-cache/
 apps/directory-blueprint/output/*/05-cache/

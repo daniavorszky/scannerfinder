@@ -1,0 +1,63 @@
+---
+// Home: state-wide answer to "[niche] in [state]". Sections per wiki/components/page-sections.md.
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import Faq from '../components/Faq.astro';
+import SearchForm from '../components/SearchForm.astro';
+import DirectoryHub from '../components/DirectoryHub.astro';
+import { loadDirectory } from '../lib/load.mjs';
+import { paragraphs } from '../lib/load.mjs';
+const { site, indexCities: cities, listings, stats, homeFeatured, statePath, buildDate, attributes } = loadDirectory();
+const vetting = site.vetting && site.vetting.length ? site.vetting : null;
+// The four steps drawn above the vetting text. Set vettingSteps in site.json to match the vetting copy.
+const vettingSteps = site.vettingSteps && site.vettingSteps.length ? site.vettingSteps : [
+  { title: 'Start from the record', text: 'Every listing begins as a public business record on Google Maps.' },
+  { title: 'Keep the real ones', text: 'Open businesses with at least one review stay. Duplicates are merged.' },
+  { title: 'Read the website', text: `Each business's own site says whether it does this work. Those that do are marked.` },
+  { title: 'Say when we do not know', text: 'No website to read means "not enough info" on the listing, never a guess.' },
+];
+// Short true statements under the hero buttons. Set in site.json; none are shown when the list is empty.
+const heroPoints = site.heroPoints || [];
+const base = `https://${site.domain}`;
+const total = listings.length;
+const title = `${site.niche.title} in ${site.state.name} | ${site.brand}`;
+const description = `${total} ${site.niche.plural} across ${cities.length} ${site.state.name} cities, with ratings, services and phone numbers. Compare, then call.`;
+const schema = [
+  homeFeatured.some((l) => l.featured) ? { '@context': 'https://schema.org', '@type': 'ItemList', name: `Featured ${site.niche.plural} in ${site.state.name}`,
+    itemListElement: homeFeatured.filter((l) => l.featured).map((l, i) => ({ '@type': 'ListItem', position: i + 1, url: base + l.path, name: l.name })) } : null,
+  { '@context': 'https://schema.org', '@type': 'WebPage', '@id': base + '/', url: base + '/', name: title, datePublished: site.launchDate, dateModified: buildDate },
+];
+---
+<Base title={title} description={description} path="/" schema={schema} headTone={site.design.band ? 'band' : 'tint'} headImage={site.design.heroImage || ''}>
+  <Fragment slot="head">
+    <div class="hero">
+      <h1>{site.niche.title} in <span class="hl">{site.state.name}</span></h1>
+      <p class="lede">Ratings, services and a phone number for every {site.niche.singular} in {site.state.name}.</p>
+      <SearchForm site={site} attributes={attributes} />
+      {heroPoints.length > 0 && <ul class="hero-points">{heroPoints.map((p) => <li>{p}</li>)}</ul>}
+      <p class="hero-link"><a href="#guide">How to choose a {site.niche.singular}</a></p>
+    </div>
+  </Fragment>
+
+  <DirectoryHub site={site} cities={cities} listings={listings} stats={stats} homeFeatured={homeFeatured} statePath={statePath} />
+
+  <section class="bleed tinted vetting-band" id="vetting">
+    <h2>How listings are vetted</h2>
+    <ol class="steps">
+      {vettingSteps.map((s, i) => <li><b>{i + 1}</b><h3>{s.title}</h3><p>{s.text}</p></li>)}
+    </ol>
+    <div class="prose vetting-text">
+    {vetting
+      ? <div set:html={paragraphs(vetting)}></div>
+      : <p>Every listing starts from public business records and Google Maps. We keep businesses that are open, have at least one review, and do this work as their main trade. Duplicates are merged.</p>}
+    <p>Owners can <a href="/claim/">claim a listing</a> to correct details or add photos. A person checks every claim. Published by <a href="/about/">{site.publisher.name}</a>.</p>
+    </div>
+  </section>
+
+  <section class="article" id="guide">
+    <h2>How to choose a {site.niche.singular} in {site.state.name}</h2>
+    <p><!-- GATE 5: replace with the buyer's guide, 400 to 600 words written from the data: what matters for this service in this state (licensing, permits, climate, price ranges), how to read the attribute grid, what to ask on the first call. --> Buyer's guide goes here.</p>
+  </section>
+
+  <Faq items={site.faq || []} />
+</Base>

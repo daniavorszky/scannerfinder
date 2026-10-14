@@ -1,0 +1,18 @@
+---
+// Tools index: calculators and resources for practitioners and clients. Each tool is one entry in
+// src/data/tools.json ({ title, path, description }); the tool pages themselves live under src/pages/tools/.
+// Kept noindex and out of the sitemap (astro.config.mjs) until the first tool is listed.
+import Base from '../../layouts/Base.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+import tools from '../../data/tools.json';
+const { site } = loadDirectory();
+---
+<Base title={`Tools | ${site.brand}`} description={`Calculators and resources for ${site.niche.plural} and the people who book scan sessions.`} path="/tools/" noindex={tools.length === 0}>
+  <Fragment slot="head">
+    <h1>Tools</h1>
+    <p>Calculators and resources for practitioners and for anyone booking a scan session.</p>
+  </Fragment>
+  {tools.length === 0
+    ? <p>The first tools are on their way. <a href="/contact/">Tell us</a> which calculator would help you most.</p>
+    : <div class="grid">{tools.map((t) => <article class="card"><h3><a href={t.path}>{t.title}</a></h3><p class="meta">{t.description}</p></article>)}</div>}
+</Base>

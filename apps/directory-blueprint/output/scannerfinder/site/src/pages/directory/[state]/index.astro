@@ -1,0 +1,88 @@
+---
+// Country hub (the kit's state hub, one per country; 04-plan.md): every region with a page, the devices used in
+// the country, and the listings of the regions under the floor, which have no page of their own.
+import Base from '../../../layouts/Base.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import FeaturedBand from '../../../components/FeaturedBand.astro';
+import StatBlock from '../../../components/StatBlock.astro';
+import { countryBlock } from '../../../lib/stats.mjs';
+import Faq from '../../../components/Faq.astro';
+import ClaimCta from '../../../components/ClaimCta.astro';
+import ListingExplorer from '../../../components/ListingExplorer.astro';
+import { loadDirectory, paragraphs } from '../../../lib/load.mjs';
+export function getStaticPaths() { const { countries } = loadDirectory(); return countries.map((c) => ({ params: { state: c.slug }, props: { slug: c.slug } })); }
+const { slug } = Astro.props;
+const dir = loadDirectory();
+const { site, buildDate } = dir;
+const co = dir.countryBySlug[slug];
+const cities = co.cities;
+const regionWord = { US: 'State', AU: 'State', CA: 'Province', ZA: 'Province' }[co.code] || 'Region';
+const regionWordPlural = { US: 'States', AU: 'States', CA: 'Provinces', ZA: 'Provinces' }[co.code] || 'Regions';
+const intro = co.copy?.intro || null;
+const base = `https://${site.domain}`;
+const title = `${site.niche.title} in ${co.inName}: ${co.count} Listed${cities.length ? `, by ${regionWord}` : ''} | ${site.brand}`;
+const description = `${co.count} ${site.niche.plural} in ${co.inName}${cities.length ? `, across ${cities.length} regions` : ''}. Compare devices (ZYTO, BICOM, AO Scan and more), remote sessions, ratings and phone numbers.`;
+const alpha = [...cities].sort((a, b) => a.name.localeCompare(b.name));
+const devicesHere = dir.devices.map((d) => ({ d, n: co.attrCounts[d.key] || 0, cp: d.countryPages.find((x) => x.country.code === co.code) })).filter((x) => x.n > 0).sort((a, b) => b.n - a.n);
+// Country explorer: the first 60 in country order (site.maxCardsPerCity), the rest as plain links underneath.
+const ranked = co.listings.filter((l) => !co.featured.includes(l));
+const explorerListings = ranked.slice(0, site.maxCardsPerCity || 60);
+const rest = ranked.slice(explorerListings.length);
+const topTowns = dir.towns.filter((t) => t.country.code === co.code).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).slice(0, 24);
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': base + co.path, url: base + co.path, name: title, datePublished: site.launchDate, dateModified: buildDate },
+  { '@context': 'https://schema.org', '@type': 'ItemList', name: `${site.niche.title} in ${co.inName} by region`,
+    itemListElement: alpha.map((c, i) => ({ '@type': 'ListItem', position: i + 1, url: base + c.path, name: c.title })) },
+];
+const top = cities[0];
+const faqs = co.copy?.faqs || [
+  { q: `How many ${site.niche.plural} are listed in ${co.inName}?`, a: `${co.count} at the last update on ${buildDate}${cities.length ? `, across ${cities.length} ${regionWordPlural.toLowerCase()}, each with a page of its own` : ''}. Every practitioner is also on the map and list on this page.` },
+  ...(top ? [{ q: `Which region of ${co.inName} has the most ${site.niche.plural}?`, a: `${top.name}, with ${top.count} listed.${cities[1] ? ` ${cities[1].name} is next with ${cities[1].count}.` : ''}` }] : []),
+  ...(devicesHere.length ? [{ q: `Which scanning devices do practitioners in ${co.inName} use?`, a: `The device named most often is ${devicesHere[0].d.label} (${devicesHere[0].n} practitioners)${devicesHere[1] ? `, then ${devicesHere[1].d.label} (${devicesHere[1].n})` : ''}. Many practitioners do not name their device, so ask when you call.` }] : []),
+  ...(co.attrCounts.remote_sessions ? [{ q: `Can I book a remote session from anywhere in ${co.inName}?`, a: `${co.attrCounts.remote_sessions} practitioners in ${co.inName} state that they offer remote or online sessions. They are marked on each listing and gathered on the remote sessions page.` }] : []),
+  { q: 'Can I be listed here?', a: `If you offer bioresonance or scan sessions in ${co.inName} and are not listed, use the claim form. We check the details and add you. Basic listings are free.` },
+];
+---
+<Base title={title} description={description} path={co.path} schema={schema}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: 'Countries', href: '/directory/' }, { name: co.name, href: co.path }]} />
+    <h1>{site.niche.title} in {co.inName}</h1>
+    <ul class="keyfacts">
+      <li><b>{co.count}</b>listed</li>
+      {co.attrCounts[site.sortAttribute] > 0 && <li><b>{co.attrCounts[site.sortAttribute]}</b>{site.confirmedLabel}</li>}
+      {co.attrCounts.remote_sessions > 0 && <li><b>{co.attrCounts.remote_sessions}</b>offer remote sessions</li>}
+      <li>Updated {buildDate}</li>
+    </ul>
+  </Fragment>
+  {alpha.length > 0 && (
+    <section>
+      <h2>{regionWordPlural} with listed practitioners</h2>
+      <ul class="city-grid">{alpha.map((c) => <li><a href={c.path}>{c.name}</a> <span class="n">{c.count}</span></li>)}</ul>
+    </section>
+  )}
+  {topTowns.length > 0 && (
+    <section>
+      <h2>Cities with the most practitioners</h2>
+      <ul class="city-grid">{topTowns.map((t) => <li><a href={t.path}>{t.name}</a> <span class="n">{t.count}</span></li>)}</ul>
+    </section>
+  )}
+  <ListingExplorer site={site} attributes={dir.attributes} listings={explorerListings} heading={rest.length ? `Top ${site.niche.plural} in ${co.inName}` : `Every ${site.niche.singular} in ${co.inName}`} groupBy="region" placeLabel={regionWord} />
+  {rest.length > 0 && (
+    <section>
+      <h3 class="more-head">{rest.length} more {site.niche.plural} in {co.inName}</h3>
+      <p class="meta">Listings with the fewest reviews. Every one is also on its {regionWord.toLowerCase()} page.</p>
+      <ul class="more-list">{rest.map((l) => <li><a href={l.path}>{l.name}</a> <span class="meta">{l.city}</span>{l.reviews > 0 && <span class="rt"><i aria-hidden="true">★</i> {l.rating.toFixed(1)} <small>({l.reviews})</small></span>}</li>)}</ul>
+    </section>
+  )}
+  <FeaturedBand site={site} items={co.featured} place={co.name} price={site.tiers?.state?.price} />
+  {devicesHere.length > 0 && (
+    <section>
+      <h2>Find a practitioner by device in {co.inName}</h2>
+      <ul class="city-grid svc-grid">{devicesHere.map((x) => <li><a href={x.cp ? x.cp.path : x.d.path}><span class="name">{x.d.label}</span> <span class="n">{x.n}</span></a></li>)}</ul>
+    </section>
+  )}
+  <ClaimCta site={site} />
+  <StatBlock block={countryBlock(co.code)} />
+  {intro && <div class="prose loc-text" set:html={paragraphs(intro)}></div>}
+  <Faq items={faqs} title={`Common questions about ${site.niche.plural} in ${co.inName}`} />
+</Base>

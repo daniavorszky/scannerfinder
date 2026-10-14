@@ -1,0 +1,13 @@
+<!-- Claim-your-listing form. No backend: posts to a form service (Formspree, or any service that takes a POST). Replace {{FORM_ENDPOINT}} and {{NOTIFY_EMAIL}}. -->
+<form action="{{FORM_ENDPOINT}}" method="POST" class="claim-form">
+  <input type="hidden" name="_subject" value="Listing claim: {{BUSINESS_NAME}}">
+  <input type="hidden" name="listing_slug" value="{{LISTING_SLUG}}">
+  <input type="hidden" name="_gotcha" style="display:none">
+  <label>Business name <input name="business" value="{{BUSINESS_NAME}}" required></label>
+  <label>Your name <input name="name" required></label>
+  <label>Work email (matching your website domain speeds this up) <input type="email" name="email" required></label>
+  <label>Phone <input type="tel" name="phone"></label>
+  <label>What should we fix or add? <textarea name="changes" rows="4"></textarea></label>
+  <label><input type="checkbox" name="featured_interest" value="yes"> Tell me about featured placement in my city</label>
+  <button type="submit">Claim this listing</button>
+</form>

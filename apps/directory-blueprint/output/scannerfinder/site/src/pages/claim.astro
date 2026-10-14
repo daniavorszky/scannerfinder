@@ -1,0 +1,133 @@
+---
+// Claim your listing, step 1 of 2 (plan: research/claim-flow-plan.md). Posts to /api/claim/start, which emails a
+// one-hour confirmation link; step 2 is /claim/profile/. Noindex: a conversion page.
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site } = loadDirectory();
+const title = `Claim your listing | ${site.brand}`;
+const description = `Claim your free ${site.niche.singular} listing on ${site.brand}: confirm your details, add your session price and booking link.`;
+---
+<Base title={title} description={description} path="/claim/" noindex={true}>
+  <Fragment slot="head">
+    <h1>Claim your listing</h1>
+  </Fragment>
+  <ol class="claim-steps" aria-label="Steps"><li class="on">Confirm it's you</li><li>Check your details</li></ol>
+  <div class="prose">
+    <p>Claiming is free, and it stays free. Confirm your email, then check the profile we built from your website: your device, session price, booking link. Claimed profiles show above unclaimed ones in your town.</p>
+    <p>Once your profile is live, you also see how your session price compares with other practitioners in your city, your country and on your device. That comparison is not published anywhere.</p>
+  </div>
+
+  <form class="claim-form" id="claim-form" novalidate>
+    <div class="claim-pick" id="pick-chosen" hidden>
+      <span>You are claiming <b id="pick-name"></b> <span class="meta" id="pick-place"></span></span>
+      <button type="button" class="linkish" id="pick-change">Change</button>
+    </div>
+    <div id="pick-search">
+      <label>Find your practice
+        <input id="pick-input" autocomplete="off" placeholder="Practice name or town" aria-describedby="pick-help" />
+      </label>
+      <ul class="pick-list" id="pick-list" hidden></ul>
+      <p class="meta" id="pick-help"><button type="button" class="linkish" id="pick-new">My practice is not listed</button></p>
+    </div>
+    <fieldset class="new-practice" id="new-practice" hidden>
+      <legend>Your practice</legend>
+      <label>Practice name <input name="np_name" /></label>
+      <div class="row2">
+        <label>Town or city <input name="np_city" /></label>
+        <label>Country <input name="np_country" /></label>
+      </div>
+      <label>Website (optional) <input name="np_website" type="url" placeholder="https://" /></label>
+      <p class="meta"><button type="button" class="linkish" id="pick-back">Search the directory instead</button></p>
+    </fieldset>
+
+    <label>Your name <input name="name" autocomplete="name" required /></label>
+    <label>Your role
+      <select name="role">
+        <option value="owner">Owner</option>
+        <option value="practitioner">Practitioner at this practice</option>
+        <option value="manager">Manager or staff</option>
+        <option value="other">Other</option>
+      </select>
+    </label>
+    <label>Email <input name="email" type="email" autocomplete="email" required aria-describedby="email-help" /></label>
+    <p class="meta" id="email-help">An email on your website's domain, or the one shown on your website, confirms ownership straight away. Any other address works too; we then call the number on your Google profile.</p>
+    <input type="text" name="website_hp" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true" />
+    <p class="form-error" id="claim-error" role="alert" hidden></p>
+    <button class="btn" type="submit" id="claim-submit">Send my confirmation link</button>
+  </form>
+
+  <div class="claim-sent" id="claim-sent" hidden>
+    <h2>Check your inbox</h2>
+    <p>We sent a confirmation link to <b id="sent-to"></b>. It works for one hour. Open it on this device or any other to continue to step 2.</p>
+    <p class="meta">Nothing there after a few minutes? Check spam, or <button type="button" class="linkish" id="sent-again">send it again</button>.</p>
+    <p class="meta" id="dev-link" hidden></p>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var q = new URLSearchParams(location.search);
+      var form = document.getElementById('claim-form'), err = document.getElementById('claim-error');
+      var chosen = null, newMode = false, index = null;
+      var $ = function (id) { return document.getElementById(id); };
+      function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+      function choose(slug, name, place) {
+        chosen = slug; newMode = false;
+        $('pick-name').textContent = name; $('pick-place').textContent = place ? '(' + place + ')' : '';
+        $('pick-chosen').hidden = false; $('pick-search').hidden = true; $('new-practice').hidden = true;
+      }
+      function searchMode() { chosen = null; newMode = false; $('pick-chosen').hidden = true; $('pick-search').hidden = false; $('new-practice').hidden = true; $('pick-input').focus(); }
+      if (q.get('listing')) choose(q.get('listing'), q.get('business') || q.get('listing'), '');
+      $('pick-change').onclick = searchMode;
+      $('pick-back').onclick = searchMode;
+      $('pick-new').onclick = function () { chosen = null; newMode = true; $('pick-search').hidden = true; $('new-practice').hidden = false; form.np_name.focus(); };
+      var input = $('pick-input'), list = $('pick-list');
+      input.addEventListener('input', function () {
+        var t = input.value.trim().toLowerCase();
+        if (t.length < 2) { list.hidden = true; return; }
+        (index ? Promise.resolve(index) : fetch('/search-index.json').then(function (r) { return r.json(); }).then(function (j) {
+          index = (j.listings || j).filter(function (e) { return e.p && e.p.indexOf('/company/') === 0; }); return index;
+        })).then(function (ix) {
+          var hits = ix.filter(function (e) { return (e.n + ' ' + e.c).toLowerCase().indexOf(t) !== -1; }).slice(0, 8);
+          list.innerHTML = hits.length ? hits.map(function (e) {
+            var slug = e.p.split('/').filter(Boolean).pop();
+            return '<li><button type="button" data-slug="' + esc(slug) + '" data-name="' + esc(e.n) + '" data-place="' + esc(e.c + ', ' + e.k) + '">' + esc(e.n) + ' <span class="meta">' + esc(e.c + ', ' + e.k) + '</span></button></li>';
+          }).join('') : '<li class="meta">No match. Try the town, or add your practice below.</li>';
+          list.hidden = false;
+        });
+      });
+      list.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-slug]');
+        if (b) { choose(b.dataset.slug, b.dataset.name, b.dataset.place); list.hidden = true; }
+      });
+      var MSG = {
+        missing_fields: 'Add your name and a valid email.', pick_listing: 'Pick your practice from the list, or add it as a new practice.',
+        bad_website: 'The website should start with https://', rate_limited: 'Too many links sent to this address in the last hour. Try again later.',
+        mail_failed: 'We could not send the email just now. Try again in a minute.'
+      };
+      var last = null;
+      function send(body) {
+        err.hidden = true; $('claim-submit').disabled = true;
+        return fetch('/api/claim/start', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            $('claim-submit').disabled = false;
+            if (!j.ok) { err.textContent = MSG[j.error] || 'Something went wrong. Try again.'; err.hidden = false; return; }
+            form.hidden = true; $('claim-sent').hidden = false; $('sent-to').textContent = body.email;
+            if (j.dev_link) { $('dev-link').hidden = false; $('dev-link').innerHTML = 'Dev mode: <a href="' + esc(j.dev_link) + '">confirmation link</a>'; }
+          })
+          .catch(function () { $('claim-submit').disabled = false; err.textContent = 'Network error. Try again.'; err.hidden = false; });
+      }
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var f = form;
+        last = {
+          slug: chosen || '', name: f.name.value, role: f.role.value, email: f.email.value, website_hp: f.website_hp.value,
+          tier: q.get('tier') || '',
+          new_practice: newMode ? { name: f.np_name.value, city: f.np_city.value, country: f.np_country.value, website: f.np_website.value } : null
+        };
+        send(last);
+      });
+      $('sent-again').onclick = function () { if (last) send(last); };
+    })();
+  </script>
+</Base>

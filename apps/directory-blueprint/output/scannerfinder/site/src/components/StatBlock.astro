@@ -1,0 +1,13 @@
+---
+// "In numbers" box for country, device and device × country pages (data: src/lib/stats.mjs). Links to /statistics/.
+const { block } = Astro.props;
+---
+{block && (
+  <section class="stat-block" aria-label={block.title}>
+    <h2>{block.title}</h2>
+    <dl class="stat-block-facts">
+      {block.facts.map((f) => <div><dd class={f.small ? 'small' : ''}>{f.v}</dd><dt>{f.l}</dt></div>)}
+    </dl>
+    <p>{block.sentence} <a href="/statistics/">See all statistics</a>.</p>
+  </section>
+)}

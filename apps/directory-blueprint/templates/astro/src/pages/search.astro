@@ -1,0 +1,19 @@
+---
+// Search results: the form again, then results drawn from /search-index.json in the browser. noindex, never in the sitemap.
+import Base from '../layouts/Base.astro';
+import SearchForm from '../components/SearchForm.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site, attributes, statePath } = loadDirectory();
+const title = `Search ${site.niche.plural} in ${site.state.name} | ${site.brand}`;
+---
+<Base title={title} description={`Search every ${site.niche.singular} listed on ${site.brand} by name, service and city.`} path="/search/" noindex={true} headTone="band">
+  <Fragment slot="head">
+    <div class="hero">
+      <h1>Search {site.niche.plural} in {site.state.name}</h1>
+      <SearchForm site={site} attributes={attributes} />
+    </div>
+  </Fragment>
+  <section id="search-results" class="results" aria-live="polite" data-page="search">
+    <p class="meta">Type a business name or a service, add a city if you like, or pick a service filter. Without JavaScript, <a href={statePath}>browse by city</a> instead.</p>
+  </section>
+</Base>

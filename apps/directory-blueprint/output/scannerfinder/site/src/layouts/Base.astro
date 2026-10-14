@@ -1,0 +1,198 @@
+---
+// Head (title, meta, canonical, OG, robots), tokens, header, footer, JSON-LD slot.
+import '../styles/fonts.css';
+import '../styles/global.css';
+import JsonLd from '../components/JsonLd.astro';
+import { loadDirectory } from '../lib/load.mjs';
+import tools from '../data/tools.json';
+const dir = loadDirectory();
+const { site, indexCities: cities, services, devices, features, countries, statePath, buildDate } = dir;
+const { title, description, path, noindex = false, schema = [], ogType = 'website', headTone = 'tint', headImage = '' } = Astro.props;
+// A hero photograph sits under a flat overlay of the band color, so the text keeps its contrast.
+const headStyle = headImage ? `background-image:linear-gradient(var(--band-overlay),var(--band-overlay)),url(${headImage});` : undefined;
+const hasHead = Astro.slots.has('head');
+const base = `https://${site.domain}`;
+const canonical = base + path;
+const d = site.design;
+// Optional tokens fall back to the base ones, so a site.json without them renders as before.
+const tokens = `--bg:${d.bg};--surface:${d.surface};--text:${d.text};--muted:${d.muted};--accent:${d.accent};--accent-text:${d.accentText};--heading-font:${d.headingFont};--body-font:${d.bodyFont};--radius:${d.radius};--shadow:${d.shadow};`
+  + `--heading:${d.heading || d.text};--heading-weight:${d.headingWeight || 700};--link:${d.link || d.accent};--button-radius:${d.buttonRadius || d.radius};`
+  + `--band:${d.band || d.surface};--band-text:${d.bandText || d.text};--action:${d.action || d.accent};--action-text:${d.actionText || d.accentText};`
+  + `--header-bg:${d.headerBg || d.surface};--header-text:${d.headerText || d.heading || d.text};--tint:${d.tint || d.surface};--accent2:${d.accent2 || d.accent};--band-soft:${d.bandSoft || d.bandText || d.text};--band-overlay:${d.bandOverlay || 'rgba(0,0,0,0.6)'};--gold:${d.gold || '#F5B940'};--gold-light:${d.goldLight || '#FFD86B'};--gold-deep:${d.goldDeep || '#D9950F'};`;
+const topCities = cities.slice(0, 8);
+// Social links come from the publisher's sameAs list. Only networks with an icon here are shown.
+const SOCIAL = {
+  'facebook.com': ['Facebook', 'M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z'],
+  'instagram.com': ['Instagram', 'M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 4 2.4 7.2 2.3c1.2-.1 1.6-.1 4.8-.1zm0 4.7a5.1 5.1 0 1 0 0 10.2 5.1 5.1 0 0 0 0-10.2zm0 8.4a3.3 3.3 0 1 1 0-6.6 3.3 3.3 0 0 1 0 6.6zm5.3-8.6a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z'],
+  'linkedin.com': ['LinkedIn', 'M20.4 2H3.6A1.6 1.6 0 0 0 2 3.6v16.8A1.6 1.6 0 0 0 3.6 22h16.8a1.6 1.6 0 0 0 1.6-1.6V3.6A1.6 1.6 0 0 0 20.4 2zM8 19H5V9.5h3V19zM6.5 8.2a1.7 1.7 0 1 1 0-3.5 1.7 1.7 0 0 1 0 3.5zM19 19h-3v-4.6c0-1.1 0-2.5-1.5-2.5S12.7 13 12.7 14.3V19h-3V9.5h2.9v1.3c.4-.8 1.4-1.5 2.8-1.5 3 0 3.6 2 3.6 4.6V19z'],
+  'youtube.com': ['YouTube', 'M23 7.2a2.9 2.9 0 0 0-2-2C19.2 4.7 12 4.7 12 4.7s-7.2 0-9 .5a2.9 2.9 0 0 0-2 2C.5 9 .5 12 .5 12s0 3 .5 4.8a2.9 2.9 0 0 0 2 2c1.8.5 9 .5 9 .5s7.2 0 9-.5a2.9 2.9 0 0 0 2-2c.5-1.8.5-4.8.5-4.8s0-3-.5-4.8zM9.7 15.1V8.9l6 3.1-6 3.1z'],
+  'x.com': ['X', 'M18.2 2h3.4l-7.4 8.5L23 22h-6.8l-5.3-7-6.1 7H1.4l7.9-9.1L1 2h7l4.8 6.4L18.2 2zm-1.2 18h1.9L7.1 3.9H5.1L17 20z'],
+  'twitter.com': ['X', 'M18.2 2h3.4l-7.4 8.5L23 22h-6.8l-5.3-7-6.1 7H1.4l7.9-9.1L1 2h7l4.8 6.4L18.2 2zm-1.2 18h1.9L7.1 3.9H5.1L17 20z'],
+  'pinterest.com': ['Pinterest', 'M12 2a10 10 0 0 0-3.6 19.3c-.1-.8-.2-2 0-2.9l1.2-5s-.3-.6-.3-1.5c0-1.4.8-2.4 1.8-2.4.8 0 1.3.6 1.3 1.4 0 .9-.6 2.2-.9 3.4-.2 1 .5 1.8 1.5 1.8 1.8 0 3.2-1.9 3.2-4.7 0-2.5-1.8-4.2-4.3-4.2-2.9 0-4.6 2.2-4.6 4.4 0 .9.3 1.8.8 2.3.1.1.1.2.1.3l-.3 1.1c0 .2-.2.2-.3.1-1.3-.6-2-2.4-2-3.9 0-3.2 2.3-6.1 6.6-6.1 3.5 0 6.2 2.5 6.2 5.8 0 3.4-2.2 6.2-5.2 6.2-1 0-2-.5-2.3-1.2l-.6 2.4c-.2.9-.8 2-1.2 2.6A10 10 0 1 0 12 2z'],
+  'tiktok.com': ['TikTok', 'M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-1.8-2.5V9.7a5.7 5.7 0 1 0 5 5.7V9.1a7.3 7.3 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.3-1.6z'],
+};
+const socials = (site.publisher.sameAs || []).map((u) => {
+  try { const h = new URL(u).hostname.replace(/^www\./, ''); const k = Object.keys(SOCIAL).find((d) => h === d || h.endsWith('.' + d)); return k ? { url: u, name: SOCIAL[k][0], path: SOCIAL[k][1] } : null; } catch { return null; }
+}).filter(Boolean);
+const orgId = `${base}/#publisher`;
+const personId = `${base}/#person`;
+const hasResources = Object.keys(import.meta.glob('../pages/resources/*.md')).filter((f) => !f.split('/').pop().startsWith('_')).length > 0;
+const siteSchema = path === '/' ? [
+  { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${base}/#website`, url: base + '/', name: site.brand, publisher: { '@id': orgId } },
+  { '@context': 'https://schema.org', '@type': 'Organization', '@id': orgId, name: site.brand, url: base + '/', email: site.contact.email,
+    founder: { '@id': personId }, publisher: { '@id': personId }, sameAs: (site.publisher.sameAs || []).filter(Boolean) },
+  { '@context': 'https://schema.org', '@type': site.publisher.type || 'Person', '@id': personId, name: site.publisher.name, legalName: site.publisher.legalName || undefined, url: site.publisher.url || undefined,
+    [site.publisher.type === 'Organization' ? 'logo' : 'image']: site.publisher.image ? base + site.publisher.image : undefined, sameAs: (site.publisher.sameAs || []).filter(Boolean) },
+] : [];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow'} />
+    <meta name="theme-color" content={d.accent} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={site.brand} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    {d.favicon ? <link rel="icon" href={d.favicon} /> : <link rel="icon" href="/favicon.svg" type="image/svg+xml" />}
+    <style set:html={`:root{${tokens}}`}></style>
+    <JsonLd data={[...siteSchema, ...schema]} />
+    <script is:inline src="/track.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <span class="hdr-progress" aria-hidden="true"><i></i></span>
+        <a class="logo" href="/">{d.logoImage ? <img src={d.logoImage} alt={site.brand} width="160" height="28" style="height:28px;width:auto;display:block" /> : (d.logoText || site.brand)}</a>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Menu">
+          <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path class="i-open" d="M3 6h18M3 12h18M3 18h18" /><path class="i-close" d="M5 5l14 14M19 5L5 19" /></svg>
+        </button>
+        <nav class="nav" id="main-nav" aria-label="Main">
+          <div class="nav-item has-sub">
+            <a href="/directory/" aria-haspopup="true">Practitioners<svg class="caret" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 4l4 4 4-4" /></svg></a>
+            <div class="sub" aria-label="Practitioners">
+              <a href="/search/">Find Practitioners</a>
+              <a href="/directory/">Browse by Country</a>
+              <a href="/best-practitioners/">Best Practitioners in {buildDate.slice(0, 4)}</a>
+              <a href="/statistics/">Statistics {buildDate.slice(0, 4)}</a>
+              <a href="/claim/">Claim your Listing</a>
+            </div>
+          </div>
+          {devices.length > 0 && (
+            <div class="nav-item has-sub">
+              <a href="/devices/" aria-haspopup="true">Technologies<svg class="caret" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 4l4 4 4-4" /></svg></a>
+              <div class="sub" aria-label="Technologies">{devices.map((x) => <a href={x.path}>{x.label}</a>)}</div>
+            </div>
+          )}
+          {tools.length > 0 ? (
+            <div class="nav-item has-sub">
+              <a href="/tools/" aria-haspopup="true">Tools<svg class="caret" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 4l4 4 4-4" /></svg></a>
+              <div class="sub" aria-label="Tools">{tools.map((x) => <a href={x.path}>{x.title}</a>)}</div>
+            </div>
+          ) : <a href="/tools/">Tools</a>}
+          {hasResources && <a href="/resources/">Resources</a>}
+          <a href="/blog/">Blog</a>
+          <a class="nav-cta" href="/claim/">Get listed</a>
+        </nav>
+      </div>
+      <script>
+        const t = document.querySelector('.nav-toggle');
+        t?.addEventListener('click', () => {
+          const open = t.getAttribute('aria-expanded') !== 'true';
+          t.setAttribute('aria-expanded', String(open));
+          t.closest('.site-header')?.classList.toggle('nav-open', open);
+        });
+        // Reading progress on the pill's bottom edge.
+        const bar = document.querySelector('.hdr-progress i') as HTMLElement | null;
+        if (bar) {
+          let raf = 0;
+          const update = () => {
+            raf = 0;
+            const el = document.documentElement, max = el.scrollHeight - el.clientHeight;
+            bar.style.transform = `scaleX(${max > 0 ? Math.min(1, el.scrollTop / max) : 0})`;
+          };
+          addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
+          update();
+        }
+      </script>
+    </header>
+    {hasHead && (
+      <div class={`page-head ${headTone}${headImage ? ' has-image' : ''}`} style={headStyle}>
+        <div class="wrap"><slot name="head" /></div>
+      </div>
+    )}
+    <main class="wrap">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="cols">
+          <div class="about">
+            <h2>About {site.brand}</h2>
+            <p>{site.footerAbout || `${site.brand} lists ${site.niche.plural} in ${countries.length} countries, by device and by region, with ratings, services and phone numbers taken from public records and each business's own website. Basic listings are free and paid placements are marked.`}</p>
+            <p>Published by <a href={site.publisher.url} rel="noopener" target="_blank">{site.publisher.name}</a>.</p>
+          </div>
+          <div>
+            <h2>Quick links</h2>
+            <ul>
+              <li><a href="/directory/">Every country and region</a></li>
+              <li><a href="/bioresonance/">What is bioresonance?</a></li>
+              <li><a href="/bioresonance-machines/">Bioresonance machines guide</a></li>
+              {devices.length > 0 && <li><a href="/devices/">{site.niche.title} by device</a></li>}
+              {features.length > 0 && <li><a href="/services/">Remote and animal sessions</a></li>}
+              <li><a href="/tools/">Tools</a></li>
+              <li><a href="/statistics/">Statistics</a></li>
+              <li><a href="/blog/">Blog</a></li>
+              <li><a href="/about/">About</a></li>
+              <li><a href="/contact/">Contact</a></li>
+              <li><a href="/claim/">Claim your listing</a></li>
+              <li><a href="/featured/">Featured placement</a></li>
+              {hasResources && <li><a href="/resources/">Resources</a></li>}
+              <li><a href="/privacy/">Privacy</a></li>
+              <li><a href="/terms/">Terms</a></li>
+              <li><a href="/affiliate-disclosure/">Affiliate disclosure</a></li>
+              <li><a href="/legal-notice/">Legal notice</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>Countries</h2>
+            <ul>
+              {countries.map((c) => <li><a href={c.path}>{site.niche.title} in {c.inName}</a></li>)}
+            </ul>
+            {devices.length > 0 && (<>
+              <h2>Devices</h2>
+              <ul>{devices.slice(0, 6).map((x) => <li><a href={x.path}>{x.label}</a></li>)}</ul>
+            </>)}
+          </div>
+          <div>
+            <h2>Contact</h2>
+            <p><strong>{site.brand}</strong></p>
+            <p><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>{site.publisher.phone && <><br /><a href={`tel:${site.publisher.phone.replace(/[^\d+]/g, '')}`}>{site.publisher.phone}</a></>}</p>
+            <p>Corrections and removals: <a href="/contact/">tell us</a>.</p>
+            {socials.length > 0 && (
+              <>
+                <h2>Follow</h2>
+                <ul class="social">{socials.map((s) => <li><a href={s.url} rel="me noopener" target="_blank" aria-label={s.name}><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d={s.path} fill="currentColor" /></svg></a></li>)}</ul>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+      <div class="legal">
+        <div class="wrap">
+          <p>&copy; {buildDate.slice(0, 4)} {site.brand}. Listings are compiled from public sources and are not endorsements. Last updated {buildDate}.</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

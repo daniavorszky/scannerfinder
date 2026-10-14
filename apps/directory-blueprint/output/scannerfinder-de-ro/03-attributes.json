@@ -1,0 +1,101 @@
+[
+ {
+  "key": "offers_scan",
+  "label": "Offers scan sessions",
+  "faq": "Which {plural} in {city} offer a bioenergetic or bioresonance scan?",
+  "true_when": "offers bioresonance, biofeedback, bioenergetic or device-based wellness scan sessions to clients, stated in words (selling a device or training only is false)",
+  "pattern": "\\bscan(s|ning)?\\b|bio-?resonance|bio-?feedback|bio-?energetic|bio-?communication|zyto|bicom|asyra|rayocomp|metatron|oberon|\\bscio\\b|timewaver|\\bmora\\b|ao[ -]?scan|frequency (scan|assessment|therapy)|bio-?resonanz|bio-?rezonan|biofeedback|bioenergeti|frequenzthera|frequenzanaly|scanare|analiz[aă] bio|testung|messung",
+  "core": true
+ },
+ {
+  "key": "zyto",
+  "label": "ZYTO",
+  "faq": "Which {plural} in {city} use a ZYTO scanner?",
+  "true_when": "uses a ZYTO device (Hand Cradle, Select, Elite, Balance, Evox) in sessions",
+  "pattern": "\\bzyto\\b|\\bevox\\b"
+ },
+ {
+  "key": "bicom",
+  "label": "BICOM",
+  "faq": "Which {plural} in {city} use BICOM bioresonance?",
+  "true_when": "uses a BICOM device (BICOM optima, BICOM 2000) or Regumed bioresonance in sessions",
+  "pattern": "\\bbicom\\b|regumed"
+ },
+ {
+  "key": "asyra",
+  "label": "Asyra / Qest4",
+  "faq": "Which {plural} in {city} use Asyra or Qest4?",
+  "true_when": "uses an Asyra or Qest4 device in sessions",
+  "pattern": "\\basyra\\b|qest ?4"
+ },
+ {
+  "key": "nes_health",
+  "label": "NES Health",
+  "faq": "Which {plural} in {city} use the NES Health scan?",
+  "true_when": "uses NES Health (miHealth, NES ProVision, Infoceuticals) or its Energy For Life successor in sessions",
+  "pattern": "\\bnes\\b|mihealth|infoceutical|provision scan|energy for life|\\be4l\\b"
+ },
+ {
+  "key": "rayonex",
+  "label": "Rayonex",
+  "faq": "Which {plural} in {city} use Rayonex bioresonance?",
+  "true_when": "uses a Rayonex device (Rayocomp PS 10, PS 1000) or bioresonance after Paul Schmidt",
+  "pattern": "rayonex|rayocomp|paul schmidt|bioresonanz nach paul schmidt"
+ },
+ {
+  "key": "nls",
+  "label": "NLS (Metatron, Oberon)",
+  "faq": "Which {plural} in {city} use an NLS scanner such as Metatron or Oberon?",
+  "true_when": "uses an NLS device (Metatron, Oberon, Hunter 4025, Diacom) in sessions",
+  "pattern": "\\bnls\\b|metatron|oberon|hunter[ -]?4025|diacom|non-?linear (system|analys)"
+ },
+ {
+  "key": "scio",
+  "label": "SCIO / Indigo / Eductor",
+  "faq": "Which {plural} in {city} use SCIO, Indigo or Eductor biofeedback?",
+  "true_when": "uses a SCIO, Indigo, Eductor or QXCI device, or quantum biofeedback named as that system",
+  "pattern": "\\bscio\\b|\\bindigo (biofeedback|device|system|session)|eductor|qxci|quantum biofeedback"
+ },
+ {
+  "key": "mora",
+  "label": "MORA",
+  "faq": "Which {plural} in {city} use MORA bioresonance?",
+  "true_when": "uses a MORA device (MORA Nova, MORA Super) or MORA therapy in sessions",
+  "pattern": "\\bmora (nova|super|iii|therapy|bioresonance|device)|med-?tronik"
+ },
+ {
+  "key": "timewaver",
+  "label": "TimeWaver",
+  "faq": "Which {plural} in {city} use TimeWaver?",
+  "true_when": "uses a TimeWaver system in sessions",
+  "pattern": "time ?waver"
+ },
+ {
+  "key": "ao_scan",
+  "label": "AO Scan",
+  "faq": "Which {plural} in {city} offer the AO Scan?",
+  "true_when": "uses the AO Scan (Solex) device, Vitals, Comprehensive or Inner Voice scan in sessions",
+  "pattern": "ao[ -]?scan|\\bsolex\\b|inner voice scan|vitals scan"
+ },
+ {
+  "key": "remote_sessions",
+  "label": "Remote sessions",
+  "faq": "Which {plural} near {city} offer remote or online scan sessions?",
+  "true_when": "offers sessions or scans at a distance (remote, online, by phone or video), stated in words",
+  "pattern": "\\bremote(ly)?\\b|distance (session|scan|healing|balancing)|\\bonline (session|scan|consult|appointment)|virtual (session|consult|scan|appointment)|via zoom|\\bzoom\\b|by video|over the phone|from (the comfort of )?your (own )?home|fern(behandlung|analyse|testung|bioresonanz|sitzung)|online-?(sitzung|beratung|analyse|termin)|telefonisch|per video|haarprobe|la distan[țt][aă]|online prin|[șs]edin[țt][aă] online|consulta[țt]ie online"
+ },
+ {
+  "key": "free_consultation",
+  "label": "Free first consultation",
+  "faq": "Which {plural} in {city} offer a free first consultation?",
+  "true_when": "offers a free or complimentary consultation, discovery call or first session",
+  "pattern": "free (consult|consultation|discovery|initial|first|intro|introductory|\\d+ ?min)|complimentary (consult|session|call|scan|discovery)|no[- ](cost|charge) (consult|call)|kostenlose[sn]? (erstgespr[äa]ch|vorgespr[äa]ch|beratung|kennenlern)|unverbindliche[sn]? (erstgespr[äa]ch|vorgespr[äa]ch)|consulta[țt]ie gratuit|prima (consulta[țt]ie|evaluare) gratuit|evaluare gratuit"
+ },
+ {
+  "key": "animal_sessions",
+  "label": "Sessions for animals",
+  "faq": "Which {plural} in {city} offer scans for pets or horses?",
+  "true_when": "offers scans or sessions for animals (pets, horses), stated in words",
+  "pattern": "\\bpets?\\b|\\banimals?\\b|\\bhorses?\\b|equine|\\bdogs?\\b|\\bcats?\\b|canine|feline|\\btiere?n?\\b|tierheil|\\bhunde?n?\\b|\\bpferde?n?\\b|\\bkatzen?\\b|haustier|\\banimale(le|lor)?\\b|\\bcâini\\b|\\bcai\\b|\\bpisici\\b"
+ }
+]

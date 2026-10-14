@@ -1,0 +1,158 @@
+---
+// Claim step 2: the practitioner checks what we show and adds what only they can give. Pre-filled from
+// /api/claim/me (listing data + the price we found on their site + their last submission). Noindex.
+import Base from '../../layouts/Base.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+const { site } = loadDirectory();
+const DEVICES = ['ZYTO', 'BICOM', 'SCIO/Indigo/Eductor', 'Rayonex', 'NLS', 'Asyra/Qest4', 'AO Scan', 'TimeWaver', 'NES Health', 'MORA'];
+const CURRENCIES = ['USD', 'GBP', 'EUR', 'RON', 'CAD', 'AUD', 'NZD', 'ZAR', 'CHF'];
+---
+<Base title={`Your profile | ${site.brand}`} description="Check and complete your ScannerFinder profile." path="/claim/profile/" noindex={true}>
+  <Fragment slot="head"><h1>Check your details</h1></Fragment>
+  <ol class="claim-steps" aria-label="Steps"><li class="done">Confirm it's you</li><li class="on">Check your details</li></ol>
+
+  <div class="claim-sent" id="signed-out" hidden>
+    <h2>Your session has ended</h2>
+    <p><a href="/claim/">Start again</a> and we will email you a new link.</p>
+  </div>
+
+  <form class="claim-form wide" id="profile-form" hidden novalidate>
+    <p class="meta" id="profile-intro"></p>
+
+    <fieldset>
+      <legend>Your listing</legend>
+      <label>Practice name <input name="business_name" /></label>
+      <div class="row2">
+        <label>Phone <input name="phone" type="tel" /></label>
+        <label>Website <input name="website" type="url" placeholder="https://" /></label>
+      </div>
+      <label>Online booking link (optional) <input name="booking_url" type="url" placeholder="https://" /></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Your device(s)</legend>
+      <div class="check-grid">{DEVICES.map((d) => <label class="check"><input type="checkbox" name="devices" value={d} /> {d}</label>)}</div>
+      <div class="row2">
+        <label>Other device(s) <input name="device_other" placeholder="e.g. Ondamed, Healy" /></label>
+        <label>Model(s) (optional) <input name="device_models" placeholder="e.g. ZYTO Evox, BICOM 2000" /></label>
+      </div>
+      <label>Manufacturer certification (optional)
+        <input name="certification_url" type="url" placeholder="https://" aria-describedby="cert-help" />
+      </label>
+      <p class="meta" id="cert-help">A link to your profile in the manufacturer's practitioner finder. We check it and add a "certified" mark to your listing.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>Sessions and prices</legend>
+      <p class="found" id="found-price" hidden></p>
+      <div class="row3">
+        <label>First session price <input name="session_price" inputmode="decimal" /></label>
+        <label>Follow-up price <input name="followup_price" inputmode="decimal" /></label>
+        <label>Currency <select name="currency">{CURRENCIES.map((c) => <option value={c}>{c}</option>)}</select></label>
+      </div>
+      <div class="row2">
+        <label>Session length (minutes) <input name="session_minutes" inputmode="numeric" /></label>
+        <label>Packages (optional) <input name="package_note" placeholder="e.g. 3 sessions for 250" /></label>
+      </div>
+      <div class="row2">
+        <label>Remote sessions
+          <select name="remote_sessions"><option value="">Choose</option><option value="yes">Yes, I offer remote scans</option><option value="no">No, in person only</option></select>
+        </label>
+        <label>Free first consultation
+          <select name="free_consultation"><option value="">Choose</option><option value="yes">Yes</option><option value="no">No</option></select>
+        </label>
+      </div>
+      <fieldset class="price-vis" aria-describedby="vis-help">
+        <legend>Your price on ScannerFinder</legend>
+        <label class="check"><input type="radio" name="price_visibility" value="public" /><span>Show my session price on my listing</span></label>
+        <label class="check"><input type="radio" name="price_visibility" value="private" /><span>Keep it private: use it only in anonymous comparisons</span></label>
+      </fieldset>
+      <p class="meta" id="vis-help">Either way, your price goes into the anonymous comparison you get with your profile, where it is grouped with at least four other practitioners. It is never shown next to your name unless you choose the first option.</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>About your practice (optional)</legend>
+      <label>Describe your sessions in a few sentences <textarea name="description" rows="4" maxlength="800"></textarea></label>
+      <p class="meta">Wellness wording only: we edit out any claim to diagnose, treat or cure.</p>
+      <label>Anything else we should correct? <textarea name="corrections" rows="3" maxlength="1000" placeholder="Address, opening hours, town…"></textarea></label>
+    </fieldset>
+
+    <fieldset class="consents">
+      <legend>Before you submit</legend>
+      <label class="check"><input type="checkbox" name="c_wellness" required /><span>My sessions are wellness services. I do not present them as medical tests, diagnosis or treatment.</span></label>
+      <label class="check"><input type="checkbox" name="c_accurate" required /><span>I run or work at this practice, and these details are correct.</span></label>
+      <label class="check"><input type="checkbox" name="c_terms" required /><span>I accept the <a href="/terms/" target="_blank">terms</a> and the <a href="/privacy/" target="_blank">privacy policy</a>.</span></label>
+      <label class="check"><input type="checkbox" name="c_marketing" /><span>Email me ScannerFinder news and offers for practitioners (optional).</span></label>
+    </fieldset>
+
+    <p class="form-error" id="profile-error" role="alert" hidden></p>
+    <button class="btn" type="submit" id="profile-submit">Submit my profile</button>
+  </form>
+
+  <div class="claim-sent" id="profile-done" hidden>
+    <h2>Thank you, your profile is in</h2>
+    <p>We check every profile, usually within two working days, and email you when it is live.</p>
+    <p><a class="btn" href="/claim/benchmark/">See how your price compares</a></p>
+    <p><a id="listing-link" href="/">See your current listing</a> · <button type="button" class="linkish" id="edit-again">Edit my answers</button></p>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var f = document.getElementById('profile-form'), err = document.getElementById('profile-error');
+      var $ = function (id) { return document.getElementById(id); };
+      function set(name, v) { if (v !== undefined && v !== null && f[name]) f[name].value = v; }
+      function yn(v) { return v === true ? 'yes' : v === false ? 'no' : ''; }
+      fetch('/api/claim/me').then(function (r) { return r.json(); }).then(function (j) {
+        if (!j.ok) { $('signed-out').hidden = false; return; }
+        var l = j.listing || {}, p = j.profile, np = (j.claim.details || {}).new_practice || {};
+        $('profile-intro').textContent = j.listing
+          ? 'Signed in as ' + j.claim.email + '. This is what your listing shows today: change anything that is wrong.'
+          : 'Signed in as ' + j.claim.email + '. Tell us about your practice and we will add it to the directory.';
+        set('business_name', l.n || np.name); set('phone', l.ph); set('website', l.w || np.website);
+        set('currency', l.cur || 'USD');
+        (l.dv || []).forEach(function (d) { var c = f.querySelector('input[name="devices"][value="' + d + '"]'); if (c) c.checked = true; });
+        set('device_models', l.dm);
+        if (l.rm) set('remote_sessions', 'yes'); if (l.fc) set('free_consultation', 'yes');
+        if (l.fp && !p) {
+          set('session_price', l.fp.i); set('followup_price', l.fp.f); set('currency', l.fp.cur); set('session_minutes', l.fp.min);
+          $('found-price').hidden = false;
+          $('found-price').textContent = 'We found ' + l.fp.cur + ' ' + l.fp.i + ' for a first session on your website and filled it in. Please check it. You choose below whether it appears on your listing.';
+        }
+        if (p) {
+          ['business_name', 'phone', 'website', 'booking_url', 'device_other', 'device_models', 'certification_url', 'currency', 'session_price', 'followup_price', 'package_note', 'session_minutes', 'description', 'corrections']
+            .forEach(function (k) { set(k, p[k]); });
+          f.querySelectorAll('input[name="devices"]').forEach(function (c) { c.checked = (p.devices || []).indexOf(c.value) !== -1; });
+          set('remote_sessions', yn(p.remote_sessions)); set('free_consultation', yn(p.free_consultation));
+          if (p.price_public === true || p.price_public === false) { var rv = f.querySelector('input[name="price_visibility"][value="' + (p.price_public ? 'public' : 'private') + '"]'); if (rv) rv.checked = true; }
+        }
+        if (l.p) $('listing-link').href = l.p; else $('listing-link').hidden = true;
+        f.hidden = false;
+      });
+      var MSG = { consents: 'Tick the three boxes above the button to submit.', bad_url: 'Links must start with https://', currency: 'Pick the currency of your price.', price_visibility: 'Choose whether to show your price on your listing or keep it private.', signed_out: 'Your session has ended. Start again from the claim page.' };
+      f.addEventListener('submit', function (e) {
+        e.preventDefault(); err.hidden = true;
+        var body = {
+          business_name: f.business_name.value, phone: f.phone.value, website: f.website.value, booking_url: f.booking_url.value,
+          devices: Array.prototype.map.call(f.querySelectorAll('input[name="devices"]:checked'), function (c) { return c.value; }),
+          device_other: f.device_other.value, device_models: f.device_models.value, certification_url: f.certification_url.value,
+          session_price: f.session_price.value.replace(',', '.'), followup_price: f.followup_price.value.replace(',', '.'), currency: f.currency.value,
+          session_minutes: f.session_minutes.value, package_note: f.package_note.value,
+          remote_sessions: f.remote_sessions.value, free_consultation: f.free_consultation.value,
+          price_visibility: (f.querySelector('input[name="price_visibility"]:checked') || {}).value || '',
+          description: f.description.value, corrections: f.corrections.value,
+          consents: { wellness: f.c_wellness.checked, accurate: f.c_accurate.checked, terms: f.c_terms.checked, marketing: f.c_marketing.checked }
+        };
+        $('profile-submit').disabled = true;
+        fetch('/api/claim/profile', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            $('profile-submit').disabled = false;
+            if (!j.ok) { err.textContent = MSG[j.error] || 'Something went wrong. Try again.'; err.hidden = false; return; }
+            f.hidden = true; $('profile-done').hidden = false; window.scrollTo(0, 0);
+          })
+          .catch(function () { $('profile-submit').disabled = false; err.textContent = 'Network error. Try again.'; err.hidden = false; });
+      });
+      $('edit-again').onclick = function () { $('profile-done').hidden = true; f.hidden = false; };
+    })();
+  </script>
+</Base>

@@ -1,0 +1,52 @@
+---
+// Browse everything (noindex, follow; an HTML sitemap with a search box). ScannerFinder: country → region →
+// listing, with the listings of the smaller regions under their country (04-plan.md).
+import Base from '../../layouts/Base.astro';
+import SearchForm from '../../components/SearchForm.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+const { site, countries, listings, cities, attributes } = loadDirectory();
+const title = `${site.niche.title} directory: every country, region and listing | ${site.brand}`;
+const description = `Browse every ${site.niche.singular} listed on ${site.brand}, country by country and region by region, or search by name, device and session type.`;
+const rt = (l) => l.reviews > 0 ? `★ ${l.rating.toFixed(1)} (${l.reviews})` : '';
+---
+<Base title={title} description={description} path="/directory/" noindex={true} headTone="band">
+  <Fragment slot="head">
+    <div class="hero compact">
+      <h1>Browse every <span class="hl">{site.niche.singular}</span></h1>
+      <p class="lede">{listings.length.toLocaleString('en-US')} listings in {countries.length} countries and {cities.length} regions. Search by name, device or session type, or scroll the list.</p>
+      <SearchForm site={site} attributes={attributes} />
+    </div>
+  </Fragment>
+
+  <section id="countries">
+    <h2>Countries</h2>
+    <!-- copy:skip -->
+    <ul class="city-grid">{countries.map((c) => <li><a href={c.path}><span class="name">{c.name}</span> <span class="n">{c.count}</span></a></li>)}</ul>
+    <!-- /copy:skip -->
+  </section>
+
+  <section id="listings">
+    <h2>Every listing, by country and region</h2>
+    <!-- copy:skip -->
+    {countries.map((co) => (
+      <div class="all-country">
+        <h3><a href={co.path}>{co.name}</a> <span class="n">{co.count}</span></h3>
+        <div class="all-listings">
+          {[...co.cities].sort((a, b) => a.name.localeCompare(b.name)).map((c) => (
+            <div class="all-city">
+              <h4><a href={c.path}>{c.name}</a> <span class="n">{c.count}</span></h4>
+              <ul>{c.listings.map((l) => <li><a href={l.path}>{l.name}</a> <span class="rt">{rt(l)}</span></li>)}</ul>
+            </div>
+          ))}
+          {co.others.length > 0 && (
+            <div class="all-city">
+              <h4><a href={co.path}>{co.cities.length ? `Other areas of ${co.inName}` : co.name}</a> <span class="n">{co.others.length}</span></h4>
+              <ul>{co.others.map((l) => <li><a href={l.path}>{l.name}</a> <span class="meta">{l.region}</span> <span class="rt">{rt(l)}</span></li>)}</ul>
+            </div>
+          )}
+        </div>
+      </div>
+    ))}
+    <!-- /copy:skip -->
+  </section>
+</Base>

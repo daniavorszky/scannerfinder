@@ -1,0 +1,17 @@
+# Cloudflare Pages headers. https://developers.cloudflare.com/pages/configuration/headers/
+
+# The free pages.dev address serves the same pages as the real domain. Keep it out of search
+# so the directory is indexed under one address only.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+# Fonts and the stylesheet carry a hash in their file name, so they can be cached for a year.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

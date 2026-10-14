@@ -1,0 +1,50 @@
+---
+// State hub: every city with its count.
+import Base from '../../../layouts/Base.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import FeaturedBand from '../../../components/FeaturedBand.astro';
+import Faq from '../../../components/Faq.astro';
+import ClaimCta from '../../../components/ClaimCta.astro';
+import { loadDirectory } from '../../../lib/load.mjs';
+export function getStaticPaths() { const { stateSlug } = loadDirectory(); return [{ params: { state: stateSlug } }]; }
+const { site, indexCities: cities, cities: allCities, listings, homeFeatured, statePath, buildDate } = loadDirectory();
+import { paragraphs } from '../../../lib/load.mjs';
+const stateIntro = site.stateIntro && site.stateIntro.length ? site.stateIntro : null;
+const remote = allCities.filter((c) => c.underFloor).sort((a, b) => a.name.localeCompare(b.name));
+const base = `https://${site.domain}`;
+const title = `${site.niche.title} in ${site.state.name}: Every City | ${site.brand}`;
+const description = `All ${cities.length} ${site.state.name} cities with listed ${site.niche.plural}, ${listings.length} businesses in total. Pick your city to compare ratings, services and phone numbers.`;
+const alpha = [...cities].sort((a, b) => a.name.localeCompare(b.name));
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': base + statePath, url: base + statePath, name: title, datePublished: site.launchDate, dateModified: buildDate },
+  { '@context': 'https://schema.org', '@type': 'ItemList', name: `${site.niche.title} in ${site.state.name} by city`,
+    itemListElement: alpha.map((c, i) => ({ '@type': 'ListItem', position: i + 1, url: base + c.path, name: c.title })) },
+];
+const faqs = [
+  { q: `How many ${site.niche.plural} are listed in ${site.state.name}?`, a: `${listings.length} at the last update on ${buildDate}, across ${cities.length} cities. Cities with fewer than ${site.cityFloor} listed businesses are folded into the nearest city page.` },
+  { q: `Which ${site.state.name} city has the most ${site.niche.plural}?`, a: `${cities[0]?.name ?? 'n/a'}, with ${cities[0]?.count ?? 0} listed. ${cities[1] ? `${cities[1].name} is next with ${cities[1].count}.` : ''}` },
+  { q: 'Can I be listed here?', a: `If you run a ${site.niche.singular} business in ${site.state.name} and are not listed, use the claim form and we will check the details and add you. Basic listings are free.` },
+];
+---
+<Base title={title} description={description} path={statePath} schema={schema}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: site.niche.title, href: '/directory/' }, { name: site.state.name, href: statePath }]} />
+    <h1>{site.niche.title} in {site.state.name}, by city</h1>
+    <p class="lede">{listings.length.toLocaleString('en-US')} {site.niche.plural} in {cities.length} cities. Every city page ranks the businesses in it by rating and review count, with featured placements marked.</p>
+  </Fragment>
+  {stateIntro && <div class="prose" set:html={paragraphs(stateIntro)}></div>}
+  <FeaturedBand site={site} items={homeFeatured} place={site.state.name} price={site.tiers?.city?.price} />
+  <section>
+    <h2>All cities</h2>
+    <ul class="city-grid">{alpha.map((c) => <li><a href={c.path}>{c.name}</a> <span class="n">{c.count}</span></li>)}</ul>
+  </section>
+  {remote.length > 0 && (
+    <section>
+      <h2>Smaller towns</h2>
+      <p>These towns have fewer than {site.cityFloor} listed {site.niche.plural} and are too far from a larger city to share its page.</p>
+      <ul class="city-grid">{remote.map((c) => <li><a href={c.path}>{c.name}</a> <span class="n">{c.count}</span></li>)}</ul>
+    </section>
+  )}
+  <Faq items={faqs} />
+  <ClaimCta site={site} />
+</Base>

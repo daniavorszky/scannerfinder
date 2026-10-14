@@ -1,0 +1,19 @@
+# ScannerFinder project repo (2026-10-14). Internal data with emails stays out of Git.
+data/
+node_modules
+node_modules.nosync
+dist
+dist.nosync
+.astro
+.astro.nosync
+.wrangler
+.dev.vars*
+.env*
+!.env.example
+.DS_Store
+# generated at build (claim-data has email hashes)
+apps/directory-blueprint/output/*/site/functions/_data/
+# caches and raw pulls
+apps/directory-blueprint/output/*/03-cache/
+apps/directory-blueprint/output/*/05-cache/
+*.jsonl

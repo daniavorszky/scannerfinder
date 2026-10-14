@@ -1,0 +1,26 @@
+---
+// Layout for src/pages/resources/*.md. Frontmatter: title, description, published, modified, cities (slugs), sources.
+import Base from './Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Byline from '../components/Byline.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { frontmatter, url } = Astro.props;
+const dir = loadDirectory();
+const { site, buildDate } = dir;
+const path = (url || '').replace(/\/?$/, '/');
+const base = `https://${site.domain}`;
+const modified = frontmatter.modified || buildDate;
+const related = (frontmatter.cities || []).map((s) => dir.cityBySlug[s]).filter(Boolean);
+const schema = [{ '@context': 'https://schema.org', '@type': 'Article', '@id': base + path, headline: frontmatter.title, description: frontmatter.description,
+  datePublished: frontmatter.published, dateModified: modified, author: { '@id': `${base}/#person` }, publisher: { '@id': `${base}/#publisher` }, mainEntityOfPage: base + path }];
+---
+<Base title={`${frontmatter.title} | ${site.brand}`} description={frontmatter.description} path={path} schema={schema} ogType="article">
+  <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: 'Resources', href: '/resources/' }, { name: frontmatter.title, href: path }]} />
+  <article class="prose">
+    <h1>{frontmatter.title}</h1>
+    <Byline site={site} published={frontmatter.published} modified={modified} />
+    <slot />
+    {frontmatter.sources?.length > 0 && (<><h2>Sources</h2><ul>{frontmatter.sources.map((s) => <li><a href={s} rel="noopener">{s}</a></li>)}</ul></>)}
+    {related.length > 0 && (<><h2>Related city pages</h2><ul>{related.map((c) => <li><a href={c.path}>{c.title}</a></li>)}</ul></>)}
+  </article>
+</Base>

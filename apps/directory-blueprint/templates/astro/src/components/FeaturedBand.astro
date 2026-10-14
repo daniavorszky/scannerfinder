@@ -1,0 +1,42 @@
+---
+// Featured band: full-bleed navy section, centered, with the paid positions as orange-framed cards.
+// With site.featuredPreview on, load.mjs fills unsold positions with the page's best real listings
+// (flagged `preview`, rendered with data-preview so the live check refuses them). With it off, one
+// dashed "position is open" card links to /featured/. The costs link sits under the cards.
+// Props: site, items (listings), place (a city name or the state name), price, slots (default 3), title.
+import { topAttrs } from '../lib/load.mjs';
+const { site, items = [], place, price = '', slots = 3, title } = Astro.props;
+const heading = title || `Featured ${site.niche.plural} in ${place}`;
+const excerpt = (t, n = 28) => { const w = (t || '').split(/\s+/); return w.length > n ? w.slice(0, n).join(' ') + '\u2026' : w.join(' '); };
+const shown = items.slice(0, slots);
+const preview = (l) => !l.featured || (items.length && l.preview);
+---
+<section class="bleed featured-band">
+  <h2>{heading}</h2>
+  <!-- copy:skip -->
+  <div class="biz-cards">
+    {shown.map((l) => (
+      <article class="biz-card featured" data-preview={l.featured ? undefined : '1'}>
+        <div class="top"><span><b class="badge">Featured</b>{l.city}</span><span class="rt"><i aria-hidden="true">★</i> {l.rating.toFixed(1)} ({l.reviews.toLocaleString('en-US')})</span></div>
+        <div class="body">
+          <h3><a href={l.path}>{l.name}</a></h3>
+          <p>{excerpt(l.description)}</p>
+          {topAttrs(l).length > 0 && <ul class="chips">{topAttrs(l).map((a) => <li>{a.label}</li>)}</ul>}
+          <a class="more" href={l.path}>View listing</a>
+        </div>
+      </article>
+    ))}
+    {shown.length < slots && (
+      <a class="biz-card featured open-slot" href="/featured/">
+        <span class="top"><span><b class="badge">Featured</b>{place}</span><span class="rt"><i aria-hidden="true">★</i> your rating</span></span>
+        <span class="body">
+          <strong>This position is open</strong>
+          <span>Put your business at the top of the {place} page{place !== site.state.name ? ` and in front of every ${site.niche.singular} search here` : ' and your city page'}. {price ? `From ${price}.` : ''}</span>
+          <span class="more">Get featured</span>
+        </span>
+      </a>
+    )}
+  </div>
+  <p class="band-foot"><a href="/featured/">What a featured listing costs</a>{price ? ` \u00b7 from ${price}` : ''}</p>
+  <!-- /copy:skip -->
+</section>

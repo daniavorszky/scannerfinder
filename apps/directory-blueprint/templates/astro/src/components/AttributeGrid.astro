@@ -1,0 +1,27 @@
+---
+// true / false / not enough info, shown honestly (wiki/framework/enrichment.md).
+// Confirmed services are tiles with a check mark and an H3 each. A "false" is a tile too, since the
+// site said so. The unknowns fold into one muted line, so the grid carries only what is known.
+// The word "Yes" stays in the page, hidden from sight only, so a screen reader and a search engine
+// still read "<service label>: Yes".
+const { attrs } = Astro.props;
+const known = attrs.filter((a) => a.value !== 'not enough info');
+const unknown = attrs.filter((a) => a.value === 'not enough info');
+const lower = (s) => s.charAt(0).toLowerCase() + s.slice(1);
+---
+{known.length > 0 && (
+  <ul class="attr-grid">
+    {known.map((a) => (
+      <li class={a.value === 'true' ? 'yes' : 'no'}>
+        {a.value === 'true' ? <h3>{a.label}</h3> : <span>{a.label}</span>}
+        {a.value === 'true'
+          ? <span class="v true"><svg class="check" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="currentColor" /><path d="M6.8 12.6l3.4 3.4 7-7.6" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="sr-only">Yes</span></span>
+          : <span class="v false"><svg class="cross" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="currentColor" /><path d="M8.2 8.2l7.6 7.6M15.8 8.2l-7.6 7.6" fill="none" stroke-width="2.6" stroke-linecap="round" /></svg><span class="sr-only">No</span></span>}
+      </li>
+    ))}
+  </ul>
+)}
+{known.length === 0 && <p class="meta">Nothing confirmed yet. The business's own website did not say what it offers, so call and ask.</p>}
+{unknown.length > 0 && known.length > 0 && (
+  <p class="attr-unknown">No information yet on {unknown.map((a) => lower(a.label)).join(', ')}. The website did not say; call and ask.</p>
+)}

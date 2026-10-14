@@ -1,0 +1,48 @@
+---
+// Featured placement: the tiers from templates/featured-tiers.md, Payment Links from site.json.
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site } = loadDirectory();
+const t = site.tiers;
+const title = `Featured placement for ${site.niche.plural} | ${site.brand}`;
+const description = `Get your practice to the top of its region, device or country page on ${site.brand}. Featured placements are always marked.`;
+const tiers = [
+  { key: 'premium', name: 'Premium listing', price: t.premium?.price, link: t.premium?.link, what: 'Your photos, every link followed, embedded map, hours, and a "Verified" badge for your own website that links back to your listing.' },
+  { key: 'best-of', name: 'Best-of placement', price: t.bestOf?.price, link: t.bestOf?.link, what: `A pinned position in the top three on your region page and the "Best of" badge.` },
+  { key: 'city', name: 'Region featured', price: t.city?.price, link: t.city?.link, what: 'The top card on your state, province or region page, a followed link and a photo.' },
+  { key: 'county', name: 'Device page featured', price: t.county?.price, link: t.county?.link, what: 'The top card on the page for the device you use (ZYTO, BICOM, AO Scan and the others) in your country. Coming soon.' },
+  { key: 'state', name: 'Country featured', price: t.state?.price, link: t.state?.link, what: `The top position on your country page and a place in the featured block on the home page.` },
+].filter((x) => x.price);
+---
+<Base title={title} description={description} path="/featured/" noindex={true} headTone="band">
+  <Fragment slot="head">
+    <div class="hero compact">
+      <h1>Get <span class="hl">featured</span></h1>
+      <p class="lede">Region, device and country pages rank {site.niche.plural} by rating and reviews. Featured and best-of positions sit above that list. One practice per tier per page, so a spot is either open or it is not.</p>
+    </div>
+  </Fragment>
+  <div class="tiers">
+    {tiers.map((x, i) => (
+      <div class={`card tier${i === tiers.length - 1 ? ' top' : ''}`}>
+        <div class="tier-head">
+          <h3>{x.name}</h3>
+          <p class="price">{x.price}</p>
+        </div>
+        <p>{x.what}</p>
+        {x.link ? <a class="btn action" href={x.link} rel="nofollow noopener">Buy {x.name.toLowerCase()}</a> : <a class="btn action" href={`/claim/?tier=${x.key}&position=${encodeURIComponent(x.name)}`}>Ask about availability</a>}
+      </div>
+    ))}
+  </div>
+  <section class="bleed tinted steps-band">
+    <h2>How it works</h2>
+    <ol class="steps">
+      <li><b>1</b><h3>Pay</h3><p>Pick a position and pay through the link. No account, no contract.</p></li>
+      <li><b>2</b><h3>Reply to the receipt</h3><p>Send your practice name and region. We check the spot is open.</p></li>
+      <li><b>3</b><h3>Go live</h3><p>We update the directory and send you the badge code. If the tier is taken in your region we refund the same day and put you on the waiting list.</p></li>
+    </ol>
+  </section>
+  <aside class="cta-band">
+    <div><h2>Not sure which position fits?</h2><p>Tell us your region and device and we will say what is open.</p></div>
+    <p><a class="btn" href="/contact/">Ask a question</a> <a href="/claim/">Claim your free listing</a></p>
+  </aside>
+</Base>

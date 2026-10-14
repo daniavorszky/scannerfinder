@@ -1,0 +1,89 @@
+---
+// Service pages: /services/ (the index) and /services/<slug>/, one per attribute with a `service` block in
+// attributes.json that at least the city floor of listings confirm (wiki/framework/page-types.md). Statewide
+// answer to "[service] [niche] in [state]". No service blocks, no pages: this route then builds nothing.
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Card from '../../components/Card.astro';
+import ClaimCta from '../../components/ClaimCta.astro';
+import { loadDirectory, paragraphs, e164, businessType } from '../../lib/load.mjs';
+export function getStaticPaths() {
+  const { services } = loadDirectory();
+  if (!services.length) return [];
+  return [{ params: { slug: undefined }, props: { key: '' } }, ...services.map((s) => ({ params: { slug: s.slug }, props: { key: s.key } }))];
+}
+const { key } = Astro.props;
+const dir = loadDirectory();
+const { site, services, listings, statePath, buildDate } = dir;
+const s = services.find((x) => x.key === key);
+const base = `https://${site.domain}`;
+const path = s ? s.path : '/services/';
+const title = s ? `${s.title} in ${site.state.name} (${s.count} Listed) | ${site.brand}` : `${site.niche.title} in ${site.state.name} by Service | ${site.brand}`;
+const top = s ? s.listings.find((l) => l.reviews > 0) : null;
+const description = s
+  ? `${s.count} ${site.niche.plural} in ${site.state.name} confirmed for ${s.label.toLowerCase()}, in ${s.cities.length} cities.${top ? ` Top rated: ${top.name} (${top.rating.toFixed(1)}, ${top.reviews} reviews).` : ''}`
+  : `${site.niche.title} in ${site.state.name} grouped by the services they confirm: ${services.slice(0, 4).map((x) => x.label.toLowerCase()).join(', ')} and more.`;
+const cards = s ? s.listings.slice(0, site.maxCardsPerCity || 60) : [];
+const intro = s && s.intro.length ? s.intro : s ? [
+  `${s.count} of the ${listings.length.toLocaleString('en-US')} ${site.niche.plural} listed in ${site.state.name} are confirmed for ${s.label.toLowerCase()}, across ${s.cities.length} ${s.cities.length === 1 ? 'city' : 'cities'}. They are ranked below by Google rating weighted by review count. Confirm the details with the business before you sign anything.`,
+] : [];
+const schema = s ? [
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': base + path, url: base + path, name: title, datePublished: site.launchDate, dateModified: buildDate },
+  { '@context': 'https://schema.org', '@type': 'ItemList', name: `${s.title} in ${site.state.name}`, numberOfItems: s.count,
+    itemListElement: cards.map((l, i) => ({ '@type': 'ListItem', position: i + 1, item: {
+      '@type': businessType(site), '@id': `${base}${l.path}#business`, name: l.name, url: base + l.path, telephone: e164(l.phone),
+      address: { '@type': 'PostalAddress', addressLocality: l.city, addressRegion: l.stateCode, postalCode: l.postalCode || undefined, addressCountry: 'US' },
+    } })) },
+] : [
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': base + path, url: base + path, name: title, datePublished: site.launchDate, dateModified: buildDate },
+  { '@context': 'https://schema.org', '@type': 'ItemList', name: `${site.niche.title} in ${site.state.name} by service`,
+    itemListElement: services.map((x, i) => ({ '@type': 'ListItem', position: i + 1, url: base + x.path, name: x.title })) },
+];
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Services', href: '/services/' }, ...(s ? [{ name: s.title, href: s.path }] : [])];
+---
+<Base title={title} description={description} path={path} schema={schema}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={crumbs} />
+    <h1>{s ? `${s.title} in ${site.state.name}` : `${site.niche.title} in ${site.state.name}, by service`}</h1>
+    {s ? (
+      <ul class="keyfacts">
+        <li><b>{s.count}</b>listed</li>
+        <li><b>{s.cities.length}</b>{s.cities.length === 1 ? 'city' : 'cities'}</li>
+        <li>Updated {buildDate}</li>
+      </ul>
+    ) : <p class="lede">Each page lists the {site.niche.plural} confirmed for one service, ranked by rating and review count.</p>}
+  </Fragment>
+
+  {s ? (
+    <>
+      <div class="prose" set:html={paragraphs(intro)}></div>
+      <section>
+        <h2>{cards.length < s.count ? `Top ${cards.length} of ${s.count}` : `All ${s.count}`}: {s.label.toLowerCase()}</h2>
+        <!-- copy:skip -->
+        <div class="grid">{cards.map((l) => <Card l={l} />)}</div>
+        <!-- /copy:skip -->
+      </section>
+      <section>
+        <h2>{s.title} by city</h2>
+        <p class="meta">The number of listed {site.niche.plural} confirmed for {s.label.toLowerCase()} on each city page.</p>
+        <!-- copy:skip -->
+        <ul class="city-grid">{s.cities.map((x) => <li><a href={x.city.path}><span class="name">{x.city.name}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+        <!-- /copy:skip -->
+      </section>
+      {services.length > 1 && (
+        <section>
+          <h2>Other services</h2>
+          <!-- copy:skip -->
+          <ul class="city-grid svc-grid">{services.filter((x) => x !== s).map((x) => <li><a href={x.path}><span class="name">{x.title}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+          <!-- /copy:skip -->
+        </section>
+      )}
+    </>
+  ) : (
+    <section>
+      <ul class="city-grid svc-grid">{services.map((x) => <li><a href={x.path}><span class="name">{x.title}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+      <p class="meta"><a href={statePath}>Or browse every city in {site.state.name}</a>.</p>
+    </section>
+  )}
+  <ClaimCta site={site} />
+</Base>

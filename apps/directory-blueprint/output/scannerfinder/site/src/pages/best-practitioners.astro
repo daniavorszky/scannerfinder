@@ -1,0 +1,64 @@
+---
+// "Best practitioners in <year>" (header menu: Practitioners → Best Practitioners). Built from the data:
+// per country, the highest-scoring listings (Google rating weighted by review count, the same score the
+// directory sorts by), with a review floor so one five-star review cannot top the list. Evergreen URL; the
+// year in the title follows the build date.
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Card from '../components/Card.astro';
+import ClaimCta from '../components/ClaimCta.astro';
+import { loadDirectory, e164, businessType } from '../lib/load.mjs';
+const dir = loadDirectory();
+const { site, countries, buildDate } = dir;
+const year = buildDate.slice(0, 4);
+const MIN_REVIEWS = 5, PER_COUNTRY = 6;
+// Listings kept in the directory but left out of this ranking (site.json bestExclude), e.g. psychic mediums (Dan, 2026-10-13).
+const exclude = new Set(site.bestExclude || []);
+const groups = countries.map((co) => ({
+  co,
+  top: co.listings.filter((l) => l.reviews >= MIN_REVIEWS && !exclude.has(l.slug)).sort((a, b) => b.score - a.score || b.reviews - a.reviews).slice(0, PER_COUNTRY),
+})).filter((g) => g.top.length > 0);
+const total = groups.reduce((n, g) => n + g.top.length, 0);
+const base = `https://${site.domain}`;
+const path = '/best-practitioners/';
+const title = `Best ${site.niche.title} in ${year}, by Country | ${site.brand}`;
+const description = `The highest-rated ${site.niche.plural} in ${groups.map((g) => g.co.name).slice(0, 4).join(', ')} and more, ranked by Google rating and review count. Updated ${buildDate}.`;
+const schema = [{
+  '@context': 'https://schema.org', '@type': 'ItemList', name: `Best ${site.niche.plural} in ${year}`, url: base + path, numberOfItems: total,
+  itemListElement: groups.flatMap((g) => g.top).map((l, i) => ({ '@type': 'ListItem', position: i + 1, item: {
+    '@type': businessType(site), '@id': `${base}${l.path}#business`, name: l.name, url: base + l.path, telephone: e164(l.phone),
+  } })),
+}];
+---
+<Base title={title} description={description} path={path} schema={schema}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: `Best ${site.niche.plural}`, href: path }]} />
+    <h1>Best {site.niche.plural} in {year}</h1>
+    <ul class="keyfacts">
+      <li><b>{total}</b>top-rated</li>
+      <li><b>{groups.length}</b>{groups.length === 1 ? 'country' : 'countries'}</li>
+      <li>Updated {buildDate}</li>
+    </ul>
+  </Fragment>
+
+  <div class="prose">
+    <p>These are the {site.niche.plural} with the strongest Google reputation in each country we cover. The ranking weighs the star rating by the number of reviews, so a practice with a long record of good reviews comes ahead of one with a single five-star review. Only practices with at least {MIN_REVIEWS} reviews are ranked.</p>
+    <p>A good rating tells you that clients were happy with the experience. It does not tell you anything medical: scan sessions are wellness sessions, not diagnostic tests. Ask the practitioner which device they use and how long a session takes before you book.</p>
+  </div>
+
+  <nav class="best-jump" aria-label="Countries">
+    {groups.map((g) => <a href={`#${g.co.slug}`}>{g.co.name}</a>)}
+  </nav>
+
+  {groups.map((g) => (
+    <section id={g.co.slug}>
+      <h2>Best {site.niche.plural} in {g.co.inName}</h2>
+      <!-- copy:skip -->
+      <div class="grid">{g.top.map((l) => <Card l={l} />)}</div>
+      <!-- /copy:skip -->
+      <p class="meta"><a href={g.co.path}>All {g.co.count} {site.niche.plural} in {g.co.inName}</a></p>
+    </section>
+  ))}
+
+  <ClaimCta site={site} />
+</Base>

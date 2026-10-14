@@ -1,0 +1,33 @@
+---
+// The directory search: one box for a business name or a service, one for the city, a Search button.
+// Suggestions under the first box list matching services first (a pick becomes a chip in the box) and
+// then businesses (a pick goes straight to the listing). Nothing searches until Search is pressed;
+// the results live on /search/ (public/search.js).
+const { site, attributes } = Astro.props;
+// The placeholder's example is the first attribute's label from attributes.json (the vertical's own
+// words), or a generic word when the file is empty; never a term from another trade.
+const example = (attributes && attributes[0] && attributes[0].label) ? attributes[0].label.toLowerCase() : 'repair';
+---
+<form class="dir-search" id="dir-search" action="/search/" method="get" data-index="/search-index.json" role="search" autocomplete="off">
+  <div class="field what">
+    <ul class="picked" id="filter-picked" aria-live="polite"></ul>
+    <label class="sr-only" for="search-what">Business name or service</label>
+    <input id="search-what" name="s" type="search" placeholder={`Business name or service, like "${example}"`} />
+    <ul class="suggest" id="sugg-what" hidden></ul>
+  </div>
+  <div class="field">
+    <label class="sr-only" for="search-near">City</label>
+    <input id="search-near" name="near" type="search" placeholder="City" />
+    <ul class="suggest" id="sugg-near" hidden></ul>
+  </div>
+  <button class="btn action" type="submit">Search</button>
+  <!-- copy:skip -->
+  <!-- Hidden from sight, kept for screen readers and the no-script form. `fieldset.sr-only` in global.css
+       keeps it from widening the page (a fieldset's default min-inline-size is min-content). -->
+  <fieldset class="sr-only">
+    <legend>Services</legend>
+    {attributes.map((a) => <label><input type="checkbox" name="f" value={a.label} /> {a.label}</label>)}
+  </fieldset>
+  <!-- /copy:skip -->
+</form>
+<script src="/search.js" defer></script>

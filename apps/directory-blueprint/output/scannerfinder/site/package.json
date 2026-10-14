@@ -1,0 +1,20 @@
+{
+  "name": "scannerfinder-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/build-claim-data.mjs && astro build",
+    "preview": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler whoami && wrangler pages deploy dist --project-name scannerfinder --branch main --commit-dirty=true"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.4.1",
+    "@fontsource/nunito-sans": "^5.2.5",
+    "astro": "^5.12.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.149.0"
+  }
+}

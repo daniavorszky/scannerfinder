@@ -1,0 +1,20 @@
+{
+  "name": "directory-mail",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "listings": "python3 ../../../scripts/make_worker_listings.py ../site/src/data/listings.csv src/listings.json",
+    "dev": "wrangler dev",
+    "deploy": "npm run listings && wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.1",
+    "mimetext": "^3.0.27",
+    "postal-mime": "^2.4.3",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.147.0"
+  }
+}

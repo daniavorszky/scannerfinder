@@ -1,0 +1,123 @@
+---
+// The directory hub: the sections shared by the home page and /directory/ (wiki/components/page-sections.md):
+// stat cards and the largest cities, the featured band, the highest-rated grid, the claim callout and the A to Z city index.
+import ClaimCta from './ClaimCta.astro';
+import FeaturedBand from './FeaturedBand.astro';
+import { topAttrs, loadDirectory } from '../lib/load.mjs';
+const { site, cities, listings, stats, homeFeatured, statePath } = Astro.props;
+const { devices, features, countries } = loadDirectory();
+// Highest rated: rating weighted with review count (score = rating x log10(reviews + 1), the order city pages use),
+// with a floor so a 5.0 from three reviews does not outrank a 4.8 from four hundred. Featured and preview cards are left out.
+const excerpt = (t, n = 28) => { const w = (t || '').split(/\s+/); return w.length > n ? w.slice(0, n).join(' ') + '\u2026' : w.join(' '); };
+const confirmed = (l) => !site.sortAttribute || l.attrs.some((a) => a.key === site.sortAttribute && a.value === 'true');
+const spotlight = [...listings].filter((l) => !l.thin && !l.featured && !homeFeatured.includes(l) && l.rating >= 4.5 && l.reviews >= 25 && confirmed(l))
+  .sort((a, b) => b.score - a.score || b.reviews - a.reviews).slice(0, 6);
+// Every city page, grouped by first letter for the city index.
+const cityGroups = [...cities].sort((a, b) => a.name.localeCompare(b.name)).reduce((acc, c) => { const L = c.name[0].toUpperCase(); const g = acc.find((x) => x.letter === L); if (g) g.cities.push(c); else acc.push({ letter: L, cities: [c] }); return acc; }, []);
+---
+  <section class="bleed tinted after-hero">
+    <div class="stats-band">
+      <dl class="stat-cards">
+        <div><dt>{site.niche.plural}</dt><dd>{stats.listings.toLocaleString('en-US')}</dd></div>
+        <div><dt>countries</dt><dd>{stats.countries}</dd></div>
+        {stats.sortAttrTrue > 0 && <div><dt>{site.confirmedLabel || 'confirmed'}</dt><dd>{stats.sortAttrTrue.toLocaleString('en-US')}</dd></div>}
+        <div><dt>Google reviews</dt><dd>{stats.reviews.toLocaleString('en-US')}</dd></div>
+      </dl>
+    </div>
+    <h2>Find {site.niche.plural} in your country</h2>
+    <ul class="city-cards">
+      {countries.map((c) => (
+        <li><a href={c.path}>
+          <h3 class="name">{c.name}</h3>
+          <span class="big"><b>{c.count}</b>{site.niche.plural}</span>
+          <span class="small">{c.cities.length ? `${c.cities.length} regions` : `${c.attrCounts[site.sortAttribute] || 0} ${site.confirmedLabel}`}</span>
+        </a></li>
+      ))}
+    </ul>
+    {/* No "See all N regions" button under the country cards: removed twice on Dan's word (2026-10-14). Do not add it back. */}
+  </section>
+
+  <FeaturedBand site={site} items={homeFeatured} place={site.state.name} price={site.tiers?.state?.price} title={`Featured ${site.niche.plural}`} />
+
+  {spotlight.length > 0 && (
+    <section>
+      <h2>Highest-rated {site.niche.plural}</h2>
+      <p class="meta">Ranked by Google rating weighted by review count, among practitioners confirmed to offer scan sessions.</p>
+      <!-- copy:skip -->
+      <div class="biz-cards">
+        {spotlight.map((l) => (
+          <article class="biz-card">
+            <div class="top"><span>{l.city}, {l.country.short}</span><span class="rt"><i aria-hidden="true">★</i> {l.rating.toFixed(1)} ({l.reviews.toLocaleString('en-US')})</span></div>
+            <div class="body">
+              <h3><a href={l.path}>{l.name}</a></h3>
+              <p>{excerpt(l.description)}</p>
+              {topAttrs(l).length > 0 && <ul class="chips">{topAttrs(l).map((a) => <li>{a.label}</li>)}</ul>}
+              <a class="more" href={l.path}>View listing</a>
+            </div>
+          </article>
+        ))}
+      </div>
+      <!-- /copy:skip -->
+    </section>
+  )}
+
+  <ClaimCta site={site} />
+
+  {devices.length > 0 && (
+    <section id="devices">
+      <h2>Find a practitioner by device</h2>
+      <!-- copy:skip -->
+      <ul class="city-grid svc-grid">{devices.map((s) => <li><a href={s.path}><span class="name">{s.label}</span> <span class="n">{s.count}</span></a></li>)}</ul>
+      <!-- /copy:skip -->
+    </section>
+  )}
+  {features.length > 0 && (
+    <section id="services">
+      <h2>Remote sessions and sessions for animals</h2>
+      <!-- copy:skip -->
+      <ul class="city-grid svc-grid">{features.map((s) => <li><a href={s.path}><span class="name">{s.title}</span> <span class="n">{s.count}</span></a></li>)}</ul>
+      <!-- /copy:skip -->
+    </section>
+  )}
+
+  <section id="cities">
+    <div class="section-head">
+      <h2>Find {site.niche.plural} by region</h2>
+      {site.cityFilter && (
+        <label class="city-filter">
+          <span class="sr-only">Type a region name</span>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2" /><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /></svg>
+          <input type="search" id="city-filter" autocomplete="off" placeholder="Type a state, province or region" />
+        </label>
+      )}
+    </div>
+    <!-- copy:skip -->
+    <div class="city-groups" id="city-list">
+      {cityGroups.map((g) => (
+        <div class="city-group">
+          <p class="letter" aria-hidden="true">{g.letter}</p>
+          <ul class="city-pills">{g.cities.map((c) => <li><a href={c.path}>{c.name}, {c.country.short} <span class="n">{c.count}</span></a></li>)}</ul>
+        </div>
+      ))}
+    </div>
+    <!-- /copy:skip -->
+    {site.cityFilter && <p id="city-none" hidden>No region page matches. <a href="/directory/">See every country</a>.</p>}
+  </section>
+  {site.cityFilter && (
+    <script is:inline>
+      // Filters the city links above as you type. The links are in the page either way.
+      (function () {
+        var input = document.getElementById('city-filter'), groups = document.querySelectorAll('#city-list .city-group'), none = document.getElementById('city-none');
+        if (!input) return;
+        input.addEventListener('input', function () {
+          var q = input.value.trim().toLowerCase(), shown = 0;
+          groups.forEach(function (g) {
+            var any = false;
+            g.querySelectorAll('li').forEach(function (li) { var hit = li.textContent.toLowerCase().indexOf(q) !== -1; li.hidden = !hit; if (hit) { any = true; shown++; } });
+            g.hidden = !any;
+          });
+          none.hidden = shown !== 0;
+        });
+      })();
+    </script>
+  )}

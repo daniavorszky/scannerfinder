@@ -1,0 +1,72 @@
+---
+// Home: state-wide answer to "[niche] in [state]". Sections per wiki/components/page-sections.md.
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import Faq from '../components/Faq.astro';
+import SearchForm from '../components/SearchForm.astro';
+import DirectoryHub from '../components/DirectoryHub.astro';
+import { loadDirectory } from '../lib/load.mjs';
+import { paragraphs } from '../lib/load.mjs';
+const { site, indexCities: cities, listings, stats, homeFeatured, statePath, buildDate, attributes } = loadDirectory();
+const vetting = site.vetting && site.vetting.length ? site.vetting : null;
+// The four steps drawn above the vetting text. Set vettingSteps in site.json to match the vetting copy.
+const vettingSteps = site.vettingSteps && site.vettingSteps.length ? site.vettingSteps : [
+  { title: 'Start from the record', text: 'Every listing begins as a public business record found by device brand: ZYTO, BICOM, AO Scan and more.' },
+  { title: 'Keep the practitioners', text: 'Device sellers, training schools and network marketing pages are left out. Duplicates are merged.' },
+  { title: 'Read the website', text: `Each practitioner's own site says which device they use and whether they offer remote sessions.` },
+  { title: 'Say when we do not know', text: 'No website to read means "not enough info" on the listing, never a guess.' },
+];
+// Short true statements under the hero buttons. Set in site.json; none are shown when the list is empty.
+const heroPoints = site.heroPoints || [];
+const base = `https://${site.domain}`;
+const total = listings.length;
+const title = `Find a Bioresonance Practitioner: ZYTO, BICOM, AO Scan and More | ${site.brand}`;
+const description = `${total} ${site.niche.plural} in ${stats.countries} countries, by device and by region. Ratings, remote sessions and phone numbers. Compare, then call.`;
+const schema = [
+  homeFeatured.some((l) => l.featured) ? { '@context': 'https://schema.org', '@type': 'ItemList', name: `Featured ${site.niche.plural}`,
+    itemListElement: homeFeatured.filter((l) => l.featured).map((l, i) => ({ '@type': 'ListItem', position: i + 1, url: base + l.path, name: l.name })) } : null,
+  { '@context': 'https://schema.org', '@type': 'WebPage', '@id': base + '/', url: base + '/', name: title, datePublished: site.launchDate, dateModified: buildDate },
+];
+---
+<Base title={title} description={description} path="/" schema={schema} headTone={site.design.band ? 'band' : 'tint'} headImage={site.design.heroImage || ''}>
+  <Fragment slot="head">
+    <div class="hero">
+      <h1>Find <span class="hl">bioresonance practitioners</span> near you</h1>
+      <p class="lede">{total} bioresonance practitioners in {stats.countries} countries, by device and by region: ZYTO, SCIO, AO Scan, Asyra, BICOM and more.</p>
+      <SearchForm site={site} attributes={attributes} />
+      {heroPoints.length > 0 && <ul class="hero-points">{heroPoints.map((p) => <li>{p}</li>)}</ul>}
+      <p class="hero-link"><a href="#guide">How to choose a {site.niche.singular}</a></p>
+    </div>
+  </Fragment>
+
+  <DirectoryHub site={site} cities={cities} listings={listings} stats={stats} homeFeatured={homeFeatured} statePath={statePath} />
+
+  <section class="bleed tinted vetting-band" id="vetting">
+    <h2>How listings are vetted</h2>
+    <ol class="steps">
+      {vettingSteps.map((s, i) => <li><b>{i + 1}</b><h3>{s.title}</h3><p>{s.text}</p></li>)}
+    </ol>
+    <div class="prose vetting-text">
+    {vetting
+      ? <div set:html={paragraphs(vetting)}></div>
+      : <p>Every listing starts from public business records and Google Maps, found by the name of the device a practitioner uses. We keep practitioners who offer scan sessions to clients, and leave out device sellers, training schools and network marketing pages. Duplicates are merged.</p>}
+    <p>Owners can <a href="/claim/">claim a listing</a> to correct details or add photos. A person checks every claim. Published by <a href={site.publisher.url} rel="noopener" target="_blank">{site.publisher.name}</a>.</p>
+    </div>
+  </section>
+
+  <section class="article" id="guide">
+    <h2>How to choose a {site.niche.singular}</h2>
+    <p>A bioresonance or biofeedback scan is a wellness session. A practitioner connects you to a device, usually through a hand cradle, hand electrodes or a headset, and the software shows a report that the practitioner talks through with you. It is not a medical test, and no device listed here is a substitute for a doctor. Seen that way, choosing a practitioner comes down to four things.</p>
+    <h3>1. The device</h3>
+    <p>Practitioners on {site.brand} use different systems: <a href="/devices/zyto/">ZYTO</a> ({stats.attr.zyto} practitioners), <a href="/devices/scio/">SCIO and Indigo</a> ({stats.attr.scio}), <a href="/devices/ao-scan/">AO Scan</a> ({stats.attr.ao_scan}), <a href="/devices/asyra/">Asyra and Qest4</a> ({stats.attr.asyra}), <a href="/devices/bicom/">BICOM</a> ({stats.attr.bicom}) and more. If someone recommended a particular device to you, start from its page. Many practitioners do not name their device online, so ask on the phone which one they use and which version.</p>
+    <h3>2. The practice around the scan</h3>
+    <p>The scan is rarely the whole service. It sits inside a naturopathic practice, a nutrition or coaching practice, a massage or skin care studio, a chiropractic office. The description on each listing says what else the practice offers. Pick the practice whose other work fits what you are looking for, because that is where the conversation after the scan will go.</p>
+    <h3>3. In person or remote</h3>
+    <p>{stats.attr.remote_sessions} practitioners state that they offer <a href="/services/remote-sessions/">remote sessions</a>, by video, by phone or with a sample sent by post. That widens the choice if there is no one near you. Ask how a remote session works in practice, what you need at home and how the report reaches you. {stats.attr.animal_sessions} practitioners also offer <a href="/services/pets-and-horses/">sessions for pets and horses</a>.</p>
+    <h3>4. Questions for the first call</h3>
+    <p>How long is a first session, and how long is a follow up? What happens after the scan: a talk, a plan, a product recommendation? Is there a package, and can you book one session first? {stats.attr.free_consultation} practitioners offer a free first consultation, which is the easiest way to ask all of this before you commit. Read the rating together with the number of reviews: a 5.0 from three reviews tells you less than a 4.8 from a hundred.</p>
+    <p>Prices are not shown here until a practitioner confirms them, so ask on the call. If a practitioner tells you a scan can diagnose or cure a condition, treat that as a reason to keep looking, and take any health concern to a licensed healthcare professional.</p>
+  </section>
+
+  <Faq items={site.faq || []} />
+</Base>

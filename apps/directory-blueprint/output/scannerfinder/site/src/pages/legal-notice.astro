@@ -1,0 +1,41 @@
+---
+// Legal notice (2026-10-14, DE/RO Gate 4 decision #7): operator identity for a site read in Germany and Romania.
+// Operator named by Dan: DGA, through Neocomm Business Distribution S.R.L.; company data from 00-brain/legal-entities.md.
+// Legal page: noindex like /privacy/, /terms/ and /affiliate-disclosure/.
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site, buildDate } = loadDirectory();
+const updated = new Date(buildDate + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+<Base title={`Legal Notice | ${site.brand}`} description={`Who operates ${site.brand}: company, registered office and contact details.`} path="/legal-notice/" noindex={true}>
+  <Fragment slot="head">
+    <h1>Legal Notice</h1>
+    <p class="meta">Last updated {updated}</p>
+  </Fragment>
+  <div class="prose">
+    <h2>Operator of this website</h2>
+    <p>{site.brand} ({site.domain}) is published by DGA (DigitalGuild Agency), operated by:</p>
+    <p>
+      <strong>NEOCOMM BUSINESS DISTRIBUTION S.R.L.</strong><br />
+      Str. Prunilor nr. 15<br />
+      Deva, Hunedoara County<br />
+      Romania
+    </p>
+    <ul>
+      <li>Trade Register number: J20/255/2015 (EUID ROONRC.J2015000255206), Trade Register Office of the Hunedoara Tribunal</li>
+      <li>VAT number: RO34285573</li>
+      <li>Email: <a href={`mailto:${site.contact?.email || 'hello@scannerfinder.com'}`}>{site.contact?.email || 'hello@scannerfinder.com'}</a></li>
+    </ul>
+
+    <h2>Responsible for content</h2>
+    <p>NEOCOMM BUSINESS DISTRIBUTION S.R.L., at the address above.</p>
+
+    <h2>About the listings</h2>
+    <p>{site.brand} is a directory. Listing details come from public business profiles and the practitioners' own websites, and practitioners can claim and correct their listing for free. The practitioners listed are independent businesses; {site.brand} does not provide any session itself. The scanning devices named on this site are wellness tools, and nothing here is medical advice.</p>
+
+    <h2>Online dispute resolution</h2>
+    <p>{site.brand} does not sell goods or services to consumers and does not take part in dispute resolution proceedings before a consumer arbitration board.</p>
+
+    <p>See also our <a href="/privacy/">privacy policy</a>, <a href="/terms/">terms</a> and <a href="/affiliate-disclosure/">affiliate disclosure</a>, or <a href="/contact/">contact us</a>.</p>
+  </div>
+</Base>

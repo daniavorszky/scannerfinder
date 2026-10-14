@@ -1,0 +1,16 @@
+---
+// Visible FAQ (no accordion) plus FAQPage schema. items: [{ q, a, html? }]; html is the answer with business names linked, a stays plain for the schema.
+import JsonLd from './JsonLd.astro';
+const { items, title = 'Frequently asked questions' } = Astro.props;
+const schema = items.length ? {
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: items.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+} : null;
+---
+{items.length > 0 && (
+  <section class="faq">
+    <h2>{title}</h2>
+    <div class="faq-grid">{items.map((f) => (<div class="qa"><h3>{f.q}</h3>{f.html ? <p set:html={f.html}></p> : <p>{f.a}</p>}</div>))}</div>
+  </section>
+)}
+<JsonLd data={schema} />

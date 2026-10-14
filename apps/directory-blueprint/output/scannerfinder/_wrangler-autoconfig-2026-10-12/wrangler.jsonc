@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "scannerfinder-site",
+  "main": "dist/_worker.js/index.js",
+  "compatibility_date": "2026-10-06",
+  "compatibility_flags": [
+    "global_fetch_strictly_public"
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "dist"
+  }
+}

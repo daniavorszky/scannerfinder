@@ -1,0 +1,138 @@
+---
+// Listing page: one business, two states (basic / optimized). wiki/framework/page-types.md.
+import Base from '../../../../../layouts/Base.astro';
+import Breadcrumbs from '../../../../../components/Breadcrumbs.astro';
+import Rating from '../../../../../components/Rating.astro';
+import AttributeGrid from '../../../../../components/AttributeGrid.astro';
+import SocialLinks from '../../../../../components/SocialLinks.astro';
+import ClaimCta from '../../../../../components/ClaimCta.astro';
+import { loadDirectory, formatPhone, telHref, hoursToSpec, paragraphs, e164, businessType } from '../../../../../lib/load.mjs';
+export function getStaticPaths() {
+  const { listings, stateSlug } = loadDirectory();
+  return listings.map((l) => ({ params: { state: stateSlug, city: l.citySlug, slug: l.slug }, props: { slug: l.slug } }));
+}
+const { slug } = Astro.props;
+const dir = loadDirectory();
+const { site, statePath, buildDate } = dir;
+const l = dir.listings.find((x) => x.slug === slug);
+const city = dir.cityBySlug[l.citySlug];
+const base = `https://${site.domain}`;
+const title = `${l.name} | ${site.niche.title} in ${l.city}, ${site.state.code}`;
+const description = (l.description.split(/(?<=\.)\s/)[0] || `${l.name}, a ${site.niche.singular} in ${l.city}, ${site.state.name}.`).slice(0, 160);
+const noindex = dir.noindexPaths.has(l.path);
+// The services the business confirms on its own site: H3s under "Services and details" and Offers in the schema.
+const services = l.attrs.filter((a) => a.value === 'true');
+const followed = l.optimized;
+// Service pages this business is listed on, and the related listings from load.mjs.
+const servicePages = dir.services.filter((s) => services.some((a) => a.key === s.key));
+const relatedCity = l.related.length && l.related[0].citySlug !== l.citySlug ? l.related[0].city : l.city;
+const dayMap = { Monday: 'Mo', Tuesday: 'Tu', Wednesday: 'We', Thursday: 'Th', Friday: 'Fr', Saturday: 'Sa', Sunday: 'Su' };
+const hoursSpec = l.hours.map((h) => { const s = hoursToSpec(h.hours); return s ? { '@type': 'OpeningHoursSpecification', dayOfWeek: `https://schema.org/${h.day}`, opens: s.opens, closes: s.closes } : null; }).filter(Boolean);
+const schema = [{
+  '@context': 'https://schema.org', '@type': businessType(site), '@id': base + l.path + '#business', name: l.name, url: l.website || base + l.path,
+  telephone: e164(l.phone),
+  address: { '@type': 'PostalAddress', streetAddress: l.areaService ? undefined : (l.street || undefined), addressLocality: l.city, addressRegion: l.stateCode, postalCode: l.postalCode || undefined, addressCountry: 'US' },
+  ...(l.lat && l.lng ? { geo: { '@type': 'GeoCoordinates', latitude: l.lat, longitude: l.lng } } : {}),
+  ...(hoursSpec.length ? { openingHoursSpecification: hoursSpec } : {}),
+  // No aggregateRating: the rating shown on the page is Google's, and Google's review snippet rules do not
+  // allow marking up ratings collected from another site (wiki/seo/schema.md).
+  ...(l.photos.length ? { image: l.photos.map((p) => base + p) } : {}),
+  description: l.description || undefined,
+  ...(l.socials.length ? { sameAs: l.socials.map((s) => s.url) } : {}),
+  ...(services.length ? { makesOffer: services.map((a) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: a.label, areaServed: { '@type': 'City', name: l.city } } })) } : {}),
+}, { '@context': 'https://schema.org', '@type': 'WebPage', '@id': base + l.path, url: base + l.path, name: title, datePublished: site.launchDate, dateModified: buildDate, about: { '@id': base + l.path + '#business' } }];
+// Directions through the Google Maps URL scheme, no key needed. Not shown for service-area businesses without an address.
+const directions = !l.areaService && l.lat && l.lng ? `https://www.google.com/maps/dir/?api=1&destination=${l.lat},${l.lng}` : '';
+const claimHref = `/claim/?listing=${encodeURIComponent(l.slug)}&business=${encodeURIComponent(l.name)}`;
+const disclaimer = site.disclaimer || `${site.brand} is a free directory compiled from public sources. Every business listed is independent, and a listing is not an endorsement. ${site.brand} does not verify licenses, insurance or the quality of any work. Check the license with your state's licensing board and confirm insurance before you hire.`;
+const mark = l.featured ? 'Featured listing' : l.bestOfRank ? `Best of ${l.city} #${l.bestOfRank}` : l.premium ? 'Premium listing' : '';
+---
+<Base title={title} description={description} path={l.path} noindex={noindex} schema={schema}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: site.niche.title, href: '/directory/' }, { name: site.state.name, href: statePath }, { name: l.city, href: city.path }, { name: l.name, href: l.path }]} />
+    {mark && <p class="mark">{mark}{l.claimed ? ' · Claimed by owner' : ''}</p>}
+    {!mark && l.claimed && <p class="mark">Claimed by owner</p>}
+    <h1>{l.name}</h1>
+    <Rating rating={l.rating} reviews={l.reviews} />
+    <p class="meta">{site.niche.title.replace(/s$/, '')} listing in <a href={city.path}>{l.city}, {site.state.code}</a></p>
+  </Fragment>
+
+  <div class="listing-layout">
+  <div class="listing-main">
+  {l.photos.length > 0 && <div class="photos">{l.photos.map((p) => <img src={p} alt={`${l.name}, ${site.niche.singular} in ${l.city}`} loading="lazy" width="400" height="300" />)}</div>}
+
+  <section class="prose about">
+    <h2>About {l.name}</h2>
+    {l.description ? <div set:html={paragraphs(l.description.split(/\n+/))}></div> : <p>No description yet. If this is your business, claim the listing and tell buyers what you do.</p>}
+    {l.reviewsTags && <p class="meta">What reviewers mention: {l.reviewsTags}</p>}
+  </section>
+
+  <section class="services">
+    <h2>Services and details</h2>
+    <AttributeGrid attrs={l.attrs} />
+    {servicePages.length > 0 && (
+      <>
+        <p class="meta svc-lead">Compare across {site.state.name}:</p>
+        <ul class="chips svc-links">{servicePages.map((s) => <li><a href={s.path}>{s.title}</a></li>)}</ul>
+      </>
+    )}
+  </section>
+
+  <div class="facts">
+    <div>
+      <h2>Contact</h2>
+      <ul>
+        {l.phone && <li><a href={telHref(l.phone)}>{formatPhone(l.phone)}</a></li>}
+        <li>{l.areaService ? `Service area business, serves ${l.city}, ${site.state.code}` : l.address}</li>
+        {l.website && <li><a href={l.website} rel={followed ? 'noopener' : 'nofollow noopener'} target="_blank">Website</a></li>}
+        {l.mapLink && <li><a href={l.mapLink} rel="nofollow noopener" target="_blank">View on Google Maps</a></li>}
+        {l.verifiedOnGoogle && <li class="meta">Listing claimed on Google</li>}
+        {l.socials.length > 0 && <li><SocialLinks socials={l.socials} name={l.name} followed={followed} /></li>}
+      </ul>
+    </div>
+    {l.hours.length > 0 && (
+      <div class="hours">
+        <h2>Hours</h2>
+        <dl>{l.hours.map((h) => <div><dt>{h.day}</dt><dd>{h.hours}</dd></div>)}</dl>
+      </div>
+    )}
+  </div>
+
+  {l.related.length > 0 && (
+    <section class="related">
+      <h2>Other {site.niche.plural} in {relatedCity}</h2>
+      <ul class="more-list">{l.related.map((r) => <li><a href={r.path}>{r.name}</a>{r.reviews > 0 && <span class="rt"><i aria-hidden="true">★</i> {r.rating.toFixed(1)} <small>({r.reviews})</small></span>}</li>)}</ul>
+      <p class="meta"><a href={city.path}>All {city.count} {site.niche.plural} in {city.name}</a></p>
+    </section>
+  )}
+
+  <p class="disclaimer">Listing compiled from public sources on {buildDate}. <a href="/contact/">Report a correction or request removal.</a> <a href={city.path}>Back to {site.niche.plural} in {l.city}</a>.</p>
+  </div>
+
+  <aside class="listing-side">
+    {(l.optimized || l.preview) && l.mapLink && l.lat && l.lng && (
+      <div class="side-map"><iframe title={`Map of ${l.name}`} width="100%" height="240" style="border:0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src={`https://www.google.com/maps?q=${l.lat},${l.lng}&output=embed`}></iframe></div>
+    )}
+    <div class="side-card">
+      <h2>Location</h2>
+      <p>{l.areaService ? `Service area business. Serves ${l.city}, ${site.state.code}.` : l.address}</p>
+      {directions && <a class="btn side-btn" href={directions} rel="nofollow noopener" target="_blank">Get directions</a>}
+      <ul class="side-links">
+        {l.phone && <li><a href={telHref(l.phone)}>{formatPhone(l.phone)}</a></li>}
+        {l.website && <li><a href={l.website} rel={followed ? 'noopener' : 'nofollow noopener'} target="_blank">Website</a></li>}
+        {l.mapLink && <li><a href={l.mapLink} rel="nofollow noopener" target="_blank">View on Google Maps</a></li>}
+      </ul>
+    </div>
+    <div class="side-card claim">
+      <h2>Is this your business?</h2>
+      <p>Claiming is free. Correct details, add photos and hear about featured placement in {l.city}.</p>
+      <a class="btn action side-btn" href={claimHref}>Claim this listing</a>
+      <p class="meta"><a href="/featured/">Get featured</a> at the top of the {l.city} page.</p>
+    </div>
+    <div class="side-card disclaimer-card">
+      <h2>Disclaimer</h2>
+      <p>{disclaimer}</p>
+    </div>
+  </aside>
+  </div>
+</Base>

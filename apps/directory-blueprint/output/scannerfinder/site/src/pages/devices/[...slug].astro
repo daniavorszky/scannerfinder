@@ -1,0 +1,14 @@
+---
+// Brand pages (04-plan.md): /devices/, /devices/<brand>/, /devices/<brand>/<country>/.
+import FamilyPage from '../../components/FamilyPage.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+export function getStaticPaths() {
+  const { devices } = loadDirectory();
+  if (!devices.length) return [];
+  return [{ params: { slug: undefined }, props: { key: '', countryCode: '' } },
+    ...devices.map((s) => ({ params: { slug: s.slug }, props: { key: s.key, countryCode: '' } })),
+    ...devices.flatMap((s) => s.countryPages.map((cp) => ({ params: { slug: `${s.slug}/${cp.country.slug}` }, props: { key: s.key, countryCode: cp.country.code } })))];
+}
+const { key, countryCode } = Astro.props;
+---
+<FamilyPage family="devices" key={key} countryCode={countryCode} />

@@ -1,0 +1,99 @@
+[
+ {
+  "key": "new_pool_construction",
+  "label": "Builds new pools",
+  "faq": "Which {plural} in {city} build new pools?",
+  "true_when": "builds or installs new swimming pools",
+  "pattern": "new (pool|construction)|pool (construction|builders?|building)|custom (pools?|swimming)|buil[dt](s|ing)? (you |your |a |the |custom |dream |new |luxury )*(swimming )?pools?|design[ /&and-]+build|pool design",
+  "core": true
+ },
+ {
+  "key": "inground",
+  "label": "Inground pools",
+  "faq": "Which {plural} in {city} build inground pools?",
+  "true_when": "builds or works on inground pools, stated in words",
+  "pattern": "in-?ground"
+ },
+ {
+  "key": "gunite_concrete",
+  "label": "Gunite or concrete",
+  "faq": "Which {plural} in {city} build gunite or concrete pools?",
+  "true_when": "builds gunite, shotcrete or concrete pools",
+  "pattern": "gunite|shotcrete|concrete pools?"
+ },
+ {
+  "key": "fiberglass",
+  "label": "Fiberglass",
+  "faq": "Who installs fiberglass pools in {city}?",
+  "true_when": "installs fiberglass pools",
+  "pattern": "fiberglass",
+  "service": {
+   "slug": "fiberglass-pools",
+   "title": "Fiberglass Pool Builders",
+   "intro": []
+  }
+ },
+ {
+  "key": "vinyl_liner",
+  "label": "Vinyl liner",
+  "faq": "Who installs or replaces vinyl liner pools in {city}?",
+  "true_when": "builds vinyl liner pools or replaces liners",
+  "pattern": "vinyl[ -]?liner|vinyl pools?|liner (replacement|pools?)"
+ },
+ {
+  "key": "spa_hot_tub",
+  "label": "Spa or hot tub",
+  "faq": "Which {plural} in {city} add a spa or hot tub?",
+  "true_when": "builds, installs or sells spas or hot tubs (a company name with Spa in it is not enough)",
+  "pattern": "\\bspas?\\b|hot tubs?|jacuzzi"
+ },
+ {
+  "key": "pool_remodel",
+  "label": "Remodels and resurfacing",
+  "faq": "Who remodels or resurfaces existing pools in {city}?",
+  "true_when": "remodels, renovates or resurfaces existing pools",
+  "pattern": "remodel|renovat|resurfac|refinish|re-?plaster"
+ },
+ {
+  "key": "screen_enclosure",
+  "label": "Screen enclosures",
+  "faq": "Which {plural} in {city} build screen enclosures?",
+  "true_when": "builds or repairs screen enclosures, pool cages or lanais",
+  "pattern": "screen(ed)? (enclosure|room|cage)|pool (cage|enclosure)|re-?screen|lanai"
+ },
+ {
+  "key": "pavers_decking",
+  "label": "Pavers and decking",
+  "faq": "Which {plural} in {city} install pavers or pool decks?",
+  "true_when": "installs pavers or pool decks",
+  "pattern": "pavers?\\b|pool decks?|decking|travertine|deck (resurfacing|coating|repair)"
+ },
+ {
+  "key": "financing_offered",
+  "label": "Financing",
+  "faq": "Which {plural} in {city} offer financing?",
+  "true_when": "offers financing",
+  "pattern": "financ"
+ },
+ {
+  "key": "licensed_cpc",
+  "label": "States a contractor license",
+  "faq": "Which {plural} in {city} state a contractor license on their website?",
+  "true_when": "states a contractor license on its site (a number, or words such as certified pool contractor, licensed and insured)",
+  "pattern": "\\b(CPC|CBC|CGC|RP|RB|SP) ?#? ?\\d{5,8}\\b|\\bCPC\\b|licen[sc]e ?(#|no\\.?|number)|licensed (and|&) insured|certified pool ?(/ ?spa )?contractor"
+ },
+ {
+  "key": "warranty_mentioned",
+  "label": "Warranty",
+  "faq": "Which {plural} in {city} mention a warranty?",
+  "true_when": "mentions a warranty on its own work or products",
+  "pattern": "warrant"
+ },
+ {
+  "key": "commercial",
+  "label": "Commercial work",
+  "faq": "Which {plural} in {city} take commercial projects?",
+  "true_when": "takes commercial pool work",
+  "pattern": "commercial"
+ }
+]

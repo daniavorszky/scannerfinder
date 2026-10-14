@@ -1,0 +1,12 @@
+---
+// Feature pages (04-plan.md): /services/, /services/remote-sessions/, /services/pets-and-horses/.
+import FamilyPage from '../../components/FamilyPage.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+export function getStaticPaths() {
+  const { features } = loadDirectory();
+  if (!features.length) return [];
+  return [{ params: { slug: undefined }, props: { key: '' } }, ...features.map((s) => ({ params: { slug: s.slug }, props: { key: s.key } }))];
+}
+const { key } = Astro.props;
+---
+<FamilyPage family="services" key={key} />

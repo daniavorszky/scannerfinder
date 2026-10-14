@@ -1,0 +1,114 @@
+---
+// Evidence page (keyword-map.md in 03-projects/2026-10-scannerfinder-seo-content, P2): does it work, is it legit, reviews/reddit.
+// Honest both ways: the one positive trial is shown with its limits. No prices.
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Byline from '../../components/Byline.astro';
+import Faq from '../../components/Faq.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+const dir = loadDirectory();
+const { site, buildDate, devices, countries, listings } = dir;
+const base = `https://${site.domain}`;
+const path = '/bioresonance/does-it-work/';
+const published = '2026-10-14';
+const title = 'Does Bioresonance Work? What the Studies Actually Show';
+const description = 'An honest look at the evidence on bioresonance and scan devices such as ZYTO and AO Scan: the controlled trials, the one positive study and its limits, what regulators say, and why people still feel better after a session.';
+const faqs = [
+  { q: 'Does bioresonance really work?', a: 'No controlled trial has shown that a bioresonance or scan device reads anything meaningful about the body, and the trials of its effect have not found more than placebo, with one small unreplicated exception. People can still enjoy a session and feel better after it, for reasons that have little to do with the device.' },
+  { q: 'Is bioresonance a scam?', a: 'Many practitioners sincerely believe in it, so "scam" is not the right word for most of them. But the central claims, that a device can read the body and correct it with signals, are not supported by evidence. Be wary of anyone who uses a scan to find problems and then sells you products to fix them.' },
+  { q: 'Is a ZYTO scan legit?', a: 'The ZYTO hand cradle really does measure skin response, and the FDA cleared it for that. It is not cleared for anything else, and the FDA warned the maker in 2015 and 2023 for promoting it beyond that. A repeated self-test published in 2017 found the readings inconsistent from one scan to the next.' },
+  { q: 'Is there any scientific proof for bioresonance?', a: 'There are a handful of small studies, most of them run by people who use or sell the method. The best-designed independent trial, in children with eczema in 1997, found no effect beyond sham sessions. A 2014 pilot study on smoking reported better quit rates, but it has not been replicated.' },
+  { q: 'Can bioresonance help you stop smoking?', a: 'One 2014 pilot study of 190 smokers in Turkey reported higher quit rates with real sessions than with placebo sessions. It was small, the gap narrowed over the year, and it has not been confirmed by an independent trial. A 2024 observational study of 1,272 patients found no clear difference between bioresonance and other methods.' },
+  { q: 'Why do people say bioresonance worked for them?', a: 'A long, calm session with someone who listens, advice on sleep, food and stress, the expectation of feeling better, and the fact that people often book when they feel worst and would improve anyway can all make a session feel effective. None of that needs the device to work.' },
+];
+const sources = [
+  ['Schöni et al. 1997, Int Arch Allergy Immunol 112:238–246 (summary by Memorial Sloan Kettering)', 'https://www.mskcc.org/cancer-care/integrative-medicine/herbs/bioresonance-therapy'],
+  ['Pihtili et al. 2014, Forsch Komplementmed 21:239–245, doi:10.1159/000365742', 'https://doi.org/10.1159/000365742'],
+  ['Bioresonance therapy for smoking cessation, Istanbul Medical Journal 2024', 'https://istanbulmedicaljournal.org/articles/doi/imj.galenos.2024.84555'],
+  ['Science-Based Medicine on Barrett 2017 (ZYTO self-test, Missouri Medicine 114:238–244)', 'https://sciencebasedmedicine.org/zyto-a-quack-electrodermal-diagnostic-device-is-tested-and-fails-miserably/'],
+  ['Wüthrich et al. 2014, "Bioresonanz – diagnostischer und therapeutischer Unsinn", Aktuelle Dermatologie', 'https://thieme-connect.de/products/ejournals/pdf/10.1055/s-0034-1367626.pdf'],
+  ['FDA 510(k) K111308 (ZYTO Hand Cradle)', 'https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K111308'],
+  ['FDA warning letter to ZYTO Technologies, 21 June 2023', 'https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/warning-letters/zyto-technologies-inc-652316-06212023'],
+  ['ASA advice: Bioresonance therapy', 'https://www.asa.org.uk/advice-online/bioresonance-therapy.html'],
+];
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'Article', '@id': base + path, headline: title, description, datePublished: published, dateModified: buildDate,
+    author: { '@id': `${base}/#person` }, publisher: { '@id': `${base}/#publisher` }, mainEntityOfPage: base + path },
+];
+---
+<Base title={`${title} | ${site.brand}`} description={description} path={path} schema={schema} ogType="article">
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: 'Bioresonance', href: '/bioresonance/' }, { name: 'Does it work?', href: path }]} />
+    <h1>Does bioresonance work? What the studies actually show</h1>
+  </Fragment>
+
+  <article class="prose">
+    <Byline site={site} published={published} modified={buildDate} />
+    <div class="callout">
+      <p><strong>Short answer</strong></p>
+      <p>No study has shown that a bioresonance or scan device can read anything meaningful about your body. The controlled trials of its effect have found nothing beyond placebo, apart from one small study on smoking that has not been repeated. Many people still enjoy sessions and feel better afterwards. That is real, but it does not depend on the device.</p>
+    </div>
+    <p>We run a directory of {listings.length} practitioners who offer these sessions, so we have a reason to want the answer to be yes. It isn't. Here is the evidence, including the parts that favour bioresonance, so you can decide for yourself.</p>
+
+    <h2>What "working" would have to mean</h2>
+    <p>Bioresonance makes two separate claims, and each needs its own proof.</p>
+    <ol>
+      <li><strong>The scan reads something real.</strong> The device picks up information about your body that a practitioner can use.</li>
+      <li><strong>The session changes something.</strong> The signals the device sends back, or the advice based on the scan, make a difference beyond what a pleasant appointment would.</li>
+    </ol>
+    <p>A good test of the first claim scans the same person several times, or compares the scan with an established test. A good test of the second compares real sessions with sham sessions, without the client or the assessor knowing which is which.</p>
+
+    <h2>Can a scan read your body?</h2>
+    <p>There is no good evidence that it can. Three findings point the same way.</p>
+    <ul>
+      <li><strong>The readings are not repeatable.</strong> In 2017, Stephen Barrett published a test in which he scanned himself repeatedly on a ZYTO Elite. According to reviews of the paper, the results changed from one scan to the next with no consistent pattern, which is what you would expect from noise.</li>
+      <li><strong>The measurement is simple.</strong> The ZYTO hand cradle measures how easily a tiny current passes through the skin. That changes with sweat, skin moisture and how firmly the hand rests on the cradle. The FDA cleared the cradle to measure exactly that, and nothing more.</li>
+      <li><strong>Allergists have looked and found nothing.</strong> A 2014 review by Swiss allergist Brunello Wüthrich and colleagues in a German dermatology journal was titled, in translation, "Bioresonance: diagnostic and therapeutic nonsense".</li>
+    </ul>
+
+    <h2>Do sessions have an effect?</h2>
+    <h3>The strongest negative trial</h3>
+    <p>In 1997, Schöni and colleagues ran a double-blind trial in 32 children with atopic eczema at a children's hospital in Davos, Switzerland. Half had real bioresonance sessions and half had sham sessions, on top of their usual care. Both groups improved, mostly thanks to the hospital stay and the mountain climate, and the real sessions added nothing measurable. It is small, but it is the best-designed independent test there is.</p>
+    <h3>The one positive trial</h3>
+    <p>In 2014, Pihtili and colleagues published a pilot study of 190 smokers in Istanbul, split between real and placebo bioresonance sessions with a MORA-type device. The abstract reports higher quit rates with real sessions: roughly 77% against 55% after one week, and roughly 29% against 16% after a year.</p>
+    <p>That result deserves a fair hearing, and so do its limits. The authors call it a pilot study. The gap between the groups shrank over the year. Quitting depends heavily on motivation and support, which are hard to keep identical across groups. And in the ten years since, no independent trial has confirmed it. A 2024 observational study of 1,272 patients at a Turkish university hospital found no clear difference in success between bioresonance and other quit methods.</p>
+    <p>One promising pilot that nobody has replicated is a reason to run a proper trial. It is not proof.</p>
+
+    <h2>Why people feel better after a session</h2>
+    <p>If the device does nothing specific, why do so many reviews say it helped? Several ordinary things happen in a typical session, and each of them can make people feel better:</p>
+    <ul>
+      <li><strong>Time and attention.</strong> An hour with a practitioner who listens is rarer than it should be, and it helps.</li>
+      <li><strong>Lifestyle advice.</strong> Suggestions about sleep, food, stress and movement can make a real difference on their own.</li>
+      <li><strong>Expectation.</strong> Believing a session will help changes how people feel and what they notice afterwards.</li>
+      <li><strong>Timing.</strong> People tend to book when they feel worst, and many conditions ease with time anyway.</li>
+    </ul>
+    <p>That is why controlled trials compare real sessions with sham ones. Everything on that list happens in both, so any difference left over would belong to the device.</p>
+
+    <h2>What regulators say</h2>
+    <ul>
+      <li><strong>United States.</strong> The FDA cleared the ZYTO hand cradle only to measure galvanic skin response. In 2015 and again in 2023 it warned the maker for promoting the device beyond that, including linking scan results to named conditions.</li>
+      <li><strong>United Kingdom.</strong> The Advertising Standards Authority advises that claims to diagnose or treat conditions with bioresonance are likely to break the advertising code, and it has upheld complaints against several advertisers.</li>
+    </ul>
+
+    <h2>Reviews, Reddit and personal stories</h2>
+    <p>Search for "ZYTO scan reddit" or "bioresonance reviews" and you will find strong opinions both ways. Personal stories tell you how a session felt and how a practitioner behaved. They cannot tell you whether the device did anything, because the person has no way to compare with the same session on a switched-off machine.</p>
+    <p>The ratings on {site.brand} come from Google reviews. Read them the same way: as a guide to how a practice treats its clients, its punctuality and its honesty about cost, not as evidence that a scan works.</p>
+
+    <h2>If you still want to try it</h2>
+    <p>That is your call, and plenty of people book a session the way they would book a massage. A few rules keep it safe and fair:</p>
+    <ul>
+      <li><strong>Treat it as a wellness session.</strong> It is not a medical test, and its results are no basis for health decisions.</li>
+      <li><strong>Keep your doctor in the loop</strong>, and don't stop any care your doctor has prescribed because of a scan.</li>
+      <li><strong>Ask the price up front</strong>, and be wary of large packages paid in advance.</li>
+      <li><strong>Be wary of scan-then-sell.</strong> A practitioner who finds problems with a scan and then sells you the products to fix them has a conflict of interest.</li>
+    </ul>
+    <p>To find a practitioner, browse <a href="/directory/">by country and region</a> or by device: {devices.slice(0, 6).map((d, i) => <>{i > 0 && ', '}<a href={d.path}>{d.label}</a></>)}. For the background, read <a href="/bioresonance/">what bioresonance is</a>.</p>
+  </article>
+
+  <Faq items={faqs} title="Questions about whether bioresonance works" />
+
+  <section class="prose">
+    <h2>Sources</h2>
+    <ul class="sources">{sources.map(([label, url]) => <li><a href={url} rel="nofollow noopener" target="_blank">{label}</a></li>)}</ul>
+  </section>
+</Base>

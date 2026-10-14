@@ -1,0 +1,73 @@
+---
+// Town page (2026-10-14): /directory/<country>/<region>/<town>/, the region page's explorer narrowed to one town.
+// Every town with a listing has a page; under site.cityFloor it renders with noindex and stays out of the sitemap.
+import Base from '../../../../../layouts/Base.astro';
+import Breadcrumbs from '../../../../../components/Breadcrumbs.astro';
+import Faq from '../../../../../components/Faq.astro';
+import ClaimCta from '../../../../../components/ClaimCta.astro';
+import FeaturedBand from '../../../../../components/FeaturedBand.astro';
+import ListingExplorer from '../../../../../components/ListingExplorer.astro';
+import { loadDirectory, attributeFaqs, linkNames, e164, businessType } from '../../../../../lib/load.mjs';
+export function getStaticPaths() {
+  const { towns } = loadDirectory();
+  return towns.map((t) => ({ params: { state: t.country.slug, city: t.region.slug, town: t.slug }, props: { path: t.path } }));
+}
+const { path } = Astro.props;
+const dir = loadDirectory();
+const { site, attributes, buildDate } = dir;
+const town = dir.towns.find((t) => t.path === path);
+const region = town.region, co = town.country;
+const base = `https://${site.domain}`;
+const plural = town.count === 1 ? site.niche.singular : site.niche.plural;
+const title = `${site.niche.title} in ${town.name}, ${co.short} (${town.count} Listed) | ${site.brand}`;
+const top = town.listings.find((l) => l.reviews > 0);
+const description = `${town.count} ${plural} in ${town.name}, ${region.name}, ${co.short}${top ? `. Top rated: ${top.name} (${top.rating.toFixed(1)}, ${top.reviews} reviews)` : ''}. Phone numbers, devices and services for each.`;
+const devicesHere = dir.devices.map((d) => ({ d, n: town.attrCounts[d.key] || 0, cp: d.countryPages.find((x) => x.country.code === co.code) })).filter((x) => x.n > 0).sort((a, b) => b.n - a.n);
+const cards = town.listings.filter((l) => !town.featured.includes(l));
+const intro = `${town.count} ${plural} ${town.count === 1 ? 'is' : 'are'} listed in ${town.name}, ${region.name}${town.totalReviews ? `, with ${town.totalReviews} Google reviews${town.avgRating ? ` and an average rating of ${town.avgRating.toFixed(1)}` : ''}` : ''}. For more choice nearby, see all ${region.count} in <a href="${region.path}">${region.name}</a>.`;
+const faqs = attributeFaqs(town, site, attributes);
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': base + town.path, url: base + town.path, name: title, datePublished: site.launchDate, dateModified: buildDate },
+  { '@context': 'https://schema.org', '@type': 'ItemList', name: `${site.niche.title} in ${town.name}, ${co.short}`, numberOfItems: town.count,
+    itemListElement: town.listings.map((l, i) => ({ '@type': 'ListItem', position: i + 1, item: {
+      '@type': businessType(site), '@id': `${base}${l.path}#business`, name: l.name, url: base + l.path, telephone: e164(l.phone),
+      address: { '@type': 'PostalAddress', streetAddress: l.areaService ? undefined : (l.street || undefined), addressLocality: l.city, addressRegion: l.stateCode, postalCode: l.postalCode || undefined, addressCountry: l.stateCode },
+    } })) },
+];
+---
+<Base title={title} description={description} path={town.path} schema={schema} noindex={town.thin}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: site.niche.title, href: '/directory/' }, { name: co.name, href: co.path }, { name: region.name, href: region.path }, { name: town.name, href: town.path }]} />
+    <h1>{site.niche.title} in {town.name}, {co.short}</h1>
+    <ul class="keyfacts">
+      <li><b>{town.count}</b>listed</li>
+      {site.sortAttribute && town.attrCounts[site.sortAttribute] > 0 && <li><b>{town.attrCounts[site.sortAttribute]}</b>{site.confirmedLabel || 'confirmed'}</li>}
+      {town.totalReviews > 0 && <li><b>{town.avgRating.toFixed(1)}</b>average from {town.totalReviews.toLocaleString('en-US')} reviews</li>}
+      <li>Updated {buildDate}</li>
+    </ul>
+  </Fragment>
+  <ListingExplorer site={site} attributes={attributes} listings={cards} citySlug={region.slug} heading={`${site.niche.title} in ${town.name}`} />
+
+  <FeaturedBand site={site} items={town.featured} place={town.name} price={site.tiers?.city?.price} />
+
+  {devicesHere.length > 0 && (
+    <section>
+      <h2>Devices used by practitioners in {town.name}</h2>
+      <ul class="city-grid svc-grid">{devicesHere.map((x) => <li><a href={x.cp ? x.cp.path : x.d.path}><span class="name">{x.d.label}</span> <span class="n">{x.n}</span></a></li>)}</ul>
+    </section>
+  )}
+
+  {town.nearby.length > 0 && (
+    <section>
+      <h2>{site.niche.title} near {town.name}</h2>
+      <ul class="city-grid">
+        {town.nearby.map((t) => <li><a href={t.path}>{t.name}</a> <span class="n">{t.count}</span></li>)}
+        <li><a href={region.path}>All of {region.name}</a> <span class="n">{region.count}</span></li>
+      </ul>
+    </section>
+  )}
+  <ClaimCta site={site} />
+
+  <div class="prose loc-text"><p set:html={intro}></p></div>
+  {faqs.length > 0 && <Faq items={faqs.map((f) => ({ ...f, html: linkNames(f.a, town.listings) }))} title={`Common questions about ${site.niche.plural} in ${town.name}`} />}
+</Base>

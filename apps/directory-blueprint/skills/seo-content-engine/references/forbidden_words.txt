@@ -1,0 +1,45 @@
+# Hard-ban list for the SEO Content Engine — the SMALL set of pure AI tells that
+# must never appear. lint_article.py reads this file and fails the Stage 6 gate if
+# any are found. Keep it plain: one item per line, no explanations (the script does
+# a literal text match, so comments/prose here could cause false matches).
+#
+# This is ONLY the hard-ban subset. The larger "avoid / rewrite" list (foster,
+# enhance, leverage, robust, buzzwords, hedging words, etc.) lives in
+# references/style-rules.md as drafting guidance — those are NOT hard-failed here.
+#
+# [WORDS] = single words, matched whole-word, case-insensitive.
+# [PHRASES] = multi-word phrases, matched as a substring, case-insensitive.
+
+[WORDS]
+delve
+delves
+delved
+delving
+tapestry
+kaleidoscope
+linchpin
+underscore
+underscores
+
+[PHRASES]
+in conclusion
+in summary
+at the end of the day
+it's worth noting
+it is worth noting
+it's important to note
+it is important to note
+in today's fast-paced world
+in today's digital landscape
+in today's rapidly evolving world
+in the ever-evolving world of
+in the ever-evolving landscape of
+unlock the potential
+unlock the power of
+revolutionize the way
+transforming the way
+navigating the landscape
+navigate the complexities of
+not only but also
+shed light on
+when all is said and done

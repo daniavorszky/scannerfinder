@@ -1,0 +1,48 @@
+---
+// Featured placement: the tiers from templates/featured-tiers.md, Payment Links from site.json.
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site } = loadDirectory();
+const t = site.tiers;
+const title = `Featured placement for ${site.niche.plural} | ${site.brand}`;
+const description = `Get your ${site.niche.singular} business to the top of its city page on ${site.brand}. One business per tier per city.`;
+const tiers = [
+  { key: 'premium', name: 'Premium listing', price: t.premium?.price, link: t.premium?.link, what: 'Your photos, every link followed, embedded map, hours, and a "Verified" badge for your own website that links back to your listing.' },
+  { key: 'best-of', name: 'Best-of placement', price: t.bestOf?.price, link: t.bestOf?.link, what: `A pinned position on the "best ${site.niche.plural} in your city" list, a press release about your business, and the "Best of" badge.` },
+  { key: 'city', name: 'City featured', price: t.city?.price, link: t.city?.link, what: 'The top card on your city page, a followed link and a photo. One business per city.' },
+  { key: 'county', name: 'County featured', price: t.county?.price, link: t.county?.link, what: 'The top card across a cluster of nearby cities, plus the featured mark on your listing.' },
+  { key: 'state', name: 'State featured', price: t.state?.price, link: t.state?.link, what: `A block on the home page and every city page in your cluster, a rewritten description and a lead form on your listing.` },
+].filter((x) => x.price);
+---
+<Base title={title} description={description} path="/featured/" noindex={true} headTone="band">
+  <Fragment slot="head">
+    <div class="hero compact">
+      <h1>Get <span class="hl">featured</span></h1>
+      <p class="lede">City pages rank {site.niche.plural} by rating and reviews. Featured and best-of positions sit above that list. One business per tier per city, so a spot is either open or it is not.</p>
+    </div>
+  </Fragment>
+  <div class="tiers">
+    {tiers.map((x, i) => (
+      <div class={`card tier${i === tiers.length - 1 ? ' top' : ''}`}>
+        <div class="tier-head">
+          <h3>{x.name}</h3>
+          <p class="price">{x.price}</p>
+        </div>
+        <p>{x.what}</p>
+        {x.link ? <a class="btn action" href={x.link} rel="nofollow noopener">Buy {x.name.toLowerCase()}</a> : <a class="btn action" href={`/claim/?tier=${x.key}&position=${encodeURIComponent(x.name)}`}>Ask about availability</a>}
+      </div>
+    ))}
+  </div>
+  <section class="bleed tinted steps-band">
+    <h2>How it works</h2>
+    <ol class="steps">
+      <li><b>1</b><h3>Pay</h3><p>Pick a position and pay through the link. No account, no contract.</p></li>
+      <li><b>2</b><h3>Reply to the receipt</h3><p>Send your business name and city. We check the spot is open.</p></li>
+      <li><b>3</b><h3>Go live</h3><p>We update the directory and send you the badge code. If the tier is taken in your city we refund the same day and put you on the waiting list.</p></li>
+    </ol>
+  </section>
+  <aside class="cta-band">
+    <div><h2>Not sure which position fits?</h2><p>Tell us your city and we will say what is open.</p></div>
+    <p><a class="btn" href="/contact/">Ask a question</a> <a href="/claim/">Claim your free listing</a></p>
+  </aside>
+</Base>

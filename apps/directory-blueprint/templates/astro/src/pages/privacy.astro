@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site, buildDate } = loadDirectory();
+---
+<Base title={`Privacy policy | ${site.brand}`} description={`How ${site.brand} handles information.`} path="/privacy/" noindex={true}>
+  <Fragment slot="head">
+    <h1>Privacy policy</h1>
+  </Fragment>
+  <div class="prose">
+    <p>Last updated {buildDate}.</p>
+    <p>{site.brand} lists businesses using publicly available business information (name, address, phone, website, hours, ratings). We do not publish personal information about private individuals. Business owners may request corrections or removal through the <a href="/contact/">contact page</a>.</p>
+    <p>When you submit the claim or contact form, the details you enter are sent to us by email so we can respond. We do not sell or share them. This site does not use advertising trackers.</p>
+    <p>Hosting and form delivery are provided by third parties who process data on our behalf. Questions: <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.</p>
+  </div>
+</Base>

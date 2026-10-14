@@ -1,0 +1,76 @@
+---
+// Search results: the form again, then results drawn from /search-index.json in the browser. noindex, never in the sitemap.
+// Results use the region page's explorer (filters, map, cards; public/explorer.js), filled by public/search.js with the
+// visitor's technology and place already ticked (Dan, 2026-10-14). The explorer starts empty and hidden.
+import Base from '../layouts/Base.astro';
+import SearchForm from '../components/SearchForm.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site, attributes } = loadDirectory();
+const title = `Search ${site.niche.plural} by name, device or region | ${site.brand}`;
+const devices = attributes.filter((a) => a.service?.family === 'devices');
+const SERVICE_KEYS = ['remote_sessions', 'free_consultation', 'animal_sessions'];
+const services = attributes.filter((a) => SERVICE_KEYS.includes(a.key));
+const v = (globalThis.__sfBuild ||= Date.now().toString(36));
+---
+<Base title={title} description={`Search every ${site.niche.singular} listed on ${site.brand} by name, service and city.`} path="/search/" noindex={true} headTone="band">
+  <Fragment slot="head">
+    <div class="hero">
+      <h1>Search {site.niche.plural}</h1>
+      <SearchForm site={site} attributes={attributes} />
+    </div>
+  </Fragment>
+  <section id="search-results" class="results" aria-live="polite" data-page="search">
+    <p class="meta">Type a business name or a service, add a city if you like, or pick a service filter. Without JavaScript, <a href="/directory/">browse by country and region</a> instead.</p>
+  </section>
+  <section class="explorer" id="explorer" data-deferred="1" hidden>
+    <div class="explorer-layout">
+      <aside class="ex-filters" aria-label="Filters">
+        <details class="ex-panel" open>
+          <summary><span>Filters</span><span class="ex-active" hidden></span></summary>
+          <form id="ex-form" onsubmit="return false">
+            <fieldset>
+              <legend>Technology</legend>
+              {devices.map((d) => <label class="ex-check"><input type="checkbox" name="attr" value={d.key} data-label={d.label} /> <span>{d.label}</span> <small></small></label>)}
+            </fieldset>
+            <fieldset>
+              <legend>Options</legend>
+              {services.map((d) => <label class="ex-check"><input type="checkbox" name="attr" value={d.key} data-label={d.label} /> <span>{d.label}</span> <small></small></label>)}
+            </fieldset>
+            <fieldset>
+              <legend>Minimum rating</legend>
+              <div class="ex-pills">
+                {[['0', 'Any'], ['3', '3+ stars'], ['4', '4+ stars'], ['4.5', '4.5+ stars']].map(([val, lab], i) => (
+                  <label class="ex-pill"><input type="radio" name="rating" value={val} checked={i === 0} /><span>{lab}</span></label>
+                ))}
+              </div>
+            </fieldset>
+            <fieldset id="ex-place">
+              <legend>Town</legend>
+              <div class="ex-towns"></div>
+            </fieldset>
+            <button type="reset" class="ex-reset">Clear all filters</button>
+          </form>
+        </details>
+      </aside>
+      <div class="ex-main">
+        <div class="ex-bar">
+          <p class="ex-count" aria-live="polite"><b id="ex-n">0</b> of <span id="ex-total">0</span> {site.niche.plural}</p>
+          <label class="ex-sort">Sort
+            <select id="ex-sort">
+              <option value="rec">Recommended</option>
+              <option value="rating">Highest rated</option>
+              <option value="reviews">Most reviews</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </label>
+        </div>
+        <div class="ex-map" id="ex-map" role="region" aria-label="Map of listed practitioners"></div>
+        <div class="grid" id="ex-grid"></div>
+        <p class="ex-empty" id="ex-empty" hidden>No practitioners match these filters. <button type="button" class="linkish" id="ex-clear">Clear the filters</button>.</p>
+      </div>
+    </div>
+  </section>
+  <link rel="stylesheet" href="/vendor/leaflet-1.9.4/leaflet.css" />
+  <script src="/vendor/leaflet-1.9.4/leaflet.js" defer is:inline></script>
+  <script src={`/explorer.js?v=${v}`} defer is:inline></script>
+</Base>

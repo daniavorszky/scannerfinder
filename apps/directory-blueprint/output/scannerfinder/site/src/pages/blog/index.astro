@@ -1,0 +1,90 @@
+---
+// Blog index (2026-10-13, inspired by mypeptidematch.com/blog): eyebrow + H1 + intro, article search and
+// category pills (filtered in the browser), the latest post as a full-width feature, then "Latest Articles"
+// in two columns and a "Stay up to date" box. noindex while every post is a placeholder (astro.config.mjs).
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+import { loadPosts, formatDate } from '../../lib/blog.mjs';
+const { site } = loadDirectory();
+const posts = loadPosts();
+const [feature, ...rest] = posts;
+const categories = [...new Set(posts.map((p) => p.category))];
+const allPlaceholder = posts.every((p) => p.placeholder || p.draft);
+---
+<Base title={`Bioresonance & Scan Session Blog: Guides and News | ${site.brand}`} description={`Guides, device comparisons and news about bioresonance and scan sessions, from the ${site.brand} editorial team.`} path="/blog/" noindex={allPlaceholder}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: 'Blog', href: '/blog/' }]} />
+    <p class="eyebrow">The Journal</p>
+    <h1>Bioresonance Insights</h1>
+    <p class="blog-lede">Plain-language guides, device comparisons and news about bioresonance and scan sessions. Wellness information, not medical advice.</p>
+  </Fragment>
+
+  {posts.length === 0 ? <p>The first articles are on their way.</p> : (
+    <div id="blog-list">
+      <div class="blog-tools">
+        <label class="blog-search"><span class="sr-only">Search articles</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+          <input type="search" id="blog-q" placeholder="Search articles…" />
+        </label>
+        <div class="blog-cats" role="group" aria-label="Categories">
+          <button type="button" class="on" data-cat="">All</button>
+          {categories.map((c) => <button type="button" data-cat={c}>{c}</button>)}
+        </div>
+      </div>
+
+      <a class="blog-feature post-item" href={feature.path} data-cat={feature.category} data-text={`${feature.title} ${feature.description} ${feature.tags.join(' ')}`.toLowerCase()}>
+        {feature.image && <img src={feature.image} alt="" loading="eager" />}
+        <div class="bf-body">
+          <span class="post-cat">{feature.category}</span>
+          <h2>{feature.title}</h2>
+          <p>{feature.description}</p>
+          <span class="post-meta">{formatDate(feature.published)} · {feature.readMinutes} min read</span>
+        </div>
+      </a>
+
+      {rest.length > 0 && (
+        <section>
+          <h2>Latest Articles</h2>
+          <div class="post-grid">
+            {rest.map((p) => (
+              <a class="post-card post-item" href={p.path} data-cat={p.category} data-text={`${p.title} ${p.description} ${p.tags.join(' ')}`.toLowerCase()}>
+                <div class="pc-img">{p.image ? <img src={p.image} alt="" loading="lazy" /> : <span>{p.category}</span>}</div>
+                <div class="pc-body">
+                  <span class="post-cat">{p.category}</span>
+                  <h3>{p.title}</h3>
+                  <p>{p.description}</p>
+                  <span class="post-meta">{formatDate(p.published)} · {p.readMinutes} min read</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+      <p class="blog-none" id="blog-none" hidden>No articles match. <button type="button" class="linkish" id="blog-reset">Show all articles</button>.</p>
+    </div>
+  )}
+
+  <aside class="blog-follow">
+    <h2>Stay up to date</h2>
+    <p>New guides on scanning devices, sessions and practitioners are published regularly. Bookmark this page or check back often.</p>
+    <p class="bf-links"><a class="btn" href="/search/">Find a practitioner</a> <a class="btn ghost-dark" href="/tools/">Tools</a></p>
+  </aside>
+</Base>
+
+<script is:inline>
+(function () {
+  var q = document.getElementById('blog-q'); if (!q) return;
+  var items = Array.prototype.slice.call(document.querySelectorAll('.post-item'));
+  var btns = Array.prototype.slice.call(document.querySelectorAll('.blog-cats button'));
+  var none = document.getElementById('blog-none'), cat = '';
+  function apply() {
+    var t = q.value.trim().toLowerCase(), n = 0;
+    items.forEach(function (el) { var ok = (!cat || el.dataset.cat === cat) && (!t || el.dataset.text.indexOf(t) !== -1); el.hidden = !ok; if (ok) n++; });
+    none.hidden = n > 0;
+  }
+  btns.forEach(function (b) { b.addEventListener('click', function () { cat = b.dataset.cat; btns.forEach(function (x) { x.classList.toggle('on', x === b); }); apply(); }); });
+  q.addEventListener('input', apply);
+  document.getElementById('blog-reset').addEventListener('click', function () { q.value = ''; cat = ''; btns.forEach(function (x, i) { x.classList.toggle('on', i === 0); }); apply(); });
+})();
+</script>

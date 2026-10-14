@@ -1,0 +1,133 @@
+---
+// ScannerFinder (04-plan.md): the kit's service page, generalised to two families.
+//   devices  → /devices/ (index), /devices/<brand>/, /devices/<brand>/<country>/ (every country; under cityFloor = noindex)
+//   services → /services/ (index), /services/<feature>/
+// Props: family ('devices' | 'services'), key (attribute key, '' for the index), countryCode (optional).
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+import Card from './Card.astro';
+import ClaimCta from './ClaimCta.astro';
+import Faq from './Faq.astro';
+import StatBlock from './StatBlock.astro';
+import { deviceBlock, deviceCountryBlock } from '../lib/stats.mjs';
+import { loadDirectory, paragraphs, e164, businessType } from '../lib/load.mjs';
+const { family, key = '', countryCode = '' } = Astro.props;
+const dir = loadDirectory();
+const { site, buildDate, countries } = dir;
+const all = dir.services.filter((x) => x.family === family);
+const s = all.find((x) => x.key === key) || null;
+const cp = s && countryCode ? s.countryPages.find((x) => x.country.code === countryCode) : null;
+const base = `https://${site.domain}`;
+const familyName = family === 'devices' ? 'Devices' : 'Services';
+const indexPath = `/${family}/`;
+const scope = cp ? cp.country.name : `${countries.length} countries`;
+const list = cp ? cp.listings : s ? s.listings : [];
+const path = cp ? cp.path : s ? s.path : indexPath;
+const heading = cp ? `${s.title} in ${cp.country.inName}` : s ? s.title : family === 'devices' ? `${site.niche.title} by device` : 'Remote sessions and sessions for animals';
+const guide = s && !cp ? s.guide : null;   // brand page only, never the country pages
+const title = guide?.seoTitle ? `${guide.seoTitle} | ${site.brand}` : `${heading} (${s ? list.length + ' Listed' : 'Index'}) | ${site.brand}`;
+const top = list.find((l) => l.reviews > 0);
+const description = guide?.seoDescription ? guide.seoDescription : s
+  ? `${list.length} ${site.niche.plural} ${family === 'devices' ? `who use ${s.label}` : `offering ${s.label.toLowerCase()}`} in ${scope}.${top ? ` Top rated: ${top.name} (${top.rating.toFixed(1)}, ${top.reviews} reviews).` : ''} Phone numbers, regions and session details.`
+  : `${site.niche.title} grouped by ${family === 'devices' ? 'the scanning device they use: ZYTO, SCIO, AO Scan, Asyra, NLS, BICOM and more' : 'remote sessions and sessions for pets and horses'}.`;
+const cards = list.slice(0, site.maxCardsPerCity || 60);
+const rest = list.slice(cards.length);
+const defaultIntro = s ? [
+  cp
+    ? `${list.length === 1 ? `1 practitioner in ${cp.country.inName} states that they use ${s.label} in their sessions.` : `${list.length} practitioners in ${cp.country.inName} state that they use ${s.label} in their sessions. They are ranked below by Google rating weighted by review count, with featured placements first.`} ${family === 'devices' ? 'Ask on the phone which model they use and how long a session takes.' : ''}`
+    : `${list.length} of the ${dir.listings.length.toLocaleString('en-US')} ${site.niche.plural} on ${site.brand} ${family === 'devices' ? `state that they use ${s.label}` : `offer ${s.label.toLowerCase()}`}, in ${s.byCountry.length} ${s.byCountry.length === 1 ? 'country' : 'countries'}. They are ranked below by Google rating weighted by review count.`,
+] : [];
+const intro = cp ? (cp.intro.length ? cp.intro : defaultIntro) : s ? (s.intro.length ? s.intro : defaultIntro) : [];
+const regions = s ? (cp ? s.cities.filter((x) => x.city.country.code === countryCode) : s.cities) : [];
+// Listings in regions too small for a page of their own: one "Other regions" entry, so the block adds up to the total.
+const otherRegions = cp ? list.length - regions.reduce((n, x) => n + x.count, 0) : 0;
+const statBlock = s && family === 'devices' ? (cp ? deviceCountryBlock(key, countryCode) : deviceBlock(key)) : null;
+const crumbs = [{ name: 'Home', href: '/' }, { name: familyName, href: indexPath }, ...(s ? [{ name: s.label, href: s.path }] : []), ...(cp ? [{ name: cp.country.name, href: cp.path }] : [])];
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': base + path, url: base + path, name: title, datePublished: site.launchDate, dateModified: buildDate },
+  s ? { '@context': 'https://schema.org', '@type': 'ItemList', name: heading, numberOfItems: list.length,
+    itemListElement: cards.map((l, i) => ({ '@type': 'ListItem', position: i + 1, item: {
+      '@type': businessType(site), '@id': `${base}${l.path}#business`, name: l.name, url: base + l.path, telephone: e164(l.phone),
+      address: { '@type': 'PostalAddress', addressLocality: l.city, addressRegion: l.region, postalCode: l.postalCode || undefined, addressCountry: l.stateCode },
+    } })) }
+    : { '@context': 'https://schema.org', '@type': 'ItemList', name: heading, itemListElement: all.map((x, i) => ({ '@type': 'ListItem', position: i + 1, url: base + x.path, name: x.title })) },
+];
+const faqs = s && family === 'devices' ? [
+  { q: `Where can I find a ${s.label} practitioner${cp ? ` in ${cp.country.inName}` : ''}?`, a: `${list.length} practitioners${cp ? ` in ${cp.country.inName}` : ''} on ${site.brand} state that they use ${s.label}.${regions[0] ? ` The region with the most is ${regions[0].city.name} (${regions[0].count}).` : ''} Each listing has a phone number and, where the practitioner offers it, a note on remote sessions.` },
+  { q: `Is a ${s.label} scan a medical test?`, a: `No. ${site.brand} lists ${s.label} sessions as wellness services. They are not medical tests, diagnoses or treatments. Talk to a licensed healthcare professional about any health concern.` },
+  { q: `Can I book a ${s.label} session remotely?`, a: `${list.filter((l) => l.attrs.find((a) => a.key === 'remote_sessions')?.value === 'true').length} of these practitioners state that they offer remote or online sessions. Check the listing, then confirm by phone how a remote session works.` },
+] : [];
+if (guide) faqs.unshift(...guide.faqs);
+---
+<Base title={title} description={description} path={path} schema={schema} noindex={!!(cp && cp.thin)}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={crumbs} />
+    <h1>{heading}</h1>
+    {s ? (
+      <ul class="keyfacts">
+        <li><b>{list.length}</b>listed</li>
+        {!cp && <li><b>{s.byCountry.length}</b>{s.byCountry.length === 1 ? 'country' : 'countries'}</li>}
+        <li>Updated {buildDate}</li>
+      </ul>
+    ) : <p class="lede">Each page lists the {site.niche.plural} {family === 'devices' ? 'who name one device' : 'who offer one kind of session'}, ranked by rating and review count.</p>}
+  </Fragment>
+
+  {s ? (
+    <>
+      <div class="prose" set:html={paragraphs(intro)}></div>
+      <StatBlock block={statBlock} />
+      {guide && guide.sections.length > 0 && (
+        <section class="guide prose">
+          {guide.sections.map((sec) => (<><h2>{sec.h}</h2><Fragment set:html={paragraphs(sec.p)} /></>))}
+          {guide.sources.length > 0 && (
+            <p class="meta sources">Sources: {guide.sources.map((x, i) => (<>{i > 0 && '; '}<a href={x.url} rel={x.url.startsWith('/') ? undefined : 'nofollow noopener'} target={x.url.startsWith('/') ? undefined : '_blank'}>{x.label}</a></>))}.</p>
+          )}
+        </section>
+      )}
+      {cp && regions.length > 0 && (
+        <section>
+          <h2>{s.label} practitioners by region in {cp.country.inName}</h2>
+          <!-- copy:skip -->
+          <ul class="city-grid">{regions.map((x) => <li><a href={x.city.path}><span class="name">{x.city.name}</span> <span class="n">{x.count}</span></a></li>)}{otherRegions > 0 && <li><a href={cp.country.path}><span class="name">Other regions</span> <span class="n">{otherRegions}</span></a></li>}</ul>
+          <!-- /copy:skip -->
+        </section>
+      )}
+      <section>
+        <h2>{cards.length < list.length ? `Top ${cards.length} of ${list.length}` : `All ${list.length}`}</h2>
+        <!-- copy:skip -->
+        <div class="grid">{cards.map((l) => <Card l={l} />)}</div>
+        {rest.length > 0 && <ul class="more-list">{rest.map((l) => <li><a href={l.path}>{l.name}</a> <span class="meta">{l.city}</span></li>)}</ul>}
+        <!-- /copy:skip -->
+      </section>
+      {!cp && s.byCountry.length > 0 && (
+        <section>
+          <h2>{s.label} by country</h2>
+          <!-- copy:skip -->
+          <ul class="city-grid">{s.byCountry.map((x) => <li><a href={s.countryPages.length ? x.path : x.country.path}><span class="name">{x.country.name}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+          <!-- /copy:skip -->
+        </section>
+      )}
+      {!cp && regions.length > 0 && (
+        <section>
+          <h2>{s.label} by region</h2>
+          <!-- copy:skip -->
+          <ul class="city-grid">{regions.map((x) => <li><a href={x.city.path}><span class="name">{x.city.name}, {x.city.country.short}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+          <!-- /copy:skip -->
+        </section>
+      )}
+      {faqs.length > 0 && <Faq items={faqs} title={`Questions about ${s.label} sessions`} />}
+      <section>
+        <h2>Other {family === 'devices' ? 'devices' : 'session types'}</h2>
+        <!-- copy:skip -->
+        <ul class="city-grid svc-grid">{all.filter((x) => x !== s).map((x) => <li><a href={x.path}><span class="name">{x.label}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+        <!-- /copy:skip -->
+      </section>
+    </>
+  ) : (
+    <section>
+      <ul class="city-grid svc-grid">{all.map((x) => <li><a href={x.path}><span class="name">{x.title}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+      <p class="meta"><a href="/directory/">Or browse by country and region</a>.</p>
+    </section>
+  )}
+  <ClaimCta site={site} />
+</Base>

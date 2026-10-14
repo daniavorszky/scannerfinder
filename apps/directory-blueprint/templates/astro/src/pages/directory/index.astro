@@ -1,0 +1,52 @@
+---
+// The directory's browse-everything page: the search box, every city A to Z, then every listing grouped by
+// city with its rating. It is the nav's niche entry (the plural niche name) and the breadcrumb level between Home and the
+// state. noindex, follow: the home page carries the ranking copy; this page is an HTML sitemap with a search
+// box, and its links still pass value (wiki/framework/site-architecture.md).
+import Base from '../../layouts/Base.astro';
+import SearchForm from '../../components/SearchForm.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+const { site, cities, listings, statePath, attributes } = loadDirectory();
+const byName = [...cities].sort((a, b) => a.name.localeCompare(b.name));
+const cityGroups = byName.reduce((acc, c) => { const L = c.name[0].toUpperCase(); const g = acc.find((x) => x.letter === L); if (g) g.cities.push(c); else acc.push({ letter: L, cities: [c] }); return acc; }, []);
+const title = `${site.niche.title} directory: every city and listing in ${site.state.name} | ${site.brand}`;
+const description = `Browse every ${site.niche.singular} listed on ${site.brand}, city by city, or search by name and service.`;
+---
+<Base title={title} description={description} path="/directory/" noindex={true} headTone="band">
+  <Fragment slot="head">
+    <div class="hero compact">
+      <h1>Browse every <span class="hl">{site.niche.singular}</span> in {site.state.name}</h1>
+      <p class="lede">{listings.length.toLocaleString('en-US')} listings in {cities.length} cities. Search by name or service, or scroll the list.</p>
+      <SearchForm site={site} attributes={attributes} />
+    </div>
+  </Fragment>
+
+  <section id="cities">
+    <h2>Cities, A to Z</h2>
+    <p class="meta"><a href={statePath}>{site.state.name}, city by city</a> has the notes on each city. Towns without a page of their own are listed under the nearest city.</p>
+    <!-- copy:skip -->
+    <div class="city-groups">
+      {cityGroups.map((g) => (
+        <div class="city-group">
+          <p class="letter" aria-hidden="true">{g.letter}</p>
+          <ul class="city-pills">{g.cities.map((c) => <li><a href={c.path}>{c.name} <span class="n">{c.count}</span></a></li>)}</ul>
+        </div>
+      ))}
+    </div>
+    <!-- /copy:skip -->
+  </section>
+
+  <section id="listings">
+    <h2>Every listing, by city</h2>
+    <!-- copy:skip -->
+    <div class="all-listings">
+      {byName.map((c) => (
+        <div class="all-city">
+          <h3><a href={c.path}>{c.name}</a> <span class="n">{c.count}</span></h3>
+          <ul>{c.listings.map((l) => <li><a href={l.path}>{l.name}</a>{l.reviews > 0 && <span class="rt"><i aria-hidden="true">★</i> {l.rating.toFixed(1)} <small>({l.reviews})</small></span>}</li>)}</ul>
+        </div>
+      ))}
+    </div>
+    <!-- /copy:skip -->
+  </section>
+</Base>

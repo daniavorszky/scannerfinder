@@ -1,0 +1,21 @@
+---
+// Not found. Cloudflare Pages serves this file with a 404 status. Without it, Pages treats the
+// site as a single-page app and answers every unknown address with the home page and a 200,
+// which search engines read as thousands of duplicate pages.
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site, indexCities, statePath } = loadDirectory();
+---
+<Base title={`Page not found | ${site.brand}`} description={`That page is not on ${site.brand}.`} path="/404/" noindex={true}>
+  <Fragment slot="head">
+    <h1>Page not found</h1>
+  </Fragment>
+  <div class="prose">
+    <p>That address is not on {site.brand}. The business may have been removed, or the link may be mistyped.</p>
+    <p><a href={statePath}>See every city in {site.state.name}</a>, or start from the <a href="/">home page</a>.</p>
+  </div>
+  <section>
+    <h2>Largest cities</h2>
+    <ul class="city-grid">{indexCities.slice(0, 12).map((c) => <li><a href={c.path}>{c.name}</a> <span class="n">{c.count}</span></li>)}</ul>
+  </section>
+</Base>

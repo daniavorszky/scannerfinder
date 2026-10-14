@@ -1,0 +1,24 @@
+---
+// Snippet page the owner copies. noindex. The offer to install it is part of the pitch.
+import Base from '../../../layouts/Base.astro';
+import { loadDirectory } from '../../../lib/load.mjs';
+export function getStaticPaths() {
+  const { listings } = loadDirectory();
+  return listings.filter((l) => l.premium || l.bestOfRank).map((l) => ({ params: { slug: l.slug }, props: { slug: l.slug } }));
+}
+const { slug } = Astro.props;
+const { site, listings } = loadDirectory();
+const l = listings.find((x) => x.slug === slug);
+const base = `https://${site.domain}`;
+const alt = l.bestOfRank ? `${l.name} is a best ${site.niche.singular} in ${l.city} on ${site.brand}` : `${l.name} is a verified ${site.niche.singular} on ${site.brand}`;
+const snippet = `<a href="${base}${l.path}" rel="noopener">\n  <img src="${base}/badge/${l.slug}.svg" alt="${alt.replace(/"/g, '&quot;')}" width="220" height="64">\n</a>`;
+---
+<Base title={`Your badge | ${site.brand}`} description={`Badge code for ${l.name}.`} path={`/badge/${l.slug}/`} noindex={true}>
+  <h1>Your {site.brand} badge</h1>
+  <div class="prose">
+    <p>Paste this on your website (the footer, the about page, or next to your reviews). It shows the badge and links to your listing.</p>
+    <p><img src={`/badge/${l.slug}.svg`} alt={alt} width="220" height="64" /></p>
+    <pre class="snippet"><code>{snippet}</code></pre>
+    <p>Send it to your developer, or <a href="/contact/">tell us where it should go and we will put it on for you</a>.</p>
+  </div>
+</Base>

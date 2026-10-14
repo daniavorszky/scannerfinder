@@ -1,0 +1,114 @@
+---
+// The directory hub: the sections shared by the home page and /directory/ (wiki/components/page-sections.md):
+// stat cards and the largest cities, the featured band, the highest-rated grid, the claim callout and the A to Z city index.
+import ClaimCta from './ClaimCta.astro';
+import FeaturedBand from './FeaturedBand.astro';
+import { topAttrs, loadDirectory } from '../lib/load.mjs';
+const { site, cities, listings, stats, homeFeatured, statePath } = Astro.props;
+const { services } = loadDirectory();
+// Highest rated: rating weighted with review count (score = rating x log10(reviews + 1), the order city pages use),
+// with a floor so a 5.0 from three reviews does not outrank a 4.8 from four hundred. Featured and preview cards are left out.
+const excerpt = (t, n = 28) => { const w = (t || '').split(/\s+/); return w.length > n ? w.slice(0, n).join(' ') + '\u2026' : w.join(' '); };
+const confirmed = (l) => !site.sortAttribute || l.attrs.some((a) => a.key === site.sortAttribute && a.value === 'true');
+const spotlight = [...listings].filter((l) => !l.thin && !l.featured && !homeFeatured.includes(l) && l.rating >= 4.5 && l.reviews >= 25 && confirmed(l))
+  .sort((a, b) => b.score - a.score || b.reviews - a.reviews).slice(0, 6);
+// Every city page, grouped by first letter for the city index.
+const cityGroups = [...cities].sort((a, b) => a.name.localeCompare(b.name)).reduce((acc, c) => { const L = c.name[0].toUpperCase(); const g = acc.find((x) => x.letter === L); if (g) g.cities.push(c); else acc.push({ letter: L, cities: [c] }); return acc; }, []);
+---
+  <section class="bleed tinted after-hero">
+    <dl class="stat-cards">
+      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg><dd>{stats.listings.toLocaleString('en-US')}</dd><dt>{site.niche.plural}</dt></div>
+      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><dd>{stats.cities}</dd><dt>cities</dt></div>
+      {stats.sortAttrTrue > 0 && <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg><dd>{stats.sortAttrTrue.toLocaleString('en-US')}</dd><dt>{site.confirmedLabel || 'confirmed'}</dt></div>}
+      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/></svg><dd>{stats.reviews.toLocaleString('en-US')}</dd><dt>Google reviews</dt></div>
+    </dl>
+    <h2>Find {site.niche.plural} in your city</h2>
+    <ul class="city-cards">
+      {cities.slice(0, 8).map((c) => (
+        <li><a href={c.path}>
+          <h3 class="name">{c.name}</h3>
+          <span class="big"><b>{c.count}</b>{site.niche.plural}</span>
+          <span class="small">{site.sortAttribute && c.attrCounts[site.sortAttribute] ? `${c.attrCounts[site.sortAttribute]} ${site.confirmedLabel || 'confirmed'}` : `${c.totalReviews.toLocaleString('en-US')} reviews`}</span>
+        </a></li>
+      ))}
+    </ul>
+    {cities.length > 8 && <p class="see-all"><a class="btn" href="#cities">See all {cities.length} cities</a></p>}
+  </section>
+
+  <FeaturedBand site={site} items={homeFeatured} place={site.state.name} price={site.tiers?.city?.price} />
+
+  {spotlight.length > 0 && (
+    <section>
+      <h2>Highest-rated {site.niche.plural} in {site.state.name}</h2>
+      <p class="meta">Ranked by Google rating weighted by review count{site.sortAttribute ? ', among builders their own website confirms' : ''}.</p>
+      <!-- copy:skip -->
+      <div class="biz-cards">
+        {spotlight.map((l) => (
+          <article class="biz-card">
+            <div class="top"><span>{l.city}</span><span class="rt"><i aria-hidden="true">★</i> {l.rating.toFixed(1)} ({l.reviews.toLocaleString('en-US')})</span></div>
+            <div class="body">
+              <h3><a href={l.path}>{l.name}</a></h3>
+              <p>{excerpt(l.description)}</p>
+              {topAttrs(l).length > 0 && <ul class="chips">{topAttrs(l).map((a) => <li>{a.label}</li>)}</ul>}
+              <a class="more" href={l.path}>View listing</a>
+            </div>
+          </article>
+        ))}
+      </div>
+      <!-- /copy:skip -->
+    </section>
+  )}
+
+  <ClaimCta site={site} />
+
+  {services.length > 0 && (
+    <section id="services">
+      <h2>Find {site.niche.plural} by service</h2>
+      <!-- copy:skip -->
+      <ul class="city-grid svc-grid">{services.map((s) => <li><a href={s.path}><span class="name">{s.title}</span> <span class="n">{s.count}</span></a></li>)}</ul>
+      <!-- /copy:skip -->
+    </section>
+  )}
+
+  <section id="cities">
+    <div class="section-head">
+      <h2>Find {site.niche.plural} by city</h2>
+      {site.cityFilter && (
+        <label class="city-filter">
+          <span class="sr-only">Type a city name</span>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2" /><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" /></svg>
+          <input type="search" id="city-filter" autocomplete="off" placeholder="Type a city name" />
+        </label>
+      )}
+    </div>
+    <p class="meta">Towns with fewer than {site.cityFloor} listed {site.niche.plural} sit on the nearest city's page.</p>
+    <!-- copy:skip -->
+    <div class="city-groups" id="city-list">
+      {cityGroups.map((g) => (
+        <div class="city-group">
+          <p class="letter" aria-hidden="true">{g.letter}</p>
+          <ul class="city-pills">{g.cities.map((c) => <li><a href={c.path}>{c.name} <span class="n">{c.count}</span></a></li>)}</ul>
+        </div>
+      ))}
+    </div>
+    <!-- /copy:skip -->
+    {site.cityFilter && <p id="city-none" hidden>No city page matches. <a href={statePath}>See every city in {site.state.name}</a>.</p>}
+  </section>
+  {site.cityFilter && (
+    <script is:inline>
+      // Filters the city links above as you type. The links are in the page either way.
+      (function () {
+        var input = document.getElementById('city-filter'), groups = document.querySelectorAll('#city-list .city-group'), none = document.getElementById('city-none');
+        if (!input) return;
+        input.addEventListener('input', function () {
+          var q = input.value.trim().toLowerCase(), shown = 0;
+          groups.forEach(function (g) {
+            var any = false;
+            g.querySelectorAll('li').forEach(function (li) { var hit = li.textContent.toLowerCase().indexOf(q) !== -1; li.hidden = !hit; if (hit) { any = true; shown++; } });
+            g.hidden = !any;
+          });
+          none.hidden = shown !== 0;
+        });
+      })();
+    </script>
+  )}

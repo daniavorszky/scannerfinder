@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site, buildDate } = loadDirectory();
+---
+<Base title={`Terms of use | ${site.brand}`} description={`Terms for using ${site.brand}.`} path="/terms/" noindex={true}>
+  <Fragment slot="head">
+    <h1>Terms of use</h1>
+  </Fragment>
+  <div class="prose">
+    <p>Last updated {buildDate}.</p>
+    <p>{site.brand} is an independent directory published by {site.publisher.name}. Listings are compiled from public sources and are provided for information only. A listing is not an endorsement, and we do not verify licensing, insurance or the quality of any business's work. Confirm those with the business before hiring.</p>
+    <p>Featured, premium and best-of positions are paid placements and are marked as such. Payment does not change a business's rating or review count, which come from Google.</p>
+    <p>Business owners may claim, correct or remove their listing through the <a href="/contact/">contact page</a>. We may remove any listing at our discretion.</p>
+  </div>
+</Base>

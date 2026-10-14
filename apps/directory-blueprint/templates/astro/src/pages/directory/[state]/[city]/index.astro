@@ -1,0 +1,83 @@
+---
+// City page: the money page and the "best [niche] in [city]" list. wiki/framework/page-types.md.
+import Base from '../../../../layouts/Base.astro';
+import Breadcrumbs from '../../../../components/Breadcrumbs.astro';
+import Card from '../../../../components/Card.astro';
+import Faq from '../../../../components/Faq.astro';
+import ClaimCta from '../../../../components/ClaimCta.astro';
+import FeaturedBand from '../../../../components/FeaturedBand.astro';
+import { loadDirectory, attributeFaqs, paragraphs, linkedParagraphs, linkNames, e164, businessType } from '../../../../lib/load.mjs';
+export function getStaticPaths() {
+  const { cities, stateSlug } = loadDirectory();
+  return cities.map((c) => ({ params: { state: stateSlug, city: c.slug }, props: { slug: c.slug } }));
+}
+const { slug } = Astro.props;
+const dir = loadDirectory();
+const { site, attributes, statePath, buildDate } = dir;
+const city = dir.cityBySlug[slug];
+const base = `https://${site.domain}`;
+const title = `${site.niche.title} in ${city.name}, ${site.state.code} (${city.count} Listed) | ${site.brand}`;
+const top = city.listings.find((l) => l.reviews > 0);
+const description = `${city.count} ${site.niche.plural} in ${city.name}, ${site.state.code}, ranked by rating and reviews.${top ? ` Top rated: ${top.name} (${top.rating.toFixed(1)}, ${top.reviews} reviews).` : ''} Phone numbers and services for each.`;
+const cards = city.listings.slice(0, site.maxCardsPerCity || 60);
+const rest = city.listings.slice(cards.length);
+const intro = city.copy?.intro || [
+  `${city.count} ${site.niche.plural} are listed in ${city.name}, ${site.state.name}, with ${city.totalReviews} Google reviews between them${city.avgRating ? ` and an average rating of ${city.avgRating.toFixed(1)}` : ''}. The list below puts featured businesses first, then paid best-of positions, then everyone else by rating and review count.`,
+];
+const faqs = city.copy?.faqs || attributeFaqs(city, site, attributes);
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': base + city.path, url: base + city.path, name: title, datePublished: site.launchDate, dateModified: buildDate },
+  { '@context': 'https://schema.org', '@type': 'ItemList', name: `Best ${site.niche.plural} in ${city.name}, ${site.state.code}`, numberOfItems: city.count,
+    itemListElement: cards.map((l, i) => ({ '@type': 'ListItem', position: i + 1, item: {
+      '@type': businessType(site), '@id': `${base}${l.path}#business`, name: l.name, url: base + l.path, telephone: e164(l.phone),
+      address: { '@type': 'PostalAddress', streetAddress: l.areaService ? undefined : (l.street || undefined), addressLocality: l.city, addressRegion: l.stateCode, postalCode: l.postalCode || undefined, addressCountry: 'US' },
+    } })) },
+];
+---
+<Base title={title} description={description} path={city.path} schema={schema}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: site.niche.title, href: '/directory/' }, { name: site.state.name, href: statePath }, { name: city.name, href: city.path }]} />
+    <h1>{site.niche.title} in {city.name}, {site.state.code}</h1>
+    <ul class="keyfacts">
+      <li><b>{city.count}</b>listed</li>
+      {site.sortAttribute && city.attrCounts[site.sortAttribute] > 0 && <li><b>{city.attrCounts[site.sortAttribute]}</b>{site.confirmedLabel || 'confirmed'}</li>}
+      {city.totalReviews > 0 && <li><b>{city.avgRating.toFixed(1)}</b>average from {city.totalReviews.toLocaleString('en-US')} reviews</li>}
+      <li>Updated {buildDate}</li>
+    </ul>
+  </Fragment>
+  <div class="prose" set:html={linkedParagraphs(intro.slice(0, Math.ceil(intro.length / 2)), city.listings)}></div>
+
+  <FeaturedBand site={site} items={city.featured} place={city.name} price={site.tiers?.city?.price} />
+
+  <section>
+    <h2>Best {site.niche.plural} in {city.name}</h2>
+    <div class="grid">{cards.filter((l) => !city.featured.includes(l)).map((l) => <Card l={l} citySlug={city.slug} />)}</div>
+    {rest.length > 0 && (
+      <>
+        <h3 class="more-head">{rest.length} more {site.niche.plural} in {city.name}</h3>
+        <p class="meta">Listings with the fewest reviews.</p>
+        <ul class="more-list">{rest.map((l) => <li><a href={l.path}>{l.name}</a>{l.reviews > 0 && <span class="rt"><i aria-hidden="true">★</i> {l.rating.toFixed(1)} <small>({l.reviews})</small></span>}</li>)}</ul>
+      </>
+    )}
+  </section>
+
+  <div class="prose city-more" set:html={linkedParagraphs(intro.slice(Math.ceil(intro.length / 2)), city.listings)}></div>
+
+  <Faq items={faqs.map((f) => ({ ...f, html: linkNames(f.a, city.listings) }))} title={`Common questions about ${site.niche.plural} in ${city.name}`} />
+
+  {city.nearby.length > 0 && (
+    <section>
+      <h2>{site.niche.title} near {city.name}</h2>
+      <ul class="city-cards nearby">
+        {city.nearby.map((c) => (
+          <li><a href={c.path}>
+            <h3 class="name">{c.name}</h3>
+            <span class="big"><b>{c.count}</b>{site.niche.plural}</span>
+            <span class="small">{site.niche.title} in {c.name}, {site.state.code}</span>
+          </a></li>
+        ))}
+      </ul>
+    </section>
+  )}
+  <ClaimCta site={site} />
+</Base>

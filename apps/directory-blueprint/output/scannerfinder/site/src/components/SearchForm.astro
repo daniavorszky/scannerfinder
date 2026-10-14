@@ -1,0 +1,47 @@
+---
+// The directory search: a technology dropdown, a box for the region or town, a free box for the
+// practitioner's name (services can still be picked there as chips), a Search button.
+// Suggestions under the first box list matching services first (a pick becomes a chip in the box) and
+// then businesses (a pick goes straight to the listing). Nothing searches until Search is pressed;
+// the results live on /search/ (public/search.js).
+const { site, attributes } = Astro.props;
+import { loadDirectory } from '../lib/load.mjs';
+// Technology is the first search criterion (Dan, 2026-10-13): its own dropdown. Each option carries the
+// device page and its country pages, so "ZYTO" alone or "ZYTO + a country" lands on the SEO page.
+const techs = loadDirectory().devices.map((d) => ({ label: d.label, path: d.path, countries: Object.fromEntries(d.countryPages.map((cp) => [cp.country.name.toLowerCase(), cp.path])) }));
+// The placeholder's example is the first attribute's label from attributes.json (the vertical's own
+// words), or a generic word when the file is empty; never a term from another trade.
+// A per-build stamp on the index and the script, so a deploy never pairs new code with a cached old index.
+const v = (globalThis.__sfBuild ||= Date.now().toString(36));
+const example = (attributes && attributes[0] && attributes[0].label) ? attributes[0].label.toLowerCase() : 'repair';
+---
+<form class="dir-search" id="dir-search" action="/search/" method="get" data-index={`/search-index.json?v=${v}`} role="search" autocomplete="off">
+  <div class="field tech">
+    <label class="sr-only" for="search-tech">Technology</label>
+    <select id="search-tech" name="tech">
+      <option value="">Any technology</option>
+      {techs.map((t) => <option value={t.label} data-path={t.path} data-countries={JSON.stringify(t.countries)}>{t.label}</option>)}
+    </select>
+  </div>
+  <div class="field">
+    <label class="sr-only" for="search-near">Region or town</label>
+    <input id="search-near" name="near" type="search" placeholder="Region or town" />
+    <ul class="suggest" id="sugg-near" hidden></ul>
+  </div>
+  <div class="field what">
+    <ul class="picked" id="filter-picked" aria-live="polite"></ul>
+    <label class="sr-only" for="search-what">Practitioner name</label>
+    <input id="search-what" name="s" type="search" placeholder="Practitioner name (optional)" />
+    <ul class="suggest" id="sugg-what" hidden></ul>
+  </div>
+  <button class="btn action" type="submit">Search</button>
+  <!-- copy:skip -->
+  <!-- Hidden from sight, kept for screen readers and the no-script form. `fieldset.sr-only` in global.css
+       keeps it from widening the page (a fieldset's default min-inline-size is min-content). -->
+  <fieldset class="sr-only">
+    <legend>Services</legend>
+    {attributes.map((a) => <label><input type="checkbox" name="f" value={a.label} /> {a.label}</label>)}
+  </fieldset>
+  <!-- /copy:skip -->
+</form>
+<script src={`/search.js?v=${v}`} defer is:inline></script>

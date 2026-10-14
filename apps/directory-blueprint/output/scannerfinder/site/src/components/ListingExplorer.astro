@@ -1,0 +1,81 @@
+---
+// Region page explorer (2026-10-13, inspired by mypeptidematch.com/clinics/<state>): filters on the left,
+// a map with one numbered pin per visible listing, then the cards. Every card is in the HTML (crawlable);
+// public/explorer.js filters, sorts and redraws the map in the browser. Leaflet is self-hosted in
+// public/vendor/leaflet-1.9.4/, tiles come from OpenStreetMap (attribution on the map).
+import Card from './Card.astro';
+import { attrValue } from '../lib/load.mjs';
+const { site, attributes, listings, citySlug, heading, groupBy = 'town', placeLabel = 'Town' } = Astro.props;
+// Country pages filter by region, region pages by town.
+const placeOf = (l) => (groupBy === 'region' ? l.region : l.city);
+const count = (key) => listings.filter((l) => attrValue(l, key) === 'true').length;
+const devices = attributes.filter((a) => a.service?.family === 'devices').map((a) => ({ key: a.key, label: a.label, n: count(a.key) })).filter((x) => x.n > 0).sort((a, b) => b.n - a.n);
+const SERVICE_KEYS = ['remote_sessions', 'free_consultation', 'animal_sessions'];
+const services = attributes.filter((a) => SERVICE_KEYS.includes(a.key)).map((a) => ({ key: a.key, label: a.label, n: count(a.key) })).filter((x) => x.n > 0);
+const towns = [...listings.reduce((m, l) => m.set(placeOf(l), (m.get(placeOf(l)) || 0) + 1), new Map())].map(([name, n]) => ({ name, n })).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
+const hasPins = listings.some((l) => l.lat && l.lng);
+const v = (globalThis.__sfBuild ||= Date.now().toString(36));
+---
+<section class="explorer" id="explorer">
+  <h2>{heading}</h2>
+  <div class="explorer-layout">
+    <aside class="ex-filters" aria-label="Filters">
+      <details class="ex-panel" open>
+        <summary><span>Filters</span><span class="ex-active" hidden></span></summary>
+        <form id="ex-form" onsubmit="return false">
+          {devices.length > 0 && (
+            <fieldset>
+              <legend>Technology</legend>
+              {devices.map((d) => <label class="ex-check"><input type="checkbox" name="attr" value={d.key} /> <span>{d.label}</span> <small>{d.n}</small></label>)}
+            </fieldset>
+          )}
+          {services.length > 0 && (
+            <fieldset>
+              <legend>Options</legend>
+              {services.map((d) => <label class="ex-check"><input type="checkbox" name="attr" value={d.key} /> <span>{d.label}</span> <small>{d.n}</small></label>)}
+            </fieldset>
+          )}
+          <fieldset>
+            <legend>Minimum rating</legend>
+            <div class="ex-pills">
+              {[['0', 'Any'], ['3', '3+ stars'], ['4', '4+ stars'], ['4.5', '4.5+ stars']].map(([val, lab], i) => (
+                <label class="ex-pill"><input type="radio" name="rating" value={val} checked={i === 0} /><span>{lab}</span></label>
+              ))}
+            </div>
+          </fieldset>
+          {towns.length > 1 && (
+            <fieldset>
+              <legend>{placeLabel}</legend>
+              <div class="ex-towns">
+                {towns.map((t) => <label class="ex-check"><input type="checkbox" name="town" value={t.name} /> <span>{t.name}</span> <small>{t.n}</small></label>)}
+              </div>
+            </fieldset>
+          )}
+          <button type="reset" class="ex-reset">Clear all filters</button>
+        </form>
+      </details>
+    </aside>
+
+    <div class="ex-main">
+      <div class="ex-bar">
+        <p class="ex-count" aria-live="polite"><b id="ex-n">{listings.length}</b> of {listings.length} {site.niche.plural}</p>
+        <label class="ex-sort">Sort
+          <select id="ex-sort">
+            <option value="rec">Recommended</option>
+            <option value="rating">Highest rated</option>
+            <option value="reviews">Most reviews</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </label>
+      </div>
+      {hasPins && <div class="ex-map" id="ex-map" role="region" aria-label="Map of listed practitioners"></div>}
+      <!-- copy:skip -->
+      <div class="grid" id="ex-grid">{listings.map((l) => <Card l={l} citySlug={citySlug} town={placeOf(l)} />)}</div>
+      <!-- /copy:skip -->
+      <p class="ex-empty" id="ex-empty" hidden>No practitioners match these filters. <button type="button" class="linkish" id="ex-clear">Clear the filters</button>.</p>
+    </div>
+  </div>
+</section>
+{hasPins && <link rel="stylesheet" href="/vendor/leaflet-1.9.4/leaflet.css" />}
+{hasPins && <script src="/vendor/leaflet-1.9.4/leaflet.js" defer is:inline></script>}
+<script src={`/explorer.js?v=${v}`} defer is:inline></script>

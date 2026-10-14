@@ -1,0 +1,8 @@
+---
+// Renders one or more JSON-LD blocks. Pass an array of schema objects.
+// Built as one HTML string: set:html inside a .map() does not compile in Astro 5.
+const { data } = Astro.props;
+const blocks = (Array.isArray(data) ? data : [data]).filter(Boolean);
+const html = blocks.map((b) => `<script type="application/ld+json">${JSON.stringify(b).replace(/</g, '\\u003c')}</script>`).join('\n');
+---
+<Fragment set:html={html} />

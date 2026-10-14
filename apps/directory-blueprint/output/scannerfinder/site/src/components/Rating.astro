@@ -1,0 +1,9 @@
+---
+const { rating, reviews } = Astro.props;
+const full = Math.round(rating);
+---
+{reviews > 0 ? (
+  <p class="rating"><span class="stars" aria-hidden="true">{'★'.repeat(full)}{'☆'.repeat(5 - full)}</span><span class="score">{rating.toFixed(1)}</span><span class="meta">({reviews.toLocaleString('en-US')} review{reviews === 1 ? '' : 's'} on Google)</span></p>
+) : (
+  <p class="meta">No reviews yet</p>
+)}

@@ -1,0 +1,14 @@
+---
+// Optional home action row: icon + title + one line + link, one card per real destination on the site.
+// Renders only when site.json "actions" is non-empty. Icons are inline SVG strings from the member's
+// inspired site's icon style (filled or outline, one color), see wiki/framework/design-seed.md.
+// HTML is built as a string because set:html cannot sit inside a .map() expression (README quirk).
+import { escapeHtml } from '../lib/load.mjs';
+const { actions = [] } = Astro.props;
+const html = actions.map((a) => `<a class="action" href="${escapeHtml(a.href)}">` +
+  (a.icon ? `<span class="icon" aria-hidden="true">${a.icon}</span>` : '') +
+  `<h3>${escapeHtml(a.title)}</h3><p>${escapeHtml(a.text)}</p>` +
+  (a.label ? `<span class="btn">${escapeHtml(a.label)}</span>` : '') +
+  `</a>`).join('\n');
+---
+{actions.length > 0 && <section class="actions" set:html={html}></section>}

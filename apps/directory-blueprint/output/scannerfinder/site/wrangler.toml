@@ -1,0 +1,24 @@
+# Cloudflare Pages config (static site in dist/ + Pages Functions in functions/).
+# Deploy stays `npm run deploy` / sfdeploy. Never `wrangler pages project create` without --force (Wrangler autoconfig).
+name = "scannerfinder"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-10-01"
+
+# D1 created 2026-10-14 with --jurisdiction eu (GDPR: DE/RO practitioners). Schema in migrations/.
+[[d1_databases]]
+binding = "DB"
+database_name = "scannerfinder"
+database_id = "5a476ed2-01c9-4426-b726-e729b771bece"
+migrations_dir = "migrations"
+
+[vars]
+SITE_URL = "https://scannerfinder.com"
+MAIL_FROM = "noreply@notify.scannerfinder.com"
+MAIL_REPLY_TO = "hello@scannerfinder.com"
+# Claim notifications (new verified claim, profile to review). Not a secret.
+ADMIN_EMAIL = "scannerfinder_leads@emailr.eu"
+MATOMO_URL = "https://stats.mkstack.com/index.php"
+MATOMO_SITE_ID = "3"
+# MAILEROO_API_KEY and MATOMO_TOKEN are Pages secrets (wrangler pages secret put).
+
+# No R2 for now (Dan, 2026-10-14): manufacturer certification is proven by a link to the maker's practitioner locator.

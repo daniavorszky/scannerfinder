@@ -1,0 +1,232 @@
+{
+  "brand": "ScannerFinder",
+  "domain": "scannerfinder.com",
+  "tagline": "Find a bioresonance and scan practitioner near you, by device and by place.",
+  "niche": {
+    "singular": "bioresonance practitioner",
+    "plural": "bioresonance practitioners",
+    "title": "Bioresonance Practitioners",
+    "mapsCategory": "bioresonance / biofeedback scan practitioner",
+    "schemaType": "HealthAndBeautyBusiness"
+  },
+  "state": {
+    "name": "seven countries",
+    "code": "",
+    "slug": "all"
+  },
+  "launchDate": "2026-10-12",
+  "publisher": {
+    "name": "DGA",
+    "url": "https://digitalguild.agency",
+    "email": "hello@scannerfinder.com",
+    "phone": "",
+    "image": "/images/dga-logo.png",
+    "bio": "DGA (DigitalGuild Agency) is a digital marketing agency that builds and runs websites, directories and lead-generation tools. ScannerFinder started with a simple question: who near me actually offers a ZYTO, BICOM or AO Scan session, and what does it cost? The answers were scattered across Facebook pages, booking widgets and distributor sites, and many of the \"practitioners\" turned out to be people selling the devices. ScannerFinder puts the answer in one place. It lists more than 800 practitioners across seven countries, each checked against their own website. Profiles name the device when the practitioner does, keep sellers and training schools out of the listings, and show a session price only after the practitioner has confirmed it.",
+    "sameAs": [],
+    "videoEmbed": "",
+    "type": "Organization",
+    "legalName": "DigitalGuild Agency"
+  },
+  "contact": {
+    "email": "hello@scannerfinder.com",
+    "formEndpoint": "",
+    "leadsEndpoint": "https://formsubmit.co/ajax/scannerfinder_leads@emailr.eu"
+  },
+  "tiers": {
+    "premium": {
+      "price": "$97 a year",
+      "link": ""
+    },
+    "bestOf": {
+      "price": "from $100, one time",
+      "link": ""
+    },
+    "city": {
+      "price": "$29 a month",
+      "link": ""
+    },
+    "county": {
+      "price": "$49 a month (device pages, coming soon)",
+      "link": ""
+    },
+    "state": {
+      "price": "$149 a month",
+      "link": ""
+    }
+  },
+  "design": {
+    "inspiredBy": "scannerfinder.com + apps/price-tools (ScannerFinder brand, Gate 1 Q7). Tokens and contrast in 04-plan.md §6.",
+    "bg": "#FFFFFF",
+    "surface": "#F5F6F8",
+    "text": "#3B414C",
+    "heading": "#272A31",
+    "headingWeight": 700,
+    "muted": "#5A5D69",
+    "accent": "#C8250F",
+    "accentText": "#FFFFFF",
+    "link": "#C8250F",
+    "action": "#C8250F",
+    "actionText": "#FFFFFF",
+    "band": "#272A31",
+    "bandText": "#FFFFFF",
+    "headingFont": "\"Saira Condensed\", \"Arial Narrow\", sans-serif",
+    "bodyFont": "ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+    "radius": "8px",
+    "buttonRadius": "8px",
+    "shadow": "0 2px 5px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.08)",
+    "logoText": "ScannerFinder",
+    "headerBg": "#272A31",
+    "headerText": "#FFFFFF",
+    "bandSoft": "#A2A9B4",
+    "tint": "#FDECEA",
+    "accent2": "#FF422F",
+    "bandOverlay": "rgba(39,42,49,0.82)",
+    "gold": "#FF422F",
+    "goldLight": "#FF7A6B",
+    "goldDeep": "#C8250F",
+    "logoImage": "/images/logo-white.png",
+    "favicon": "/favicon.png"
+  },
+  "cityFloor": 3,
+  "maxCardsPerCity": 60,
+  "faq": [
+    {
+      "q": "What is a bioresonance or biofeedback scan session?",
+      "a": "It is a wellness session in which a practitioner connects you to a device, through a hand cradle, hand electrodes or a headset, and talks you through the report the software shows. Sessions are offered as wellness services. They are not medical tests and are not a substitute for a doctor."
+    },
+    {
+      "q": "How do I find a practitioner who uses a specific device?",
+      "a": "Use the device pages: ZYTO, SCIO and Indigo, AO Scan, Asyra and Qest4, BICOM, NES Health, NLS, Rayonex, MORA and TimeWaver each have a page, and the larger ones have a page per country. A device appears on a listing only when the practitioner names it."
+    },
+    {
+      "q": "Can I book a session if there is no practitioner near me?",
+      "a": "Often, yes. Many practitioners offer remote sessions by video, by phone or with a sample sent by post. They are gathered on the remote sessions page, with the country and the device for each one."
+    },
+    {
+      "q": "Why are session prices not shown?",
+      "a": "Prices on practice websites are often out of date, so ScannerFinder shows a price only after the practitioner confirms it. Until then, ask on the phone, or book a free first consultation where one is offered."
+    },
+    {
+      "q": "How are practitioners chosen for the directory?",
+      "a": "Each one was found by the name of the device they use and checked against their own website. Device sellers, training schools and network marketing pages are left out. Basic listings are free, and featured placements are always marked."
+    },
+    {
+      "q": "I offer scan sessions and I am not listed. How do I get added?",
+      "a": "Use the claim form. Tell us your practice name, your town and the device you use, and a person checks the details before the listing goes live. Claiming and correcting a listing is free."
+    }
+  ],
+  "sortAttribute": "offers_scan",
+  "foldMaxKm": 0,
+  "cityFilter": true,
+  "vetting": [],
+  "stateIntro": [],
+  "heroPoints": [],
+  "footerAbout": "",
+  "disclaimer": "ScannerFinder lists independent wellness practitioners from public sources and each business's own website. Scans and sessions described here are wellness services, not medical tests, diagnoses or treatments. Talk to a licensed healthcare professional about any health concern. Confirm details with the practitioner before you book.",
+  "featuredPreview": false,
+  "confirmedLabel": "confirmed scan practitioners",
+  "countries": [
+    {
+      "code": "US",
+      "name": "United States",
+      "short": "USA",
+      "slug": "united-states"
+    },
+    {
+      "code": "GB",
+      "name": "United Kingdom",
+      "short": "UK",
+      "slug": "united-kingdom"
+    },
+    {
+      "code": "CA",
+      "name": "Canada",
+      "short": "Canada",
+      "slug": "canada"
+    },
+    {
+      "code": "AU",
+      "name": "Australia",
+      "short": "Australia",
+      "slug": "australia"
+    },
+    {
+      "code": "ZA",
+      "name": "South Africa",
+      "short": "South Africa",
+      "slug": "south-africa"
+    },
+    {
+      "code": "NZ",
+      "name": "New Zealand",
+      "short": "New Zealand",
+      "slug": "new-zealand"
+    },
+    {
+      "code": "IE",
+      "name": "Ireland",
+      "short": "Ireland",
+      "slug": "ireland"
+    }
+  ],
+  "countryCopy": {
+    "US": {
+      "intro": [
+        "Bioresonance and biofeedback scan practitioners in the United States number 388, and the biggest groups sit in California, Florida and Texas. New York and Colorado come next, followed by Wisconsin, Minnesota and Illinois, so the map stretches from both coasts through the Midwest and the Mountain West.",
+        "ZYTO is by far the most common device here. AO Scan, Asyra and SCIO form a second tier, while NES Health, NLS, MORA, BICOM, Rayonex and TimeWaver each turn up at a much smaller set of practices. Many practices work with more than one system, so a single business can appear under several device pages.",
+        "Wellness centers are the most common kind of practice offering scans. Alternative medicine practitioners, holistic medicine practitioners and health consultants follow, with naturopathic practitioners and chiropractors also well represented. Some practices offer a free consultation, and some run sessions for animals.",
+        "Remote sessions are offered by 75 practitioners, which makes distance sessions an option well beyond the home region. In Parkland, Florida, Parkside Health & Wellness Center Dr. Joseph Bogart carries one of the longest review histories, rated 4.9 from 290 reviews."
+      ]
+    },
+    "GB": {
+      "intro": [
+        "The south of England has the largest share of the 176 practitioners offering bioresonance and biofeedback scan sessions in the United Kingdom. The South East leads, with the East of England, London and the South West close behind. Further north, Yorkshire and the Humber, the North West and Scotland each have a solid group, and Northern Ireland, the East Midlands and the West Midlands have smaller ones.",
+        "Asyra, BICOM, Rayonex and NLS are used at similar levels and together define the market, with SCIO a step behind. TimeWaver, ZYTO and MORA appear only occasionally. That balance sets the United Kingdom apart from North America, where one device dominates.",
+        "Health consultants are the most common kind of practice, followed by holistic medicine practitioners, alternative medicine practitioners and wellness centres. Nutritionists and naturopaths also offer scans, and some practices fold bioresonance into nutritional work or homeopathy.",
+        "Remote sessions are available from 42 practitioners, and a number also give a free consultation or see animals. Lilias Ahmeira in London has a long review history, rated 5 from 93 reviews."
+      ]
+    },
+    "CA": {
+      "intro": [
+        "Ontario is the main centre for scan practitioners in Canada, which has 63 in all. British Columbia and Manitoba come next, followed by Alberta and Quebec, with Saskatchewan and New Brunswick home to only a few. Manitoba has a cluster built around Winnipeg and Winkler.",
+        "No single device dominates. SCIO and AO Scan are the most widely used, ZYTO is close behind, and BICOM, NES Health and Rayonex each have a handful of practitioners. Asyra, TimeWaver and NLS are rarer.",
+        "Health consultants are the most common kind of practice, with wellness centers, alternative medicine practitioners, naturopathic practitioners, holistic medicine practitioners and massage therapists making up most of the rest. Several of the practices combine scans with massage, acupuncture, nutrition or counselling.",
+        "Remote sessions are offered by 16 practitioners, and some also work with animals or offer a free consultation. Renew Wellness Center in Winkler, Manitoba, has the longest review history, rated 5 from 239 reviews."
+      ]
+    },
+    "AU": {
+      "intro": [
+        "Queensland is the clear centre of scan practice in Australia, and New South Wales and Victoria follow. South Australia has a smaller group, and Western Australia only a couple of practitioners. In all, 75 practitioners offer bioresonance and biofeedback scan sessions, many of them along the east coast from the Gold Coast and Brisbane to the Sunshine Coast.",
+        "Naturopathic practitioners are the most common kind of practice, well ahead of health consultants, alternative medicine practitioners and wellness centers. Biofeedback therapists and kinesiologists also offer scans, and many practices pair them with herbal work, nutrition or kinesiology.",
+        "Device use is spread thinly. AO Scan is the most common, with NES Health and NLS next, then MORA, BICOM, Asyra and SCIO, and ZYTO only once. Remote sessions are available from 20 practitioners, and some also see animals or give a free consultation.",
+        "Empowering Health - Kinesiology, Bioresonance, Energy Healing in Winmalee, New South Wales, is rated 5 from 61 reviews."
+      ]
+    },
+    "ZA": {
+      "intro": [
+        "Gauteng and the Western Cape are the two hubs for South Africa’s 77 bioresonance and biofeedback scan practitioners, and between them they account for most of the country. KwaZulu-Natal comes a distant third, with North West Province, Mpumalanga and the Free State holding only a few.",
+        "SCIO is by far the most common device, used at a large share of practices, while NLS is the only other system with a real presence. ZYTO, NES Health and MORA each appear at a single practice.",
+        "Health consultants and wellness centers are the most common kinds of practice, followed by holistic medicine practitioners and biofeedback therapists. Alternative medicine practitioners and wellness programs make up much of the rest. Many practices sit inside natural health shops or shared wellness centers where several practitioners work under one roof.",
+        "Remote sessions are offered by 14 practitioners, and a few also work with animals. ESSENTIAL HEALTH WELLNESS CENTRE in Gillitts, KwaZulu-Natal, has the longest review history, rated 5 from 134 reviews."
+      ]
+    },
+    "NZ": {
+      "intro": [
+        "Auckland is the main centre for scan practice in New Zealand, which has 19 practitioners in all. Canterbury is the second area, built around Christchurch and Kaiapoi, and the Bay of Plenty, Nelson, Wellington and Gisborne each have a few.",
+        "No device dominates. BICOM and SCIO are the most common, and Asyra, NES Health, MORA and AO Scan each appear at a single practice. Several practitioners use more than one system alongside naturopathy, iridology or Reiki.",
+        "Health consultants are the most common kind of practice, followed by naturopathic practitioners, alternative medicine practitioners and homeopaths, with a chiropractor also offering scans. Most are small, owner-led practices, and many combine scans with herbal consultations, kinesiology or nutrition.",
+        "Remote sessions are a notable part of the picture, available from 9 practitioners, so clients outside the main cities can still book a session. Kathy Houghton in Nelson has the longest review history, rated 5 from 35 reviews."
+      ]
+    },
+    "IE": {
+      "intro": [
+        "Ireland has 12 practitioners offering bioresonance and biofeedback scan sessions, and they are spread across the country rather than gathered in one city. Cork has the most, and Donegal, Dublin, Kildare, Wexford, Kerry, Louth, Limerick, Sligo and Cavan each have one.",
+        "NLS is the most common device, with BICOM used at a single practice. The kinds of practice are mixed, which suggests scans sit alongside other services rather than standing alone: naturopathic practitioners, a massage therapist, a training centre, an acupuncture clinic, a holistic medicine practitioner and an alternative medicine practitioner.",
+        "None offer remote sessions, a free consultation or sessions for animals, so these are in-person appointments in the practice itself. Lotus Massage in Cork, a massage studio that adds bioresonance scan sessions, has the longest review history, rated 5 from 280 reviews. Plasma-Med Dublin Registered Naturopath & Integrative Medicine is a naturopathy and aesthetics clinic, and Pyramid Holistic Training Centre & Spa in Carrigans, County Donegal, is first of all a training centre."
+      ]
+    }
+  },
+  "bestExclude": [
+    "psychic-medium-caressa-quantum-healer-and-life-alignment-mentor-brentwood"
+  ]
+}

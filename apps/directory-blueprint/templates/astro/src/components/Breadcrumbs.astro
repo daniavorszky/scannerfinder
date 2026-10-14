@@ -1,0 +1,18 @@
+---
+// items: [{ name, href }] in order, current page last. Also emits BreadcrumbList schema.
+import JsonLd from './JsonLd.astro';
+const { items, site } = Astro.props;
+const base = `https://${site.domain}`;
+const schema = {
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, item: base + it.href })),
+};
+---
+<nav class="crumbs" aria-label="Breadcrumb">
+  <ol>
+    {items.map((it, i) => (
+      <li>{i < items.length - 1 ? <a href={it.href}>{it.name}</a> : <span aria-current="page">{it.name}</span>}</li>
+    ))}
+  </ol>
+</nav>
+<JsonLd data={schema} />

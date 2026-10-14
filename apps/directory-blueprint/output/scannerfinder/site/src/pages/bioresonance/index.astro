@@ -1,0 +1,140 @@
+---
+// Pillar page: what bioresonance is, a session, cost, evidence (keyword-map.md in 03-projects/2026-10-scannerfinder-seo-content, P1).
+// Counts come from the directory at build time. No prices (decision 2026-10-12).
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Byline from '../../components/Byline.astro';
+import Faq from '../../components/Faq.astro';
+import { loadDirectory, attrValue } from '../../lib/load.mjs';
+const dir = loadDirectory();
+const { site, buildDate, devices, countries, listings } = dir;
+const base = `https://${site.domain}`;
+const path = '/bioresonance/';
+const published = '2026-10-14';
+const total = listings.length;
+const remote = listings.filter((l) => attrValue(l, 'remote_sessions') === 'true').length;
+const animals = listings.filter((l) => attrValue(l, 'animal_sessions') === 'true').length;
+const dev = Object.fromEntries(devices.map((d) => [d.key, d]));
+// How each seller describes its device. Only what the sources and the listings support.
+const KINDS = [
+  ['bicom', 'Bioresonance', 'Hand electrodes or applicators; the device is said to read and return signals.'],
+  ['rayonex', 'Bioresonance', 'German bioresonance systems, sold for practice and home use.'],
+  ['mora', 'Bioresonance', 'The original 1977 method, named after its two developers.'],
+  ['zyto', 'Skin-response scan', 'A hand cradle measures galvanic skin response against on-screen items.'],
+  ['asyra', 'Skin-response scan', 'Hand-held electrodes and software that test against a library of items.'],
+  ['scio', 'Biofeedback', 'The client is linked to the device through electrodes.'],
+  ['nls', 'Scan with headphone sensors', 'The client wears sensors in headphones while a computer runs the scan.'],
+  ['ao_scan', 'App-based frequency scan', 'Runs through an app; some scans work from a voice sample.'],
+  ['nes_health', 'Body-field scan', 'Offered in person or remotely.'],
+  ['timewaver', 'Information-field system', 'Often run at a distance.'],
+].filter(([k]) => dev[k]);
+const title = 'Bioresonance Therapy: What It Is and What the Evidence Says';
+const description = `What bioresonance therapy is, where it comes from, what happens in a session, how it differs from biofeedback scans, and what the research shows. Plus ${total} practitioners in ${countries.length} countries.`;
+const faqs = [
+  { q: 'What is bioresonance therapy?', a: 'Bioresonance is a wellness method that uses an electronic device which, according to its makers, picks up electromagnetic signals from the body and sends adjusted signals back. It was developed in Germany in 1977. There is no accepted scientific evidence that the body works this way or that the device can read it.' },
+  { q: 'Does bioresonance work?', a: 'Controlled research has not shown an effect beyond placebo. In a double-blind trial of 32 children with atopic eczema, published in 1997, children who had real bioresonance sessions did no better than children who had sham sessions. Treat a session as a wellness session, not as a medical test.' },
+  { q: 'Is bioresonance the same as biofeedback?', a: 'No, though the words are often mixed up. Bioresonance devices such as BICOM, Rayonex and MORA are said to send signals back to the body. Scan devices such as ZYTO, Asyra, SCIO and AO Scan are sold as biofeedback or bioenergetic scans. Ask the practitioner which device they use and what it does in the session.' },
+  { q: 'Can I have a bioresonance session remotely?', a: `${remote} of the ${total} practitioners on ${site.brand} state that they offer remote or online sessions. How that works depends on the device, so ask before you book.` },
+  { q: 'How much does a bioresonance session cost?', a: `Each practice sets its own price, and ${site.brand} shows a price only once the practitioner confirms it. Ask on the phone what the first session includes, how long it lasts, and whether you are expected to buy products afterwards.` },
+  { q: 'How do I find bioresonance near me?', a: `${site.brand} lists ${total} practitioners in ${countries.length} countries. Browse by country and region, or by device if you already know which one you want.` },
+];
+const sources = [
+  ['Helsana: Bioresonance, explanation and costs', 'https://www.helsana.ch/en/individuals/knowledge-centre/complementary-medicine/bioresonance.html'],
+  ['Schöni et al. 1997, Int Arch Allergy Immunol 112:238–246 (summary by Memorial Sloan Kettering)', 'https://www.mskcc.org/cancer-care/integrative-medicine/herbs/bioresonance-therapy'],
+  ['ASA advice: Bioresonance therapy', 'https://www.asa.org.uk/advice-online/bioresonance-therapy.html'],
+  ['FDA 510(k) K111308 (ZYTO Hand Cradle)', 'https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K111308'],
+];
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'Article', '@id': base + path, headline: title, description, datePublished: published, dateModified: buildDate,
+    author: { '@id': `${base}/#person` }, publisher: { '@id': `${base}/#publisher` }, mainEntityOfPage: base + path },
+];
+---
+<Base title={`${title} | ${site.brand}`} description={description} path={path} schema={schema} ogType="article">
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: 'Bioresonance', href: path }]} />
+    <h1>Bioresonance therapy: what it is, what a session involves, and what the evidence says</h1>
+    <ul class="keyfacts">
+      <li><b>{total}</b>practitioners</li>
+      <li><b>{countries.length}</b>countries</li>
+      <li><b>{devices.length}</b>devices</li>
+      <li>Updated {buildDate}</li>
+    </ul>
+  </Fragment>
+
+  <article class="prose">
+    <Byline site={site} published={published} modified={buildDate} />
+    <div class="callout">
+      <p><strong>In short</strong></p>
+      <ul>
+        <li>Bioresonance is a wellness method built on an electronic device that, its makers say, reads signals from the body and sends adjusted signals back.</li>
+        <li>It began in Germany in 1977. Today the word is also used loosely for scan devices such as ZYTO, AO Scan and SCIO.</li>
+        <li>Controlled research has not found an effect beyond placebo, and no device is accepted as a way to assess health.</li>
+        <li>If you book a session, book it as a wellness session. Ask which device is used, what the session includes and what it costs.</li>
+      </ul>
+    </div>
+
+    <h2>What is bioresonance?</h2>
+    <p>Bioresonance is a method in which a practitioner connects a client to an electronic device, usually through hand electrodes. According to the people who sell and use these devices, the body gives off electromagnetic oscillations, the device picks them up, and it sends adjusted oscillations back to bring the body into balance.</p>
+    <p>That is the theory as its makers state it. Physics and biology do not support it, and no study has shown that the devices pick up what they are said to pick up. The rest of this page explains what a session looks like in practice and what the research has found.</p>
+
+    <h2>Where bioresonance comes from</h2>
+    <p>The method was developed in 1977 in Germany by the physician Franz Morell and the electronics engineer Erich Rasche. They called it MORA therapy, from the first letters of their surnames. Morell had worked with electroacupuncture before. The method was later renamed bioresonance, and the BICOM devices grew out of the same work.</p>
+    <p>Bioresonance is still most common in German-speaking countries. In English-speaking countries the word is often used for a wider group of scan devices, some of which work in quite different ways.</p>
+
+    <h2>Bioresonance, biofeedback and scan devices</h2>
+    <p>Practitioners use the words bioresonance, biofeedback, bioenergetic scan and frequency scan almost interchangeably. The devices behind them are not the same. The table shows how each one is described by the people who sell it, and how many practitioners on {site.brand} name it.</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Device</th><th>Sold as</th><th>How a session is described</th><th>Practitioners</th></tr></thead>
+        <tbody>
+          {KINDS.map(([k, kind, how]) => (
+            <tr><td><a href={dev[k].path}>{dev[k].label}</a></td><td>{kind}</td><td>{how}</td><td>{dev[k].count}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p>Many practitioners do not name their device at all and simply offer "bioresonance". Ask which one they use before you book. The <a href="/devices/zyto/">ZYTO</a> and <a href="/devices/ao-scan/">AO Scan</a> pages explain those two in more detail.</p>
+
+    <h2>What happens in a bioresonance session</h2>
+    <p>Sessions differ by device and by practice, but most follow the same outline.</p>
+    <ol>
+      <li><strong>A conversation.</strong> The practitioner asks what you want from the session and about your lifestyle.</li>
+      <li><strong>The scan.</strong> You hold hand electrodes, rest a hand on a cradle, wear headphone sensors, or record your voice, depending on the device. The software runs for a few minutes.</li>
+      <li><strong>The report.</strong> The practitioner goes through what the software shows. With bioresonance devices such as BICOM or Rayonex, this is often followed by a phase in which the device is said to send signals back.</li>
+      <li><strong>Suggestions.</strong> Many practitioners end with lifestyle or nutrition suggestions, and some sell supplements or other products.</li>
+    </ol>
+    <p>{remote} of the {total} practitioners on {site.brand} state that they offer sessions at a distance, and <a href="/services/pets-and-horses/">{animals} offer sessions for pets and horses</a>. See <a href="/services/remote-sessions/">remote scan sessions</a> for the list.</p>
+
+    <h2>What a session costs</h2>
+    <p>Prices vary by country, device and practice, and many practices do not publish them. {site.brand} shows a session price only once the practitioner has confirmed it, so it never repeats an old or wrong price. When you call, ask four things: the price of the first session, how long it lasts, whether follow-up sessions are expected, and whether you will be offered products to buy.</p>
+
+    <h2>What the evidence says</h2>
+    <p>The clearest test is a double-blind trial published in 1997 by Schöni and colleagues. Thirty-two children with atopic eczema, staying at a children's hospital in Davos, Switzerland, were split into two groups. One group had real bioresonance sessions and the other had sham sessions on top of their usual care. Both groups got better, and the real sessions added nothing measurable.</p>
+    <p>No bioresonance or scan device is accepted as a way to assess health. In the United States, the FDA cleared the ZYTO hand cradle only to measure skin response, and it has warned the maker twice about promoting it for more. In the United Kingdom, the Advertising Standards Authority advises that claims to diagnose or treat conditions with bioresonance are likely to break the advertising code, and it has upheld complaints against several advertisers.</p>
+    <p>So treat a bioresonance session as a wellness session. It is not a medical test, and its results are no basis for health decisions. Talk to a licensed healthcare professional about any health concern.</p>
+    <p>For the full picture, including the one positive trial and its limits, read <a href="/bioresonance/does-it-work/">does bioresonance work?</a></p>
+
+    <h2>How to choose a practitioner</h2>
+    <ul>
+      <li><strong>Ask which device they use</strong>, and whether they are certified by its maker.</li>
+      <li><strong>Ask what the session includes</strong> and how long it lasts.</li>
+      <li><strong>Ask about cost up front</strong>, including follow-ups and any products.</li>
+      <li><strong>Notice how they talk about results.</strong> A practitioner who promises to find or fix a health problem is making a claim no device can back.</li>
+      <li><strong>Check the reviews</strong> and whether they answer your questions plainly.</li>
+    </ul>
+
+    <h2>Find a bioresonance practitioner</h2>
+    <p>By country:</p>
+    <ul class="city-grid">{countries.map((c) => <li><a href={c.path}><span class="name">{c.name}</span></a></li>)}</ul>
+    <p>By device:</p>
+    <ul class="city-grid svc-grid">{devices.map((x) => <li><a href={x.path}><span class="name">{x.label}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+    <p>Thinking of offering sessions yourself? Read the <a href="/bioresonance-machines/">bioresonance machines buyer's guide</a>.</p>
+  </article>
+
+  <Faq items={faqs} title="Questions about bioresonance" />
+
+  <section class="prose">
+    <h2>Sources</h2>
+    <ul class="sources">{sources.map(([label, url]) => <li><a href={url} rel="nofollow noopener" target="_blank">{label}</a></li>)}</ul>
+  </section>
+</Base>

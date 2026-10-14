@@ -1,0 +1,45 @@
+---
+// Affiliate disclosure (2026-10-13; sections modelled on mypeptidematch.com/affiliate-disclosure, text written
+// for ScannerFinder): how the site earns money, what that means for visitors, how paid and affiliate links are
+// marked, the wellness disclaimer and FTC compliance. Legal page: noindex like /privacy/ and /terms/.
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site, buildDate } = loadDirectory();
+const t = site.tiers || {};
+const updated = new Date(buildDate + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+<Base title={`Affiliate Disclosure | ${site.brand}`} description={`How ${site.brand} earns money, how paid placements and affiliate links are marked, and why rankings stay independent.`} path="/affiliate-disclosure/" noindex={true}>
+  <Fragment slot="head">
+    <h1>Affiliate Disclosure</h1>
+    <p class="meta">Last updated {updated}</p>
+  </Fragment>
+  <div class="prose">
+    <p>{site.brand} is free for everyone who uses it to find a practitioner. To keep it that way, the site earns money in a few clearly defined ways. This page explains each of them, so you can judge what you read here with the full picture.</p>
+
+    <h2>How we earn revenue</h2>
+    <ol>
+      <li><strong>Premium practitioner listings.</strong> Practitioners can choose to upgrade to a premium listing{t.premium?.price ? ` (${t.premium.price})` : ''} or a featured placement{t.city?.price ? ` (from ${t.city.price})` : ''} for more visibility. Paid listings are always labelled. An upgrade never changes the organic ranking of practitioners in our directory, and a basic listing is free and stays free.</li>
+      <li><strong>Lead generation.</strong> When you use one of our tools, such as the <a href="/tools/roi-calculator/">ROI Calculator</a>, and tick the box that lets an authorised distributor send you a quote, we pass your details to that distributor and may receive a fee for the introduction. We never share your details without that box ticked.</li>
+      <li><strong>Affiliate partnerships.</strong> Some of our <a href="/devices/">technology pages</a> (ZYTO, BICOM, AO Scan and the others) and blog articles include links to device sellers and training providers. When you click one of these links and make a purchase, we may earn a commission at no additional cost to you.</li>
+    </ol>
+
+    <h2>What this means for you</h2>
+    <ul>
+      <li><strong>You pay nothing extra.</strong> A commission or referral fee never changes the price you pay.</li>
+      <li><strong>Rankings are not for sale.</strong> The organic order of practitioners on region, country and device pages comes from Google ratings weighted by the number of reviews. A premium listing or featured spot appears in its own labelled area; it does not move a practice up the organic ranking.</li>
+      <li><strong>Editorial independence.</strong> Our guides and comparisons are written to be useful first. A brand that pays us does not get a better review, and one that does not is not left out.</li>
+      <li><strong>Directory and partners stay separate.</strong> Who appears in the directory depends on whether they offer scan sessions to clients, not on any commercial relationship with a device maker or distributor.</li>
+    </ul>
+
+    <h2>How to identify paid and affiliate links</h2>
+    <p>Paid placements carry a visible label: Featured, Premium listing or Best of. Affiliate links sit in clearly marked sections, such as "Where to buy", and are tagged in the page code with <code>rel="sponsored"</code>, which tells search engines that the link is commercial. If you are unsure whether a link is paid, <a href="/contact/">ask us</a>.</p>
+
+    <h2>Wellness disclaimer</h2>
+    <p>The scanning devices listed on {site.brand} are wellness tools. They are not validated to diagnose, treat, cure or prevent any medical condition, and a scan session is not a medical test. Nothing on this site, including any page that earns us money, is medical or financial advice. For health questions, speak to a qualified healthcare provider.</p>
+
+    <h2>FTC compliance</h2>
+    <p>This disclosure follows the US Federal Trade Commission's Guides Concerning the Use of Endorsements and Testimonials in Advertising, and the equivalent principles applied by advertising regulators in the other countries we cover. We aim to be transparent about every source of revenue and will update this page whenever that changes.</p>
+
+    <p>Questions about this page: <a href="/contact/">contact us</a>. Practitioners can <a href="/claim/">claim their listing</a> for free or read about <a href="/featured/">featured placements</a>. How we handle your data is in our <a href="/privacy/">privacy policy</a>.</p>
+  </div>
+</Base>

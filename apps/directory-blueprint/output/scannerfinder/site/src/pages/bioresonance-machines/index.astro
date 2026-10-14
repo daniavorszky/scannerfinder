@@ -1,0 +1,154 @@
+---
+// Buyer's guide for practitioners (keyword-map.md in 03-projects/2026-10-scannerfinder-seo-content, P1, B2B).
+// Device prices: public sources only, src/data/device-prices.csv (copied from the launch project's data/device-prices-seed.csv).
+// Session prices are never shown (decision 2026-10-12).
+import fs from 'node:fs';
+import path from 'node:path';
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Byline from '../../components/Byline.astro';
+import Faq from '../../components/Faq.astro';
+import { loadDirectory, parseCsv } from '../../lib/load.mjs';
+const dir = loadDirectory();
+const { site, buildDate, devices, countries, listings } = dir;
+const base = `https://${site.domain}`;
+const pagePath = '/bioresonance-machines/';
+const published = '2026-10-14';
+const prices = parseCsv(fs.readFileSync(path.join(process.cwd(), 'src/data/device-prices.csv'), 'utf8'));
+const SYM = { USD: '$', GBP: '£', EUR: '€' };
+const money = (v, cur) => `${SYM[cur] || cur + ' '}${Number(v).toLocaleString('en-US')}`;
+const priceText = (r) => !r.price_low ? 'No public price' : r.price_low === '0' && r.monthly_fee ? 'Subscription' : r.price_low === r.price_high ? money(r.price_low, r.currency) : `${money(r.price_low, r.currency)}–${money(r.price_high, r.currency)}`;
+const CONDITION = { new: 'New', used: 'Used', kit: 'Training kit', subscription: 'Subscription', unknown: '–' };
+// Brand in the price file → device page on the site.
+const DEVICE_OF = { 'ZYTO': 'zyto', 'BICOM': 'bicom', 'Asyra / Qest4': 'asyra', 'Rayonex': 'rayonex', 'NLS': 'nls', 'SCIO': 'scio', 'Indigo': 'scio', 'Eductor': 'scio', 'AO Scan': 'ao_scan', 'NES Health': 'nes_health', 'MORA': 'mora', 'TimeWaver': 'timewaver' };
+const dev = Object.fromEntries(devices.map((d) => [d.key, d]));
+const asOf = prices.map((r) => r.as_of).filter(Boolean).sort().pop();
+const noPrice = [...new Set(prices.filter((r) => !r.price_low).map((r) => r.brand))];
+const title = "Bioresonance Machines: Prices, Types and a Buyer's Guide";
+const description = `What bioresonance and scan machines cost, from public prices for ZYTO, BICOM, Rayonex, Asyra, SCIO and more; the running costs; new or used; the rules on what you can claim; and how many practitioners already use each device.`;
+const faqs = [
+  { q: 'How much does a bioresonance machine cost?', a: 'From public listings checked in October 2026: a ZYTO hand cradle without software from about $269, Rayonex systems from £5,490 to about £10,990 new, Asyra/QEST4 systems around $12,500, and SCIO, Indigo and Eductor systems from about $7,500 used to $18,000 new. NES Health, MORA and TimeWaver publish no prices. Software subscriptions and training come on top.' },
+  { q: 'Which bioresonance machine is best?', a: 'No study ranks them, because none has been shown to measure what it is sold to measure. Choose on practical grounds: what kind of session you want to offer, in person or remote, the running costs, the training, the support from the seller, and how many practitioners near you already use the same device.' },
+  { q: 'Can I buy a used bioresonance machine?', a: 'Yes, used BICOM, Asyra, SCIO, Indigo and Eductor systems are sold on marketplaces and by resellers. Before you buy, ask whether the software licence and updates transfer to you, what support you will get, and whether the model is still made.' },
+  { q: 'Is a bioresonance machine FDA approved?', a: 'The FDA cleared the ZYTO hand cradle in 2011 only to measure galvanic skin response, and warned the maker in 2015 and 2023 for promoting it beyond that. A clearance for a measurement does not cover any health claim. In the EU, some Rayonex models are sold as class IIa medical devices.' },
+  { q: 'Do I need training to use one?', a: 'Most makers and resellers sell training and certification with their devices, for example a ZYTO specialist course that bundles a hand cradle and software. Ask what is included, what it costs, and whether the certificate is recognised outside the seller.' },
+];
+const sources = [
+  ['FDA 510(k) K111308 (ZYTO Hand Cradle)', 'https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K111308'],
+  ['FDA warning letter to ZYTO Technologies, 21 June 2023', 'https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/warning-letters/zyto-technologies-inc-652316-06212023'],
+  ['ASA advice: Bioresonance therapy', 'https://www.asa.org.uk/advice-online/bioresonance-therapy.html'],
+  ['Rayonex: Rayocomp PS 10 MED Plus', 'https://rayonex.co.uk/product/rayocomp-ps-10-med-plus/'],
+];
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'Article', '@id': base + pagePath, headline: title, description, datePublished: published, dateModified: buildDate,
+    author: { '@id': `${base}/#person` }, publisher: { '@id': `${base}/#publisher` }, mainEntityOfPage: base + pagePath },
+];
+---
+<Base title={`${title} | ${site.brand}`} description={description} path={pagePath} schema={schema} ogType="article">
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: 'Bioresonance', href: '/bioresonance/' }, { name: 'Machines', href: pagePath }]} />
+    <h1>Bioresonance machines: prices, types and a buyer's guide</h1>
+    <ul class="keyfacts">
+      <li><b>{prices.length}</b>price points</li>
+      <li><b>{devices.length}</b>devices compared</li>
+      <li>Prices checked {asOf}</li>
+    </ul>
+  </Fragment>
+
+  <article class="prose">
+    <Byline site={site} published={published} modified={buildDate} />
+    <div class="callout">
+      <p><strong>In short</strong></p>
+      <ul>
+        <li>Public prices run from a few hundred dollars for a ZYTO hand cradle to about $18,000 for a new Indigo system. {noPrice.join(', ')} publish no price.</li>
+        <li>The machine is only part of the cost. Software subscriptions, content libraries, training and updates add to it every year.</li>
+        <li>No machine has been shown to measure what it is sold to measure. What you may say about your sessions is limited by law, whatever the seller says.</li>
+        <li>Check how many practitioners near you already use the same device before you buy.</li>
+      </ul>
+    </div>
+    <p>This guide is for practitioners and for people thinking of starting a practice. If you want to book a session instead, read <a href="/bioresonance/">what bioresonance is</a> or <a href="/directory/">find a practitioner</a>.</p>
+
+    <h2>The main types of machine</h2>
+    <p>"Bioresonance machine" is used for several kinds of device. Bioresonance systems such as <a href="/devices/bicom/">BICOM</a>, <a href="/devices/rayonex/">Rayonex</a> and <a href="/devices/mora/">MORA</a> are said to read signals from the body and send adjusted signals back. Skin-response scanners such as <a href="/devices/zyto/">ZYTO</a> and <a href="/devices/asyra/">Asyra</a> measure how easily a tiny current passes through the skin. Biofeedback systems such as <a href="/devices/scio/">SCIO, Indigo and Eductor</a> link the client through electrodes. <a href="/devices/ao-scan/">AO Scan</a> runs as an app on a subscription. The <a href="/bioresonance/">bioresonance guide</a> compares how sessions on each one are described.</p>
+
+    <h2>What bioresonance machines cost</h2>
+    <p>These are public prices from manufacturers, resellers and marketplace listings, checked on {asOf}. Marketplace prices are asking prices, and some reseller pages are old, so use them as a range, not a quote.</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Device</th><th>Model</th><th>Condition</th><th>Price</th><th>Monthly fee</th><th>Source</th></tr></thead>
+        <tbody>
+          {prices.map((r) => {
+            const d = dev[DEVICE_OF[r.brand]];
+            return (
+              <tr>
+                <td>{d ? <a href={d.path}>{r.brand}</a> : r.brand}</td>
+                <td>{r.model}</td>
+                <td>{CONDITION[r.condition] || r.condition}</td>
+                <td>{priceText(r)}</td>
+                <td>{r.monthly_fee ? money(r.monthly_fee, r.currency) : '–'}</td>
+                <td>{r.source_url && r.source_type !== 'none' ? <a href={r.source_url} rel="nofollow noopener" target="_blank">{r.source_type}</a> : '–'}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+
+    <h2>The costs after you buy</h2>
+    <ul>
+      <li><strong>Software and subscriptions.</strong> Some systems need a monthly fee to keep working or to stay up to date. ZYTO Balance resellers list $50 a month per content library, and AO Scan is sold as a monthly subscription.</li>
+      <li><strong>Training and certification.</strong> Often sold as a package with the device. One ZYTO specialist course bundles training, a hand cradle and five months of software for about $1,200.</li>
+      <li><strong>Hardware you supply.</strong> Several systems need your own laptop or tablet.</li>
+      <li><strong>Updates and support.</strong> On some systems, updates stop when the subscription ends.</li>
+    </ul>
+    <p>Want to see whether a machine pays for itself? The <a href="/tools/roi-calculator/">ROI calculator</a> works out the payback in months from the price, your session fee and your weekly clients.</p>
+
+    <h2>New or used?</h2>
+    <p>Used BICOM, Asyra, SCIO, Indigo and Eductor systems come up on marketplaces and through resellers, often for half the new price or less. The machine is the easy part. Ask whether the software licence transfers to you, whether updates still work, whether the model is still made, and who you can call when something breaks. A cheap system you cannot update can cost more in the end.</p>
+
+    <h2>What you can and cannot claim</h2>
+    <p>Whatever a seller tells you, no bioresonance or scan machine has been shown to assess health. Regulators act on the claims practitioners make, not just on the makers:</p>
+    <ul>
+      <li><strong>United States.</strong> The FDA cleared the ZYTO hand cradle only to measure galvanic skin response. It warned the maker in 2015 and 2023 for promoting it beyond that.</li>
+      <li><strong>United Kingdom.</strong> The Advertising Standards Authority advises that claims to diagnose or treat conditions with bioresonance are likely to break the advertising code, and it has upheld complaints against practitioners.</li>
+      <li><strong>European Union.</strong> Some Rayonex models are sold as class IIa medical devices. A device class says how a product is regulated, not that it works for any purpose you advertise.</li>
+    </ul>
+    <p>The safe ground is to describe your sessions as wellness sessions, say what happens in them, and leave out what they find or fix. That is also how {site.brand} describes every listing.</p>
+
+    <h2>How many practitioners already use each device</h2>
+    <p>A device few people near you offer is easier to stand out with. These are the practitioners on {site.brand} who name each device, across {countries.length} countries.</p>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead><tr><th>Device</th><th>Practitioners</th><th>Countries</th><th>Top country</th></tr></thead>
+        <tbody>
+          {[...devices].sort((a, b) => b.count - a.count).map((d) => {
+            const topC = [...d.byCountry].sort((a, b) => b.count - a.count)[0];
+            return <tr><td><a href={d.path}>{d.label}</a></td><td>{d.count}</td><td>{d.byCountry.length}</td><td>{topC ? `${topC.country.name} (${topC.count})` : '–'}</td></tr>;
+          })}
+        </tbody>
+      </table>
+    </div>
+    <p>Many of the {listings.length} practitioners listed do not name a device at all, so these counts are a floor.</p>
+
+    <h2>Questions to ask a seller</h2>
+    <ol>
+      <li>What is included: hardware, software, a laptop, training, the first months of subscription?</li>
+      <li>What does it cost each year to keep it running and up to date?</li>
+      <li>What happens to the software if I stop paying?</li>
+      <li>Is training required, and is the certificate recognised outside your company?</li>
+      <li>What can I legally say about my sessions in my country?</li>
+      <li>Can I resell the machine, and does the licence transfer?</li>
+      <li>How many practitioners near me already use it?</li>
+    </ol>
+
+    <h2>Already offering sessions?</h2>
+    <p>If you work with one of these devices, <a href="/claim/">claim or add your listing</a> on {site.brand}. Listings are free, and clients can find you by device and by region.</p>
+  </article>
+
+  <Faq items={faqs} title="Questions about bioresonance machines" />
+
+  <section class="prose">
+    <h2>Sources</h2>
+    <ul class="sources">{sources.map(([label, url]) => <li><a href={url} rel={url.startsWith('/') ? undefined : 'nofollow noopener'} target={url.startsWith('/') ? undefined : '_blank'}>{label}</a></li>)}</ul>
+  </section>
+</Base>

@@ -1,0 +1,4 @@
+/company /directory/ 301
+/company/ /directory/ 301
+/company/florida/ /directory/florida/ 301
+/company/florida/:city/ /directory/florida/:city/ 301

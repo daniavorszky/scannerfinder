@@ -1,0 +1,30 @@
+{
+  // Mail worker for the directory: receives hello@, acknowledges, triages with Claude, queues for the owner's review.
+  // `python3 scripts/mail_worker.py setup --slug <slug> --review-to <email>` fills every REPLACE_ value from the site's
+  // site.json and the deploy; edit by hand only if you know why. Secrets (ANTHROPIC_API_KEY, INBOX_KEY) are set with
+  // `wrangler secret put` by that script and never written here.
+  // SEND_FROM must be on the ROOT domain enabled for Email Sending (hello@yourdomain.com), the same as MAIL_ADDRESS,
+  // so a business that replies reaches the worker. A mail. subdomain has no inbox and bounces replies.
+  "name": "REPLACE_WORKER_NAME",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "send_email": [{ "name": "EMAIL" }],
+  "kv_namespaces": [
+    { "binding": "INBOX", "id": "REPLACE_KV_ID" }
+  ],
+  "vars": {
+    "BRAND": "REPLACE_BRAND",
+    "SITE_URL": "https://REPLACE_DOMAIN",
+    "MAIL_ADDRESS": "hello@REPLACE_DOMAIN",
+    "SEND_FROM": "hello@REPLACE_DOMAIN",
+    "REVIEW_TO": "REPLACE_REVIEW_TO",
+    "WORKER_URL": "",
+    "FORWARD_TO": "",
+    "TIERS": "REPLACE_TIERS",
+    "NICHE_PLURAL": "REPLACE_NICHE",
+    "STATE_NAME": "REPLACE_STATE",
+    "NAME_NOISE": ""
+  }
+}

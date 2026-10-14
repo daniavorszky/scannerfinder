@@ -1,0 +1,43 @@
+---
+// Claim your listing: conversion page, noindex. Posts to the form service in site.json, or to the mail worker's /claim (templates/worker), which redirects back to /claim/?sent=1.
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site } = loadDirectory();
+const title = `Claim your listing | ${site.brand}`;
+const description = `Claim your free ${site.niche.singular} listing on ${site.brand} to correct details and add photos.`;
+---
+<Base title={title} description={description} path="/claim/" noindex={true}>
+  <Fragment slot="head">
+    <h1>Claim your listing</h1>
+  </Fragment>
+  <div class="prose">
+    <p>Claiming is free. Once we confirm you are the owner or manager, we correct your details, add your photos and links, and mark the listing as claimed. Most claims are processed within a week.</p>
+    <p>To confirm ownership we look for a work email on your website's domain, or we call the number on your Google listing.</p>
+  </div>
+  <div class="claim-sent" id="claim-sent" hidden>
+    <h2>Thanks, your request is in.</h2>
+    <p>We check every claim by hand and reply by email, usually within a day. If you gave a work email on your website's domain, that is the quickest confirmation.</p>
+    <p><a class="btn" href="/">Back to the directory</a></p>
+  </div>
+  <form action={site.contact.formEndpoint} method="POST" class="claim-form" id="claim-form">
+    <input type="hidden" name="_subject" value={`Listing claim on ${site.brand}`} />
+    <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true" />
+    <input type="hidden" name="listing_slug" id="listing_slug" value="" />
+    <input type="hidden" name="tier" id="tier" value="" />
+    <p class="meta" id="tier-note" hidden>You asked about the <b id="tier-name"></b> position. Tell us your city below and we will say whether it is open.</p>
+    <label>Business name <input name="business" id="business" required /></label>
+    <label>Your name <input name="name" required /></label>
+    <label>Work email (matching your website domain speeds this up) <input type="email" name="email" required /></label>
+    <label>Phone <input type="tel" name="phone" /></label>
+    <label>What should we fix or add? <textarea name="changes" rows="4"></textarea></label>
+    <label class="check"><input type="checkbox" name="featured_interest" value="yes" /> Tell me about featured placement in my city</label>
+    <button class="btn" type="submit">Claim this listing</button>
+  </form>
+  <script is:inline>
+    const q = new URLSearchParams(location.search);
+    if (q.get('sent')) { document.getElementById('claim-form').hidden = true; document.getElementById('claim-sent').hidden = false; }
+    if (q.get('listing')) document.getElementById('listing_slug').value = q.get('listing');
+    if (q.get('business')) document.getElementById('business').value = q.get('business');
+    if (q.get('tier')) { document.getElementById('tier').value = q.get('tier'); document.getElementById('tier-name').textContent = q.get('position') || q.get('tier'); document.getElementById('tier-note').hidden = false; }
+  </script>
+</Base>

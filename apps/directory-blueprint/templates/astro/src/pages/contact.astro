@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+const { site } = loadDirectory();
+---
+<Base title={`Contact | ${site.brand}`} description={`Reach ${site.brand}: corrections, removals, claims and featured placement.`} path="/contact/" noindex={true}>
+  <Fragment slot="head">
+    <h1>Contact</h1>
+  </Fragment>
+  <div class="prose">
+    <p>Email <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>{site.publisher.phone ? ` or call ${site.publisher.phone}` : ''}. {site.brand} is published by <a href="/about/">{site.publisher.name}</a>.</p>
+    <h2>Corrections and removals</h2>
+    <p>Listings are compiled from public sources. If yours is wrong, tell us what to change. If you want it removed, say so and it comes down at the next rebuild, normally within a week. Include the business name and city.</p>
+    <h2>Claims and featured placement</h2>
+    <p>Use the <a href="/claim/">claim form</a> to take over your listing, or see <a href="/featured/">featured placement</a> for the paid positions.</p>
+  </div>
+</Base>

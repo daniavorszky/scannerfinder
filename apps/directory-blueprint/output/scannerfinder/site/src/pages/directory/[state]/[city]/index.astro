@@ -1,0 +1,92 @@
+---
+// City page: the money page and the "best [niche] in [city]" list. wiki/framework/page-types.md.
+import Base from '../../../../layouts/Base.astro';
+import Breadcrumbs from '../../../../components/Breadcrumbs.astro';
+import Card from '../../../../components/Card.astro';
+import Faq from '../../../../components/Faq.astro';
+import ClaimCta from '../../../../components/ClaimCta.astro';
+import FeaturedBand from '../../../../components/FeaturedBand.astro';
+import ListingExplorer from '../../../../components/ListingExplorer.astro';
+import { loadDirectory, attributeFaqs, paragraphs, linkedParagraphs, linkNames, e164, businessType } from '../../../../lib/load.mjs';
+export function getStaticPaths() {
+  const { cities } = loadDirectory();
+  return cities.map((c) => ({ params: { state: c.country.slug, city: c.slug }, props: { slug: c.slug } }));
+}
+const { slug } = Astro.props;
+const dir = loadDirectory();
+const { site, attributes, buildDate } = dir;
+const city = dir.cityBySlug[slug];
+const co = city.country, statePath = co.path;
+const devicesHere = dir.devices.map((d) => ({ d, n: city.attrCounts[d.key] || 0, cp: d.countryPages.find((x) => x.country.code === co.code) })).filter((x) => x.n > 0).sort((a, b) => b.n - a.n);
+const base = `https://${site.domain}`;
+const title = `${site.niche.title} in ${city.name}, ${co.short} (${city.count} Listed) | ${site.brand}`;
+const top = city.listings.find((l) => l.reviews > 0);
+const description = `${city.count} ${site.niche.plural} in ${city.name}, ${co.short}, ranked by rating and reviews.${top ? ` Top rated: ${top.name} (${top.rating.toFixed(1)}, ${top.reviews} reviews).` : ''} Phone numbers and services for each.`;
+const cards = city.listings.slice(0, site.maxCardsPerCity || 60);
+const rest = city.listings.slice(cards.length);
+const intro = city.copy?.intro || [
+  `${city.count} ${site.niche.plural} are listed in ${city.name}, ${co.name}, with ${city.totalReviews} Google reviews between them${city.avgRating ? ` and an average rating of ${city.avgRating.toFixed(1)}` : ''}. The list below puts featured businesses first, then paid best-of positions, then everyone else by rating and review count.`,
+];
+const faqs = city.copy?.faqs || attributeFaqs(city, site, attributes);
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': base + city.path, url: base + city.path, name: title, datePublished: site.launchDate, dateModified: buildDate },
+  { '@context': 'https://schema.org', '@type': 'ItemList', name: `Best ${site.niche.plural} in ${city.name}, ${co.short}`, numberOfItems: city.count,
+    itemListElement: cards.map((l, i) => ({ '@type': 'ListItem', position: i + 1, item: {
+      '@type': businessType(site), '@id': `${base}${l.path}#business`, name: l.name, url: base + l.path, telephone: e164(l.phone),
+      address: { '@type': 'PostalAddress', streetAddress: l.areaService ? undefined : (l.street || undefined), addressLocality: l.city, addressRegion: l.stateCode, postalCode: l.postalCode || undefined, addressCountry: l.stateCode },
+    } })) },
+];
+---
+<Base title={title} description={description} path={city.path} schema={schema} noindex={city.thin}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: site.niche.title, href: '/directory/' }, { name: co.name, href: statePath }, { name: city.name, href: city.path }]} />
+    <h1>{site.niche.title} in {city.name}, {co.short}</h1>
+    <ul class="keyfacts">
+      <li><b>{city.count}</b>listed</li>
+      {site.sortAttribute && city.attrCounts[site.sortAttribute] > 0 && <li><b>{city.attrCounts[site.sortAttribute]}</b>{site.confirmedLabel || 'confirmed'}</li>}
+      {city.totalReviews > 0 && <li><b>{city.avgRating.toFixed(1)}</b>average from {city.totalReviews.toLocaleString('en-US')} reviews</li>}
+      <li>Updated {buildDate}</li>
+    </ul>
+  </Fragment>
+  <section>
+    <h2>Towns in {city.name}</h2>
+    <ul class="city-grid">{city.towns.map((t) => <li><a href={t.path}>{t.name}</a> <span class="n">{t.count}</span></li>)}</ul>
+  </section>
+
+  <ListingExplorer site={site} attributes={attributes} listings={cards.filter((l) => !city.featured.includes(l))} citySlug={city.slug} heading={`Best ${site.niche.plural} in ${city.name}`} />
+  {rest.length > 0 && (
+    <section>
+      <h3 class="more-head">{rest.length} more {site.niche.plural} in {city.name}</h3>
+      <p class="meta">Listings with the fewest reviews.</p>
+      <ul class="more-list">{rest.map((l) => <li><a href={l.path}>{l.name}</a>{l.reviews > 0 && <span class="rt"><i aria-hidden="true">★</i> {l.rating.toFixed(1)} <small>({l.reviews})</small></span>}</li>)}</ul>
+    </section>
+  )}
+
+  <FeaturedBand site={site} items={city.featured} place={city.name} price={site.tiers?.city?.price} />
+
+  {devicesHere.length > 0 && (
+    <section>
+      <h2>Devices used by practitioners in {city.name}</h2>
+      <ul class="city-grid svc-grid">{devicesHere.map((x) => <li><a href={x.cp ? x.cp.path : x.d.path}><span class="name">{x.d.label}</span> <span class="n">{x.n}</span></a></li>)}</ul>
+    </section>
+  )}
+
+  {city.nearby.length > 0 && (
+    <section>
+      <h2>{site.niche.title} near {city.name}</h2>
+      <ul class="city-cards nearby">
+        {city.nearby.map((c) => (
+          <li><a href={c.path}>
+            <h3 class="name">{c.name}</h3>
+            <span class="big"><b>{c.count}</b>{site.niche.plural}</span>
+            <span class="small">{site.niche.title} in {c.name}, {co.short}</span>
+          </a></li>
+        ))}
+      </ul>
+    </section>
+  )}
+  <ClaimCta site={site} />
+
+  <div class="prose loc-text" set:html={linkedParagraphs(intro, city.listings)}></div>
+  <Faq items={faqs.map((f) => ({ ...f, html: linkNames(f.a, city.listings) }))} title={`Common questions about ${site.niche.plural} in ${city.name}`} />
+</Base>

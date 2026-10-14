@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scanner Price Tools</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#272A31; --bg2:#3B414C; --panel:#474955; --line:#5A5D69;
+    --text:#FFFFFF; --muted:#A2A9B4; --accent:#FF422F; --accent-h:#E8341F;
+    --ok:#3FBF7F; --warn:#F5B942; --radius:4px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 "Nunito Sans",system-ui,sans-serif}
+  a{color:var(--text)}
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 24px;max-width:1100px;margin:0 auto}
+  header img{height:44px;width:auto;display:block}
+  @media (max-width:520px){header img{height:34px}header nav a{font-size:13px}}
+  header .wordmark{display:none;font-weight:800;font-size:22px}
+  header nav a{color:var(--muted);text-decoration:none;font-size:14px}
+  .hero{background:var(--bg);padding:24px 24px 40px;text-align:center}
+  .hero h1{font-size:clamp(28px,5vw,48px);font-weight:700;margin:0 0 8px;line-height:1.15}
+  .hero p{color:#E3E6EA;font-size:clamp(16px,2.2vw,20px);margin:0 auto;max-width:680px}
+  main{background:var(--bg2);min-height:60vh;padding:32px 16px 64px}
+  .wrap{max-width:1100px;margin:0 auto}
+  .tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+  .tab{background:transparent;border:1px solid var(--line);color:var(--muted);padding:10px 18px;border-radius:var(--radius);font:inherit;font-weight:600;cursor:pointer}
+  .tab[aria-selected=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+  .panel{display:none}.panel.on{display:block}
+  .card{background:var(--panel);border-radius:var(--radius);padding:20px}
+  .grid{display:grid;gap:16px}
+  .brands{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .brand h3{margin:0 0 4px;font-size:18px}
+  .brand .range{font-size:22px;font-weight:800;margin:6px 0}
+  .brand .range.none{font-size:16px;color:var(--warn);font-weight:700}
+  .small{font-size:13px;color:var(--muted)}
+  .pill{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--bg2);color:var(--muted);margin-right:4px}
+  .pill.hi{background:rgba(63,191,127,.18);color:var(--ok)}
+  .pill.lo{background:rgba(245,185,66,.15);color:var(--warn)}
+  .pill.demo{background:rgba(255,66,47,.2);color:#FF8A7D}
+  h2{font-size:24px;margin:32px 0 12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+  @media (max-width:820px){.two{grid-template-columns:1fr}}
+  label{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
+  label .req{color:var(--accent)}
+  input,select{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:var(--radius);padding:10px 12px;font:inherit}
+  input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .check{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:14px;margin-top:12px}
+  .check input{width:auto;margin-top:4px}
+  .btn{background:var(--accent);color:#fff;border:0;border-radius:var(--radius);padding:12px 20px;font:inherit;font-weight:700;cursor:pointer;margin-top:16px}
+  .btn:hover{background:var(--accent-h)}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:600}
+  .locked{position:relative}
+  .locked .blur{filter:blur(6px);pointer-events:none;user-select:none}
+  .locked .gate{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;background:linear-gradient(180deg,rgba(71,73,85,.55),rgba(71,73,85,.92))}
+  .gate strong{font-size:20px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  .tablewrap{overflow-x:auto}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .kpi{background:var(--bg);border-radius:var(--radius);padding:14px}
+  .kpi .v{font-size:26px;font-weight:800;line-height:1.2}
+  .kpi .v.good{color:var(--ok)} .kpi .v.bad{color:#FF8A7D}
+  .note{background:var(--bg);border-left:3px solid var(--accent);padding:12px 14px;border-radius:var(--radius);font-size:14px;margin-top:16px}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ok);color:#10261A;font-weight:700;padding:10px 18px;border-radius:var(--radius);display:none}
+  footer{padding:32px 24px;text-align:center;color:var(--muted);font-size:13px;max-width:900px;margin:0 auto}
+  footer img{height:28px;width:auto;display:block;margin:0 auto 14px;opacity:.9}
+  .proto{background:var(--accent);color:#fff;text-align:center;font-size:13px;font-weight:700;padding:6px}
+</style>
+</head>
+<body>
+<div class="proto">PROTOTYPE — data is stored only in this browser. Nothing is sent anywhere.</div>
+<header>
+  <a href="#" aria-label="ScannerFinder home"><img src="assets/logo-white.png" alt="ScannerFinder" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="wordmark">ScannerFinder</span></a>
+  <nav><a href="#roi" data-goto="roi">Thinking of buying a scanner?</a></nav>
+</header>
+
+<section class="hero">
+  <h1 id="heroTitle">What do practitioners really pay for a scanner?</h1>
+  <p id="heroSub">Manufacturers say “contact us for a quote”. We collect real prices from practitioners. Share yours to see everyone else’s.</p>
+</section>
+
+<main>
+<div class="wrap">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="index">Device Price Index</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="roi">ROI Calculator</button>
+  </div>
+
+  <!-- ============ PRICE INDEX ============ -->
+  <section class="panel on" id="panel-index">
+    <div class="grid brands" id="brandGrid"></div>
+
+    <h2>Practitioner-reported prices</h2>
+    <div class="two">
+      <div class="locked" id="lockBox">
+        <div class="card blur" id="reportsCard">
+          <div id="medians"></div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Device</th><th>Year</th><th>Condition</th><th>Paid (USD)</th><th>Monthly</th><th>Country</th><th>Next 12 mo</th></tr></thead>
+            <tbody id="reportRows"></tbody>
+          </table></div>
+        </div>
+        <div class="gate" id="gate">
+          <strong>Unlock every practitioner price</strong>
+          <p class="small" style="max-width:340px">Share what you paid for your device. It takes 2 minutes and stays anonymous. Prices are published only as aggregates.</p>
+        </div>
+      </div>
+
+      <form class="card" id="reportForm" novalidate>
+        <h3 style="margin:0">Share your device price</h3>
+        <p class="small" style="margin:4px 0 0">Anonymous. We never show your name or practice next to a price.</p>
+        <div class="row">
+          <div><label>Brand <span class="req">*</span></label><select name="brand" required id="rBrand"></select></div>
+          <div><label>Model <span class="req">*</span></label><input name="model" required placeholder="e.g. Elite, optima B32"></div>
+        </div>
+        <div class="row">
+          <div><label>Year purchased <span class="req">*</span></label><input name="year" type="number" min="1990" max="2026" required placeholder="2023"></div>
+          <div><label>Condition <span class="req">*</span></label><select name="condition" required><option value="">Select…</option><option>New</option><option>Used</option><option>Lease</option><option>Rental</option></select></div>
+        </div>
+        <div class="row">
+          <div><label>Price paid <span class="req">*</span></label><input name="price" type="number" min="0" required placeholder="9500"></div>
+          <div><label>Currency <span class="req">*</span></label><select name="currency" required><option>USD</option><option>GBP</option><option>EUR</option><option>CAD</option><option>AUD</option><option>NZD</option><option>ZAR</option></select></div>
+        </div>
+        <div class="row">
+          <div><label>Monthly software fee</label><input name="monthly" type="number" min="0" placeholder="0"></div>
+          <div><label>Training included?</label><select name="training"><option value="">—</option><option>Yes</option><option>No</option></select></div>
+        </div>
+        <div class="row">
+          <div><label>Country <span class="req">*</span></label><select name="country" required><option value="">Select…</option><option>US</option><option>GB</option><option>CA</option><option>AU</option><option>NZ</option><option>IE</option><option>ZA</option><option>Other</option></select></div>
+          <div><label>Satisfaction with manufacturer (0–10)</label><input name="nps" type="number" min="0" max="10" placeholder="8"></div>
+        </div>
+        <label>In the next 12 months you plan to… <span class="req">*</span></label>
+        <select name="intent" required><option value="">Select…</option><option>Keep my device</option><option>Upgrade (same brand)</option><option>Switch brand</option><option>Sell my device</option><option>Undecided</option></select>
+        <label>Email <span class="req">*</span> <span class="small">(to verify you and send your access link)</span></label>
+        <input name="email" type="email" required placeholder="you@practice.com">
+        <label class="check"><input type="checkbox" name="consentAgg" required> <span>I agree my answers are published <b>only as anonymous aggregates</b> (medians, ranges). <span class="req">*</span></span></label>
+        <label class="check"><input type="checkbox" name="consentContact"> <span>Optional: manufacturers or distributors may contact me with trade-in or upgrade offers.</span></label>
+        <button class="btn" type="submit">Share &amp; unlock prices</button>
+        <p class="small" id="formErr" style="color:#FF8A7D"></p>
+      </form>
+    </div>
+
+    <h2>Public sources</h2>
+    <div class="card tablewrap">
+      <table>
+        <thead><tr><th>Brand</th><th>Model</th><th>Condition</th><th>Price</th><th>Monthly</th><th>Source</th><th>Confidence</th></tr></thead>
+        <tbody id="seedRows"></tbody>
+      </table>
+      <p class="small">Collected 12 Oct 2026 from manufacturer, reseller and marketplace pages. Asking prices are not sale prices. USD conversions are approximate.</p>
+    </div>
+    <p style="margin-top:16px"><button class="btn ghost" id="demoBtn" type="button">Prototype only: load 12 demo reports</button> <button class="btn ghost" id="resetBtn" type="button">Reset</button></p>
+  </section>
+
+  <!-- ============ ROI ============ -->
+  <section class="panel" id="panel-roi">
+    <div class="two">
+      <form class="card" id="roiForm">
+        <h3 style="margin:0">Will a scanner pay for itself?</h3>
+        <p class="small" style="margin:4px 0 0">Defaults come from public prices. Change any number.</p>
+        <label>Device</label>
+        <select id="roiDevice"></select>
+        <div class="row">
+          <div><label>Device price (USD)</label><input id="dPrice" type="number" min="0"></div>
+          <div><label>Training / certification (USD)</label><input id="dTrain" type="number" min="0"></div>
+        </div>
+        <div class="row">
+          <div><label>Software fee / month (USD)</label><input id="dMonthly" type="number" min="0"></div>
+          <div><label>Other costs / month (USD)</label><input id="dOther" type="number" min="0" value="0"></div>
+        </div>
+        <div class="row">
+          <div><label>Price per session (USD)</label><input id="sPrice" type="number" min="0"></div>
+          <div><label>Sessions per week</label><input id="sWeek" type="number" min="0" value="5"></div>
+        </div>
+        <div class="row">
+          <div><label>Weeks worked / year</label><input id="sYear" type="number" min="1" max="52" value="46"></div>
+          <div><label>Product profit / session (USD)</label><input id="sMargin" type="number" min="0" value="0"></div>
+        </div>
+        <p class="small" id="roiSrc"></p>
+      </form>
+
+      <div>
+        <div class="card">
+          <div class="kpis">
+            <div class="kpi"><div class="small">Pays for itself in</div><div class="v" id="kPayback">–</div></div>
+            <div class="kpi"><div class="small">Net per month</div><div class="v" id="kNet">–</div></div>
+            <div class="kpi"><div class="small">Year-1 profit</div><div class="v" id="kYear1">–</div></div>
+            <div class="kpi"><div class="small">Sessions/week to pay back in 12 months</div><div class="v" id="kNeed">–</div></div>
+          </div>
+          <div class="note" id="roiNote"></div>
+        </div>
+
+        <form class="card" id="leadForm" style="margin-top:16px" novalidate>
+          <h3 style="margin:0">Get the full comparison</h3>
+          <p class="small" style="margin:4px 0 0">Every device side by side, with real practitioner prices as they come in.</p>
+          <div class="row">
+            <div><label>Email <span class="req">*</span></label><input name="email" type="email" required></div>
+            <div><label>Country <span class="req">*</span></label><select name="country" required><option value="">Select…</option><option>US</option><option>GB</option><option>CA</option><option>AU</option><option>NZ</option><option>IE</option><option>ZA</option><option>Other</option></select></div>
+          </div>
+          <div class="row">
+            <div><label>Budget</label><select name="budget"><option value="">—</option><option>Under $2k</option><option>$2k–$5k</option><option>$5k–$10k</option><option>$10k–$20k</option><option>$20k+</option></select></div>
+            <div><label>When will you buy? <span class="req">*</span></label><select name="timeline" required><option value="">Select…</option><option>0–3 months</option><option>3–6 months</option><option>6–12 months</option><option>Just researching</option></select></div>
+          </div>
+          <label>Your background</label>
+          <select name="background"><option value="">—</option><option>Naturopath</option><option>Chiropractor</option><option>Nutritionist</option><option>Health coach</option><option>Massage / bodywork</option><option>Already a scanner practitioner</option><option>Other</option></select>
+          <label class="check"><input type="checkbox" name="consentContact"> <span>Optional: authorised distributors may contact me with quotes.</span></label>
+          <button class="btn" type="submit">Email me the comparison</button>
+          <p class="small" id="leadMsg"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+</main>
+
+<footer>
+  <img src="assets/logo-white.png" alt="ScannerFinder" onerror="this.remove()">
+  Scanning devices listed on ScannerFinder are wellness tools. They are not validated to diagnose, treat or cure any medical condition. Nothing on this page is medical or financial advice.
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const FX={USD:1,GBP:1.30,EUR:1.15,CAD:0.73,AUD:0.66,NZD:0.60,ZAR:0.055};
+const usd=(v,c)=>Math.round(v*(FX[c]||1));
+const fmt=v=>v==null||isNaN(v)?'–':'$'+Math.round(v).toLocaleString('en-US');
+const SEED=[
+ ["ZYTO","Hand Cradle (hardware only)","New",269,365,"USD",null,"reseller","medium","https://www.aulternatives.com/store/p6/ZYTO_Hand_Cradle.html"],
+ ["ZYTO","Balance (cradle + software)","New",479,479,"USD",50,"reseller","medium","https://gr8solutions.com/zyto-balance/"],
+ ["ZYTO","Elite","New",14750,14750,"USD",50,"manufacturer","medium","https://zyto.com/products/elite"],
+ ["ZYTO","Certified ZYTO Specialist (training kit)","Kit",1200,1200,"USD",null,"training provider","low","https://www.trinityschool.org/program/czs"],
+ ["BICOM","optima (new, estimate)","New",8000,12000,"USD",null,"third-party estimate","low","https://bioresonance.org/therapy-machine-2/"],
+ ["BICOM","optima B21","Used",3500,3500,"USD",null,"marketplace asking","low","https://www.ebay.com/itm/376120409900"],
+ ["BICOM","optima B32","Used",15750,15750,"GBP",null,"marketplace asking","low","https://www.ebay.co.uk/itm/225764747574"],
+ ["Asyra / Qest4","Asyra Pro / QEST4 system","New",12500,12500,"USD",null,"competitor claim","low","https://resofield.app/qest4-vs-resofield/"],
+ ["Asyra / Qest4","QEST4 Bluetooth","Used",9500,9500,"USD",null,"marketplace asking","low","https://www.ebay.com/itm/236617007350"],
+ ["Rayonex","Rayocomp PS 10 basic","New",5490,5490,"GBP",null,"manufacturer","high","https://rayonex.co.uk/product/rayocomp-ps-10-basic/"],
+ ["Rayonex","Rayocomp PS 10 MED Plus","New",8990,8990,"GBP",null,"manufacturer","high","https://rayonex.co.uk/product/rayocomp-ps-10-med-plus/"],
+ ["Rayonex","Rayocomp PS 10 Complete Premium","New",9990,10990,"GBP",null,"manufacturer","medium","https://rayonex.co.uk/the-new-ps10-complete-premium/"],
+ ["NLS","Metatron Hunter 4025 (marketplace)","New",560,1362,"USD",null,"marketplace","low","https://www.aliexpress.com/w/wholesale-metatron-hunter-4025-25d-nls.html"],
+ ["NLS","Metatron Hunter 4025 (UK package)","New",1995,3445,"GBP",null,"reseller","low","https://bioresonancetech.com/"],
+ ["SCIO","SCIO package (discontinued)","New",8999,8999,"EUR",null,"reseller","low","https://www.qxworld.eu/products/scio-biofeedback-legacy/"],
+ ["SCIO","SCIO pre-owned","Used",12750,12750,"USD",null,"reseller","low","https://whitedoveglobal.com/shop/quantum-biofeedback-2/pre-owned-systems/preowned-scio-biofeedback-system/"],
+ ["Indigo","Indigo system","New",17995,17995,"USD",null,"reseller","low","https://www.healthysolutionservices.com/indigo-device-sales"],
+ ["Indigo","Indigo V1","Used",7495,7495,"USD",null,"reseller","low","https://quantumwellness.ca/mobile/device-sales-used.html"],
+ ["Eductor","Eductor","Used",12500,13900,"USD",null,"marketplace asking","low","https://www.ebay.com/itm/187434962545"],
+ ["AO Scan","AO Scan (software subscription)","Subscription",0,0,"USD",149,"third-party","low","https://scienceinsights.org/what-is-an-ao-scan-how-it-works-and-what-science-says/"]
+].map(r=>({brand:r[0],model:r[1],condition:r[2],lo:r[3],hi:r[4],cur:r[5],monthly:r[6],src:r[7],conf:r[8],url:r[9]}));
+const BRANDS=["ZYTO","BICOM","Asyra / Qest4","NES Health","Rayonex","NLS","SCIO","Indigo","Eductor","MORA","TimeWaver","AO Scan","Other"];
+const ROI_DEVICES=[
+ {k:"ZYTO Elite",price:14750,train:1200,monthly:50,session:95,src:"ZYTO list price; ZYTO sessions publicly range $55–$305."},
+ {k:"ZYTO Balance",price:479,train:1200,monthly:50,session:95,src:"Reseller price + Trinity CZS training."},
+ {k:"ZYTO Evox",price:269,train:1200,monthly:350,session:130,src:"ZYTO publishes no Evox list price. Example: a ZYTO practitioner program charges $350/month for software access including EVOX; hand cradle from $269 (reseller); ZYTO-approved certification (Trinity CZS) $1,200.",sessionNote:"Default session price = median published EVOX session price on 5 practitioner websites ($50–$175, Oct 2026)."},
+ {k:"BICOM optima (est.)",price:10000,train:0,monthly:0,session:208,src:"Third-party estimate; BICOM sells by quote only."},
+ {k:"Asyra Pro / QEST4",price:12500,train:0,monthly:0,session:159,src:"Competitor-reported price; training included per manufacturer."},
+ {k:"Rayocomp PS 10 MED Plus",price:usd(8990,"GBP"),train:0,monthly:0,session:172,src:"Rayonex UK list price £8,990."},
+ {k:"NLS Hunter 4025 (UK package)",price:usd(1995,"GBP"),train:0,monthly:0,session:195,src:"UK reseller package from £1,995."},
+ {k:"SCIO (new stock)",price:usd(8999,"EUR"),train:0,monthly:0,session:125,src:"EU reseller, net of VAT. Discontinued model."},
+ {k:"Indigo",price:17995,train:0,monthly:0,session:125,src:"US reseller list; laptop and training extra."},
+ {k:"AO Scan",price:0,train:0,monthly:149,session:88,src:"$149/month subscription, single third-party source."},
+ {k:"Custom",price:5000,train:0,monthly:0,session:100,src:"Enter your own numbers."}
+];
+const SESSION_NOTE="Session price = median published price on 148 practitioner websites (Oct 2026): ZYTO $95 (n=15), BICOM $208 (n=12), Asyra/QEST4 $159 (n=18), Rayonex $172 (n=7), NLS $195 (n=14), SCIO/Indigo $125 (n=19), AO Scan $88 (n=16).";
+const K_MIN=5;
+const store={
+  get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let reports=store.get('sf_reports',[]);
+let unlocked=store.get('sf_unlocked',false);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const median=a=>{const s=[...a].sort((x,y)=>x-y),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2};
+function toast(t){const el=$('#toast');el.textContent=t;el.style.display='block';setTimeout(()=>el.style.display='none',2600)}
+
+function renderBrands(){
+  $('#brandGrid').innerHTML=BRANDS.filter(b=>b!=='Other').map(b=>{
+    const rows=SEED.filter(r=>r.brand===b&&r.condition!=='Kit'&&r.condition!=='Subscription');
+    const sub=SEED.find(r=>r.brand===b&&r.condition==='Subscription');
+    const n=reports.filter(r=>r.brand===b).length;
+    let range;
+    if(rows.length){const lo=Math.min(...rows.map(r=>usd(r.lo,r.cur))),hi=Math.max(...rows.map(r=>usd(r.hi,r.cur)));range=`<div class="range">${fmt(lo)} – ${fmt(hi)}</div>`}
+    else if(sub){range=`<div class="range">${fmt(sub.monthly)}<span class="small"> / month</span></div>`}
+    else range=`<div class="range none">No public price exists</div>`;
+    const conf=rows.some(r=>r.conf==='high')?'<span class="pill hi">manufacturer price</span>':(rows.length||sub?'<span class="pill lo">estimates</span>':'');
+    return `<div class="card brand"><h3>${esc(b)}</h3>${range}<div>${conf}<span class="pill">${n} practitioner report${n===1?'':'s'}</span></div>${!rows.length&&!sub?'<p class="small" style="margin:8px 0 0">Own one? Be the first to report.</p>':''}</div>`
+  }).join('');
+}
+function renderSeed(){
+  $('#seedRows').innerHTML=SEED.map(r=>{
+    const p=r.condition==='Subscription'?'–':(r.lo===r.hi?`${r.cur} ${r.lo.toLocaleString()}`:`${r.cur} ${r.lo.toLocaleString()}–${r.hi.toLocaleString()}`);
+    const host=new URL(r.url).hostname.replace('www.','');
+    return `<tr><td>${esc(r.brand)}</td><td>${esc(r.model)}</td><td>${r.condition}</td><td>${p}</td><td>${r.monthly?fmt(r.monthly):'–'}</td><td><a href="${r.url}" target="_blank" rel="noopener">${host}</a><div class="small">${r.src}</div></td><td><span class="pill ${r.conf==='high'?'hi':'lo'}">${r.conf}</span></td></tr>`}).join('');
+}
+function renderReports(){
+  const box=$('#lockBox'),card=$('#reportsCard'),gate=$('#gate');
+  if(unlocked){card.classList.remove('blur');gate.style.display='none'}else{card.classList.add('blur');gate.style.display='flex'}
+  const list=unlocked?reports:(reports.length?reports:Array.from({length:6},(_,i)=>({brand:['ZYTO','BICOM','Rayonex'][i%3],model:'Model',year:2022,condition:'New',usd:9000+i*700,monthly:0,country:'US',intent:'Keep my device'})));
+  const byKey={},label={};reports.filter(r=>!r.review).forEach(r=>{const k=r.brand+' · '+r.model.trim().toLowerCase();label[k]=label[k]||r.brand+' '+r.model.trim();(byKey[k]=byKey[k]||[]).push(r.usd)});
+  const med=Object.entries(byKey).map(([key,v])=>[label[key],v]).map(([k,v])=>v.length>=K_MIN?`<span class="pill hi">${esc(k)}: median ${fmt(median(v))} (n=${v.length})</span>`:`<span class="pill">${esc(k)}: ${v.length} report${v.length>1?'s':''}, ${K_MIN-v.length} more to show the median</span>`).join(' ');
+  const switching=reports.length?Math.round(100*reports.filter(r=>/Switch|Sell/.test(r.intent)).length/reports.length):0;
+  $('#medians').innerHTML=reports.length?`<p style="margin:0 0 10px">${med}</p><p class="small" style="margin:0 0 10px">${switching}% of reporters plan to switch brand or sell in the next 12 months.</p>`:`<p class="small" style="margin:0 0 10px">No practitioner reports yet. Yours would be the first.</p>`;
+  $('#reportRows').innerHTML=list.map(r=>`<tr><td>${esc(r.brand)} ${esc(r.model)} ${r.demo?'<span class="pill demo">DEMO</span>':''}</td><td>${esc(r.year)}</td><td>${esc(r.condition)}</td><td>${fmt(r.usd)}</td><td>${r.monthly?fmt(r.monthly):'–'}</td><td>${esc(r.country)}</td><td>${esc(r.intent)}</td></tr>`).join('');
+}
+function renderAll(){renderBrands();renderReports()}
+
+$('#rBrand').innerHTML='<option value="">Select…</option>'+BRANDS.map(b=>`<option>${b}</option>`).join('');
+$('#reportForm').addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target,d=Object.fromEntries(new FormData(f));
+  if(!f.checkValidity()){$('#formErr').textContent='Please fill in the required fields (*) and accept the aggregate-publishing terms.';f.reportValidity();return}
+  const price=+d.price;
+  const brandVals=reports.filter(r=>r.brand===d.brand).map(r=>r.usd);
+  const u=usd(price,d.currency);
+  const outlier=brandVals.length>=K_MIN&&(u>3*median(brandVals)||u<median(brandVals)/3);
+  reports.push({brand:d.brand,model:d.model,year:+d.year,condition:d.condition,usd:u,monthly:+d.monthly||0,country:d.country,intent:d.intent,nps:d.nps,consentContact:!!d.consentContact,review:outlier,ts:Date.now()});
+  store.set('sf_reports',reports);unlocked=true;store.set('sf_unlocked',true);
+  $('#formErr').textContent='';f.reset();renderAll();
+  toast(outlier?'Thanks! Your price is unusual, so we will review it before including it.':'Thanks! Prices unlocked.');
+  document.getElementById('lockBox').scrollIntoView({behavior:'smooth',block:'start'});
+});
+$('#demoBtn').onclick=()=>{
+  const demo=[["ZYTO","Elite",2021,"New",14750,50,"US","Keep my device"],["ZYTO","Elite",2019,"Used",6900,50,"US","Upgrade (same brand)"],["ZYTO","Elite",2023,"New",13500,50,"CA","Keep my device"],["ZYTO","Elite",2022,"New",14000,50,"US","Switch brand"],["ZYTO","Elite",2020,"Used",8200,50,"US","Sell my device"],["BICOM","optima B32",2018,"Used",11000,0,"GB","Keep my device"],["BICOM","optima B32",2016,"Used",9000,0,"GB","Undecided"],["Rayonex","PS 10 MED Plus",2024,"New",11700,0,"GB","Keep my device"],["Asyra / Qest4","QEST4",2022,"New",12500,0,"AU","Switch brand"],["NLS","Hunter 4025",2023,"New",1400,0,"ZA","Upgrade (same brand)"],["NES Health","miHealth",2021,"New",4500,0,"US","Sell my device"],["SCIO","SCIO",2017,"Used",7000,0,"NZ","Undecided"]];
+  demo.forEach(r=>reports.push({brand:r[0],model:r[1],year:r[2],condition:r[3],usd:r[4],monthly:r[5],country:r[6],intent:r[7],demo:true}));
+  store.set('sf_reports',reports);renderAll();toast('12 demo reports loaded (marked DEMO).');
+};
+$('#resetBtn').onclick=()=>{reports=[];unlocked=false;store.set('sf_reports',[]);store.set('sf_unlocked',false);renderAll();toast('Reset.')};
+
+/* ROI */
+$('#roiDevice').innerHTML=ROI_DEVICES.map((d,i)=>`<option value="${i}">${d.k}</option>`).join('');
+function loadDevice(i){const d=ROI_DEVICES[i];$('#dPrice').value=d.price;$('#dTrain').value=d.train;$('#dMonthly').value=d.monthly;$('#sPrice').value=d.session;$('#roiSrc').textContent=d.src+' '+(d.sessionNote||SESSION_NOTE);calc()}
+function calc(){
+  const n=id=>Math.max(0,+$(id).value||0);
+  const upfront=n('#dPrice')+n('#dTrain'),fixed=n('#dMonthly')+n('#dOther');
+  const perSession=n('#sPrice')+n('#sMargin'),weeksPerMonth=Math.min(52,n('#sYear')||46)/12;
+  const sessionsMonth=n('#sWeek')*weeksPerMonth;
+  const net=sessionsMonth*perSession-fixed;
+  const payback=net>0?upfront/net:Infinity;
+  const need=perSession>0?((upfront/12)+fixed)/perSession/weeksPerMonth:Infinity;
+  const y1=net*12-upfront;
+  $('#kPayback').textContent=upfront===0?'Day one':(isFinite(payback)?(payback<1?'< 1 month':payback.toFixed(1)+' months'):'Never');
+  $('#kPayback').className='v '+(payback<=12||upfront===0?'good':(isFinite(payback)?'':'bad'));
+  $('#kNet').textContent=fmt(net);$('#kNet').className='v '+(net>0?'good':'bad');
+  $('#kYear1').textContent=fmt(y1);$('#kYear1').className='v '+(y1>=0?'good':'bad');
+  $('#kNeed').textContent=isFinite(need)?Math.ceil(need):'–';
+  $('#roiNote').innerHTML=!isFinite(payback)?'At these numbers the device never pays for itself. Raise the session price or the weekly volume.':
+    `At <b>${n('#sWeek')}</b> sessions a week you bring in <b>${fmt(sessionsMonth*perSession)}</b> a month before costs. You need <b>${isFinite(need)?Math.ceil(need):'–'}</b> sessions a week to recover the device in a year.`;
+}
+['#dPrice','#dTrain','#dMonthly','#dOther','#sPrice','#sWeek','#sYear','#sMargin'].forEach(id=>$(id).addEventListener('input',calc));
+$('#roiDevice').addEventListener('change',e=>loadDevice(+e.target.value));
+$('#leadForm').addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target;if(!f.checkValidity()){f.reportValidity();return}
+  const d=Object.fromEntries(new FormData(f));d.device=ROI_DEVICES[+$('#roiDevice').value].k;d.payback=$('#kPayback').textContent;d.ts=Date.now();
+  const leads=store.get('sf_leads',[]);leads.push(d);store.set('sf_leads',leads);
+  f.reset();$('#leadMsg').textContent='Saved (prototype: stored in this browser only).';
+});
+
+/* tabs */
+const HERO={index:["What do practitioners really pay for a scanner?","Manufacturers say “contact us for a quote”. We collect real prices from practitioners. Share yours to see everyone else’s."],roi:["Will a scanner pay for itself?","Pick a device, enter your session price, and see how many clients you need to earn back the investment."]};
+function showTab(t){document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='panel-'+t));$('#heroTitle').textContent=HERO[t][0];$('#heroSub').textContent=HERO[t][1];try{location.hash=t}catch(e){}}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+document.querySelector('[data-goto=roi]').onclick=e=>{e.preventDefault();showTab('roi')};
+renderSeed();renderAll();loadDevice(0);
+if(location.hash==='#roi')showTab('roi');
+</script>
+</body>
+</html>

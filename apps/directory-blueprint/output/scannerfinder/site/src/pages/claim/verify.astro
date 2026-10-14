@@ -1,0 +1,29 @@
+---
+// Landing page of the confirmation email. The token is exchanged by a button press (POST), not on page load,
+// so mail scanners that open links cannot use it up.
+import Base from '../../layouts/Base.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+const { site } = loadDirectory();
+---
+<Base title={`Confirm your email | ${site.brand}`} description="Confirm your email to claim your listing." path="/claim/verify/" noindex={true}>
+  <Fragment slot="head"><h1>Confirm your email</h1></Fragment>
+  <div class="claim-sent" id="verify-box">
+    <p>One click and you can check your profile.</p>
+    <p><button class="btn" type="button" id="verify-btn">Confirm and continue</button></p>
+    <p class="form-error" id="verify-error" role="alert" hidden>This link has expired or was already used. <a href="/claim/">Request a new one</a>.</p>
+  </div>
+  <script is:inline>
+    (function () {
+      var t = new URLSearchParams(location.search).get('t');
+      var btn = document.getElementById('verify-btn'), err = document.getElementById('verify-error');
+      if (!t) { btn.hidden = true; err.hidden = false; return; }
+      btn.onclick = function () {
+        btn.disabled = true;
+        fetch('/api/claim/verify', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ t: t }) })
+          .then(function (r) { return r.json(); })
+          .then(function (j) { if (j.ok) location.replace('/claim/profile/'); else { btn.hidden = true; err.hidden = false; } })
+          .catch(function () { btn.disabled = false; });
+      };
+    })();
+  </script>
+</Base>

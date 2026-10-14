@@ -1,0 +1,21 @@
+# Directory Blueprint additions to the skill's hard-ban list (skills/seo-content-engine/references/forbidden_words.txt).
+# Same format: [WORDS] whole-word, [PHRASES] substring, case-insensitive. One item per line, no prose.
+# These are the swapped-city boilerplate tells and the community's banned openers.
+
+[WORDS]
+nestled
+vibrant
+bustling
+thriving
+picturesque
+
+[PHRASES]
+here's the thing
+here is the thing
+worth saying plainly
+look no further
+hidden gem
+whether you're a
+whether you are a
+in the heart of
+a wide range of

@@ -1,0 +1,43 @@
+---
+// About: the publisher front and center (wiki/framework/publisher-entity.md). Person schema.
+import Base from '../layouts/Base.astro';
+import { loadDirectory } from '../lib/load.mjs';
+import { paragraphs } from '../lib/load.mjs';
+const { site, listings, indexCities: cities, buildDate } = loadDirectory();
+const vetting = site.vetting && site.vetting.length ? site.vetting : null;
+const p = site.publisher;
+const base = `https://${site.domain}`;
+const title = `About ${site.brand}`;
+const description = `${site.brand} is published by ${p.name}. Why it exists, how listings are vetted, and how to reach us.`;
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'AboutPage', '@id': base + '/about/', url: base + '/about/', name: title, datePublished: site.launchDate, dateModified: buildDate, mainEntity: { '@id': `${base}/#person` } },
+  { '@context': 'https://schema.org', '@type': 'Person', '@id': `${base}/#person`, name: p.name, url: p.url || undefined, email: p.email || undefined,
+    image: p.image ? base + p.image : undefined, description: p.bio, sameAs: (p.sameAs || []).filter(Boolean), owns: { '@type': 'Organization', '@id': `${base}/#publisher`, name: site.brand, url: base + '/' } },
+];
+---
+<Base title={title} description={description} path="/about/" schema={schema}>
+  <Fragment slot="head">
+    <h1>About {site.brand}</h1>
+  </Fragment>
+  <div class="publisher">
+    {p.image && <img src={p.image} alt={p.name} width="160" height="160" />}
+    <div class="prose">
+      <h2 style="margin-top:0">Published by {p.name}</h2>
+      <p>{p.bio}</p>
+      {p.url && <p><a href={p.url} rel="me noopener">{p.url.replace(/^https?:\/\//, '')}</a></p>}
+    </div>
+  </div>
+  {p.videoEmbed && <div class="prose" set:html={p.videoEmbed}></div>}
+  <section class="prose">
+    <h2>Why this directory exists</h2>
+    <p><!-- GATE 5: 150 to 250 words in the publisher's voice from 01-scope.md. --> Why this directory exists, in the publisher's own words.</p>
+    <h2>How listings are vetted</h2>
+    {vetting
+      ? <div set:html={paragraphs(vetting.slice(0, 2))}></div>
+      : <p>Every listing starts from public business records and Google Maps. We keep businesses that are open, have reviews, and do this work as their main trade. We merge duplicates and drop closed businesses.</p>}
+    <p>Right now that is {listings.length.toLocaleString('en-US')} {site.niche.plural} in {cities.length} {site.state.name} cities, last refreshed {buildDate}.</p>
+    <p>Owners can claim their listing for free. Every claim is checked by a person: a real local business, a matching email domain or a call to the number on the Google listing. Paid placements are marked as featured, premium or best-of wherever they appear.</p>
+    <h2>Corrections and removals</h2>
+    <p>If a listing is wrong, or you want your business removed, <a href="/contact/">tell us</a>. We answer within a week and rebuild the directory with the change.</p>
+  </section>
+</Base>

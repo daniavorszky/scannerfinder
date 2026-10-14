@@ -1,0 +1,15 @@
+---
+// Index of resource pages. Built even when empty so the footer link never 404s once a page exists.
+import Base from '../../layouts/Base.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+const { site } = loadDirectory();
+const mods = import.meta.glob('./*.md', { eager: true });
+// Files that start with an underscore are examples and are not built, so they are not listed.
+const pages = Object.entries(mods).filter(([f]) => !f.split('/').pop().startsWith('_')).map(([, m]) => m).map((m) => ({ url: m.url + '/', ...m.frontmatter })).sort((a, b) => (b.published || '').localeCompare(a.published || ''));
+---
+<Base title={`Resources | ${site.brand}`} description={`Guides and reference pages about ${site.niche.plural} in ${site.state.name}.`} path="/resources/" noindex={pages.length === 0}>
+  <Fragment slot="head">
+    <h1>Resources</h1>
+  </Fragment>
+  {pages.length === 0 ? <p>Nothing here yet.</p> : <ul>{pages.map((p) => <li><a href={p.url}>{p.title}</a> <span class="meta">{p.published}</span></li>)}</ul>}
+</Base>

@@ -1,0 +1,121 @@
+---
+// Private benchmark (plan § Faza 3): where a claimed practice stands against its peers. Data: /api/claim/benchmark
+// (aggregates of 5+ peers only, interquartile range, never single prices). Noindex, needs the claim session.
+import Base from '../../layouts/Base.astro';
+import { loadDirectory } from '../../lib/load.mjs';
+const { site } = loadDirectory();
+---
+<Base title={`Your benchmark | ${site.brand}`} description="How your practice compares with other practitioners." path="/claim/benchmark/" noindex={true}>
+  <Fragment slot="head"><h1 id="bm-title">How you compare</h1></Fragment>
+
+  <div class="claim-sent" id="bm-signed-out" hidden>
+    <h2>Sign in to see your benchmark</h2>
+    <p>Your comparison is private to you. <a href="/claim/">Claim your listing</a> and confirm your email to open it.</p>
+  </div>
+  <div class="claim-sent" id="bm-no-listing" hidden>
+    <h2>Your benchmark opens once your practice is in the directory</h2>
+    <p>We add new practices by hand. We will email you when yours is live.</p>
+  </div>
+
+  <div class="bm" id="bm" hidden>
+    <p class="meta" id="bm-intro"></p>
+
+    <section class="bm-card">
+      <h2>Session price</h2>
+      <p class="meta" id="bm-price-note"></p>
+      <div id="bm-price"></div>
+    </section>
+
+    <section class="bm-card">
+      <h2>Price per minute</h2>
+      <div id="bm-perminute"></div>
+    </section>
+
+    <section class="bm-card">
+      <h2>Google reviews in <span id="bm-region"></span></h2>
+      <div id="bm-reputation"></div>
+    </section>
+
+    <section class="bm-card">
+      <h2>Your listing on ScannerFinder, last 30 days</h2>
+      <div id="bm-visibility"></div>
+    </section>
+
+    <section class="bm-card">
+      <h2>Searches for <span id="bm-place"></span>, last 30 days</h2>
+      <div id="bm-demand"></div>
+    </section>
+
+    <section class="bm-card">
+      <h2>Practitioners near you</h2>
+      <div id="bm-competition"></div>
+    </section>
+
+    <section class="bm-card">
+      <h2>Your profile</h2>
+      <div id="bm-profile"></div>
+    </section>
+
+    <p class="meta">Groups of fewer than five practitioners are not shown, and you are never counted in your own group. Prices are converted at fixed approximate exchange rates. Comparisons use prices confirmed by practitioners and, until enough have confirmed, prices published on practice websites.</p>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+      function fmt(v, cur, dec) { return v == null ? '–' : (cur ? cur + ' ' : '') + Number(v).toLocaleString('en', { maximumFractionDigits: dec || 0, minimumFractionDigits: dec || 0 }); }
+      // One range bar from zero (or a fixed scale): middle half of the group (p25–p75), the median, and you.
+      function bar(s, mine, f, max) {
+        var a = 0, b = max || Math.max(s.p75, mine == null ? 0 : mine) * 1.15 || 1;
+        var x = function (v) { return ((v - a) / (b - a) * 100).toFixed(2) + '%'; };
+        var w = ((s.p75 - s.p25) / (b - a) * 100).toFixed(2) + '%';
+        return '<div class="bm-bar" role="img" aria-label="Middle half ' + esc(f(s.p25)) + ' to ' + esc(f(s.p75)) + ', median ' + esc(f(s.median)) + (mine != null ? ', you ' + esc(f(mine)) : '') + '">' +
+          '<span class="bm-band" style="left:' + x(s.p25) + ';width:' + w + '" title="Middle half of the group: ' + esc(f(s.p25)) + ' to ' + esc(f(s.p75)) + '"></span>' +
+          '<span class="bm-median" style="left:' + x(s.median) + '" title="Median: ' + esc(f(s.median)) + '"></span>' +
+          (mine != null ? '<span class="bm-you" style="left:' + x(mine) + '" title="You: ' + esc(f(mine)) + '"><b>You</b></span>' : '') + '</div>';
+      }
+      // words = [more, less]: "You charge more than 56% of them."
+      function rows(groups, mine, f, words, max) {
+        var shown = groups.filter(function (g) { return g.ok; }), thin = groups.filter(function (g) { return !g.ok; });
+        return shown.map(function (g) { return row(g.label, g, mine, f, words, max); }).join('') +
+          (thin.length ? '<p class="meta">Not enough practitioners yet to compare in ' + thin.map(function (g) { return esc(g.label); }).join(', ') + '.</p>' : '');
+      }
+      function row(label, s, mine, f, words, max) {
+        var p = s.percentile, pct = p == null ? '' : p === 50 ? ' You are right in the middle.' : ' You ' + (p > 50 ? words[0] + ' ' + p : words[1] + ' ' + (100 - p)) + '% of them.';
+        return '<div class="bm-row"><div class="bm-label">' + esc(label) + ' <span class="meta">· ' + s.n + ' practitioners</span></div>' + bar(s, mine, f, max) +
+          '<p class="bm-text">Median ' + esc(f(s.median)) + ', middle half ' + esc(f(s.p25)) + ' to ' + esc(f(s.p75)) + '.' + esc(pct) + '</p></div>';
+      }
+      fetch('/api/claim/benchmark').then(function (r) { return r.json(); }).then(function (d) {
+        if (!d.ok) { (d.error === 'no_listing' ? $('bm-no-listing') : $('bm-signed-out')).hidden = false; return; }
+        var cur = d.currency, money = function (v) { return fmt(v, cur); }, perMin = function (v) { return fmt(v, cur, 2) + '/min'; };
+        $('bm-title').textContent = 'How ' + d.name + ' compares';
+        $('bm-intro').innerHTML = 'Private to you. <a href="' + esc(d.listingPath) + '">Your listing</a> · <a href="/claim/profile/">Edit your profile</a>';
+        $('bm-price-note').textContent = d.you.price == null ? 'Add your session price in your profile to see where you stand. The groups below show what others charge.'
+          : d.you.priceIsSeed ? 'Your price here is the one we found on your website: ' + money(d.you.price) + '. Confirm it in your profile.' : 'Your first-session price: ' + money(d.you.price) + '.';
+        $('bm-price').innerHTML = rows(d.price, d.you.price, money, ['charge more than', 'charge less than']);
+        var ym = d.you.price && d.you.minutes ? d.you.price / d.you.minutes : null;
+        $('bm-perminute').innerHTML = (d.you.minutes ? '' : '<p class="meta">Add your session length in your profile to compare your price per minute.</p>') +
+          rows(d.perMinute, ym, perMin, ['charge more per minute than', 'charge less per minute than']);
+        $('bm-region').textContent = d.reputation.region;
+        var rep = d.reputation;
+        $('bm-reputation').innerHTML = rows([{ ...rep.rating, label: 'Rating' }], rep.you.reviews > 0 ? rep.you.rating : null, function (v) { return fmt(v, '', 1) + '★'; }, ['are rated higher than', 'are rated lower than'], 5) +
+          rows([{ ...rep.reviews, label: 'Number of reviews' }], rep.you.reviews, function (v) { return fmt(v); }, ['have more reviews than', 'have fewer reviews than']);
+        if (d.visibility) {
+          var v = d.visibility, names = { views: 'Listing views', phone: 'Phone clicks', website: 'Website clicks', directions: 'Directions', maps: 'Google Maps', booking: 'Booking clicks' };
+          $('bm-visibility').innerHTML = '<table class="bm-table"><thead><tr><th></th><th>You</th><th>Average listing in ' + esc(d.reputation.region) + '</th></tr></thead><tbody>' +
+            Object.keys(names).map(function (k) { return '<tr><th>' + names[k] + '</th><td>' + (v.you[k] || 0) + '</td><td>' + v.regionAverage[k] + '</td></tr>'; }).join('') +
+            '</tbody></table><p class="meta">' + v.regionListings + ' listings in the region. Complete profiles rank higher on the region page.</p>';
+        } else $('bm-visibility').innerHTML = '<p class="meta">Visit numbers are not available right now. Check back later.</p>';
+        $('bm-place').textContent = d.demand ? d.demand.place : '';
+        $('bm-demand').innerHTML = d.demand ? '<p class="bm-big">' + d.demand.searches + '</p><p>searches on ScannerFinder named ' + esc(d.demand.place) + (d.demand.noResult ? ', ' + d.demand.noResult + ' of them for something nobody here lists yet.' : '.') + '</p>'
+          : '<p class="meta">Search numbers are not available right now.</p>';
+        var co = d.competition;
+        $('bm-competition').innerHTML = '<p class="bm-big">' + co.all + '</p><p>other listed practitioners within ' + co.radiusKm + ' km' + (co.byDevice.length ? ': ' + co.byDevice.map(function (x) { return x.n + ' with ' + esc(x.device); }).join(', ') + '.' : '.') + '</p>';
+        var cp = d.completeness;
+        $('bm-profile').innerHTML = (cp.position ? '<p>You are <b>#' + cp.position[0] + ' of ' + cp.position[1] + '</b> on the ' + esc(d.reputation.region) + ' page.</p>' : '') +
+          rows([{ ...cp.region, label: 'Profile completeness' }], cp.you, function (x) { return Math.round(x) + '%'; }, ['have a more complete profile than', 'have a less complete profile than'], 100) + '<p><a class="btn" href="/claim/profile/">Complete your profile</a></p>';
+        $('bm').hidden = false;
+      }).catch(function () { $('bm-signed-out').hidden = false; });
+    })();
+  </script>
+</Base>

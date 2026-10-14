@@ -1,0 +1,172 @@
+---
+// /statistics/ (2026-10-14): proprietary numbers from the directory, written to be quoted. Each finding is
+// one full sentence with the number, the base and the date; methodology, a CSV download, Dataset schema
+// and a "cite this page" box. All figures come from src/lib/stats.mjs at build time.
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { loadStats, PRICE_MIN } from '../lib/stats.mjs';
+const S = loadStats();
+const { site, buildDate } = S.dir;
+const base = `https://${site.domain}`;
+const path = '/statistics/';
+const year = buildDate.slice(0, 4);
+const month = new Date(buildDate + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const fmt = (n) => n.toLocaleString('en-US');
+const title = `Bioresonance Practitioner Statistics ${year}: Devices, Countries, Remote Sessions`;
+const description = `Original data on ${fmt(S.total)} bioresonance practitioners in ${S.countries.length} countries: which scanning device leads in each country, how often each offers remote sessions, and who offers scans. Updated ${buildDate}.`;
+const us = S.countries.find((c) => c.co.code === 'US');
+const topRemote = [...S.devices].filter((d) => d.n >= 20).sort((a, b) => b.remotePct - a.remotePct);
+const lowRemote = topRemote[topRemote.length - 1];
+const remoteCountries = [...S.countries].filter((c) => c.total >= 15).sort((a, b) => b.remotePct - a.remotePct);
+const findings = [
+  `As of ${month}, ${site.brand} lists ${fmt(S.total)} bioresonance and scan practitioners in ${S.countries.length} countries.`,
+  ...S.countries.filter((c) => c.leader && c.total >= 50).map((c) => c.second && c.second.n === c.leader.n
+    ? `In ${c.co.inName}, ${c.leader.label} and ${c.second.label} are tied as the most-named devices, with ${c.leader.n} of ${c.total} listed practitioners each.`
+    : `In ${c.co.inName}, the most-named device is ${c.leader.label}, with ${c.leader.n} of ${c.total} listed practitioners${c.second ? `; next is ${c.second.label}, with ${c.second.n}` : ''}.`),
+  S.price.ok ? `The median published price of a scan session is $${S.price.median}, based on ${S.price.n} practitioner websites; the middle half of prices runs from $${S.price.p25} to $${S.price.p75}.` : '',
+  ...(() => { const pr = S.devices.filter((d) => d.price.ok).sort((a, b) => b.price.median - a.price.median); return pr.length >= 2 ? [`Among devices with at least ${PRICE_MIN} published prices, ${pr[0].d.label} sessions cost the most (median $${pr[0].price.median}) and ${pr[pr.length - 1].d.label} sessions the least (median $${pr[pr.length - 1].price.median}).`] : []; })(),
+  `Only ${S.namedPct}% of practitioners (${fmt(S.named)} of ${fmt(S.total)}) name the device they use; ${S.multi} name two or more.`,
+  topRemote.length ? `${topRemote[0].d.label} practitioners are the most likely to offer remote sessions (${topRemote[0].remotePct}%), ${lowRemote.d.label} practitioners the least (${lowRemote.remotePct}%).` : '',
+  remoteCountries.length ? `Remote sessions are most common in ${remoteCountries[0].co.name} (${remoteCountries[0].remotePct}% of practitioners) and least common in ${remoteCountries[remoteCountries.length - 1].co.name} (${remoteCountries[remoteCountries.length - 1].remotePct}%).` : '',
+  S.types[0] ? `The most common type of practice offering scan sessions is "${S.types[0].type}" (${S.types[0].p}% of listings), followed by "${S.types[1]?.type}" (${S.types[1]?.p}%).` : '',
+].filter(Boolean);
+const topTypes = S.types.slice(0, 8);
+const otherTypes = S.types.slice(8).reduce((n, t) => n + t.n, 0);
+const citation = `${site.brand}. "Bioresonance Practitioner Statistics ${year}." ${month}. ${base}${path}`;
+const schema = [{
+  '@context': 'https://schema.org', '@type': 'Dataset', name: `Bioresonance practitioner statistics ${year}`, description,
+  url: base + path, creator: { '@id': `${base}/#publisher` }, dateModified: buildDate, license: 'https://creativecommons.org/licenses/by/4.0/',
+  isAccessibleForFree: true, spatialCoverage: S.countries.map((c) => c.co.name), variableMeasured: ['practitioners per device and country', 'share offering remote sessions', 'share naming their device', 'practice type', 'median published session price (USD)'],
+  distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: `${base}/statistics.csv` }],
+}];
+const maxRemote = Math.max(...S.countries.map((c) => c.remotePct), 1);
+---
+<Base title={`${title} | ${site.brand}`} description={description} path={path} schema={schema}>
+  <Fragment slot="head">
+    <Breadcrumbs site={site} items={[{ name: 'Home', href: '/' }, { name: 'Statistics', href: path }]} />
+    <p class="eyebrow">Original data</p>
+    <h1>Bioresonance Practitioner Statistics {year}</h1>
+    <ul class="keyfacts">
+      <li><b>{fmt(S.total)}</b>practitioners</li>
+      <li><b>{S.countries.length}</b>countries</li>
+      <li><b>{S.devices.length}</b>devices tracked</li>
+      <li>Updated {buildDate}</li>
+    </ul>
+  </Fragment>
+
+  <section class="stat-findings">
+    <h2>Key findings</h2>
+    <ul>{findings.map((f) => <li>{f}</li>)}</ul>
+    <p class="meta">Free to quote with a link to this page. <a href="#cite">How to cite</a> · <a href="/statistics.csv" download>Download the data (CSV)</a></p>
+  </section>
+
+  <section>
+    <h2>Which device leads in each country</h2>
+    <p>Number of listed practitioners who name each device, by country. The leading device in each country is highlighted. A practitioner who names two devices is counted under both.</p>
+    <div class="stat-table-wrap">
+      <table class="stat-table">
+        <thead><tr><th scope="col">Country</th><th scope="col">Listed</th>{S.devices.map((d) => <th scope="col">{d.d.label}</th>)}</tr></thead>
+        <tbody>
+          {S.countries.map((c) => (
+            <tr>
+              <th scope="row"><a href={c.co.path}>{c.co.name}</a></th>
+              <td>{fmt(c.total)}</td>
+              {S.devices.map((d) => { const cell = c.cells.find((x) => x.key === d.d.key); const lead = c.leader && cell.n === c.leader.n && cell.n > 0; return <td class={lead ? 'lead' : cell.n === 0 ? 'zero' : ''}>{cell.n || '–'}</td>; })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Technology profiles</h2>
+    <p>For each device: how many listed practitioners name it, in how many countries, its share of all practitioners who name a device, and how many of them offer remote sessions.</p>
+    <div class="stat-table-wrap">
+      <table class="stat-table">
+        <thead><tr><th scope="col">Device</th><th scope="col">Practitioners</th><th scope="col">Countries</th><th scope="col">Share of device-naming practitioners</th><th scope="col">Offer remote sessions</th></tr></thead>
+        <tbody>
+          {S.devices.map((d) => (
+            <tr><th scope="row"><a href={d.d.path}>{d.d.label}</a></th><td>{fmt(d.n)}</td><td>{d.countries}</td><td>{d.sharePct}%</td><td><span class="bar"><i style={`width:${d.remotePct}%`}></i></span> {d.remotePct}%</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {S.price.ok && (
+  <section>
+    <h2>What a scan session costs</h2>
+    <p>Median price of a first or single session as published on practitioners' own websites, converted to US dollars. The typical range is the middle half of prices (25th to 75th percentile). Shown only where at least {PRICE_MIN} practitioners publish a price. Across all devices and countries: <strong>${S.price.median}</strong> ({S.price.n} websites, typical range ${S.price.p25}–${S.price.p75}).</p>
+    <div class="stat-table-wrap">
+      <table class="stat-table narrow">
+        <thead><tr><th scope="col">Device</th><th scope="col">Median price</th><th scope="col">Typical range</th><th scope="col">Websites</th></tr></thead>
+        <tbody>{[...S.devices].filter((d) => d.price.ok).sort((a, b) => b.price.median - a.price.median).map((d) => <tr><th scope="row"><a href={d.d.path}>{d.d.label}</a></th><td><strong>${d.price.median}</strong></td><td>${d.price.p25}–${d.price.p75}</td><td>{d.price.n}</td></tr>)}</tbody>
+      </table>
+    </div>
+    <div class="stat-table-wrap" style="margin-top:1rem">
+      <table class="stat-table narrow">
+        <thead><tr><th scope="col">Country</th><th scope="col">Median price</th><th scope="col">Typical range</th><th scope="col">Websites</th></tr></thead>
+        <tbody>{[...S.countries].filter((c) => c.price.ok).sort((a, b) => b.price.median - a.price.median).map((c) => <tr><th scope="row"><a href={c.co.path}>{c.co.name}</a></th><td><strong>${c.price.median}</strong></td><td>${c.price.p25}–${c.price.p75}</td><td>{c.price.n}</td></tr>)}</tbody>
+      </table>
+    </div>
+    <p class="meta">Individual practitioners' prices are not published on {site.brand} until the practitioner confirms them; only these anonymous medians are shown.</p>
+  </section>
+  )}
+
+  <section>
+    <h2>Remote sessions by country</h2>
+    <p>Share of listed practitioners in each country who state that they offer remote or online sessions. Across all countries: {S.remotePct}% ({fmt(S.remote)} of {fmt(S.total)}).</p>
+    <ul class="stat-bars">
+      {[...S.countries].sort((a, b) => b.remotePct - a.remotePct).map((c) => (
+        <li><span class="lbl">{c.co.name}</span><span class="bar wide"><i style={`width:${(100 * c.remotePct) / maxRemote}%`}></i></span><span class="val">{c.remotePct}% <small>({c.remote} of {c.total})</small></span></li>
+      ))}
+    </ul>
+  </section>
+
+  <section>
+    <h2>How many practitioners name their device</h2>
+    <p>{S.namedPct}% of listed practitioners ({fmt(S.named)} of {fmt(S.total)}) name the scanning device they use on their website or Google profile, and {S.multi} name two or more. The rest describe their sessions without naming the device, which is why {site.brand} records the device only when the practitioner states it.</p>
+    <ul class="stat-bars">
+      {S.countries.map((c) => (
+        <li><span class="lbl">{c.co.name}</span><span class="bar wide"><i style={`width:${c.namedPct}%`}></i></span><span class="val">{c.namedPct}% <small>({c.named} of {c.total})</small></span></li>
+      ))}
+    </ul>
+  </section>
+
+  <section>
+    <h2>Who offers scan sessions</h2>
+    <p>The type of practice, as listed on each business's Google profile.</p>
+    <div class="stat-table-wrap">
+      <table class="stat-table narrow">
+        <thead><tr><th scope="col">Type of practice</th><th scope="col">Listings</th><th scope="col">Share</th></tr></thead>
+        <tbody>
+          {topTypes.map((t) => <tr><th scope="row">{t.type}</th><td>{fmt(t.n)}</td><td>{t.p}%</td></tr>)}
+          {otherTypes > 0 && <tr><th scope="row">Other types</th><td>{fmt(otherTypes)}</td><td>{Math.round((100 * otherTypes) / S.total)}%</td></tr>}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="prose">
+    <h2>Methodology</h2>
+    <p>The figures cover every practitioner listed on {site.brand} on {buildDate}. Listings start from public business records and Google Maps, found by device brand and by the local terms for bioresonance in each country. Each practice was then checked against its own website: device sellers, training schools, network-marketing pages and duplicates were removed, and practices that only work with animals are not listed.</p>
+    <p>Session prices are the price of a first or single session as published on the practitioner's own website, read from the page text and checked for confidence; packages, follow-up-only prices and figures outside $10–$1,000 are left out. Prices in other currencies are converted to US dollars at fixed approximate rates. Medians are shown only where at least {PRICE_MIN} practitioners publish a price.</p>
+    <p>A device is counted for a practitioner only when the practitioner names it on their website or Google profile. Remote sessions are counted when the practitioner states that they offer them. The type of practice is the primary category on the business's Google profile.</p>
+    <p>Limits: the directory covers practitioners who can be found online in {S.countries.length} countries, not every practitioner in each market; practitioners who do not name their device are not counted under any device; and counts change as practices claim, correct or leave their listings. The numbers are updated every time the directory is rebuilt.</p>
+  </section>
+
+  <section class="stat-cite" id="cite">
+    <h2>Cite this page</h2>
+    <p>You are welcome to quote these figures with a link to this page. Suggested citation:</p>
+    <p class="cite-box"><code id="cite-text">{citation}</code> <button type="button" class="btn small" id="cite-copy">Copy</button></p>
+    <p class="meta">Data: <a href="/statistics.csv" download>statistics.csv</a> (CC BY 4.0). Questions: <a href="/contact/">contact us</a>.</p>
+  </section>
+</Base>
+
+<script is:inline>
+(function () {
+  var b = document.getElementById('cite-copy'); if (!b) return;
+  b.addEventListener('click', function () { try { navigator.clipboard.writeText(document.getElementById('cite-text').textContent); b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy'; }, 1500); } catch (e) {} });
+})();
+</script>

@@ -1,0 +1,24 @@
+brand,model,condition,price_low,price_high,currency,monthly_fee,source_type,confidence,as_of,source_url,note
+ZYTO,Hand Cradle (hardware only),new,269,365,USD,,reseller,medium,2026-10-12,https://www.aulternatives.com/store/p6/ZYTO_Hand_Cradle.html,"$269 Aulternatives, $285 Utah seller, $365 Nature's Link (software sold separately)"
+ZYTO,Balance (cradle + software),new,479,479,USD,50,reseller,medium,2026-10-12,https://gr8solutions.com/zyto-balance/,$50/mo per nutritional company library; first month included
+ZYTO,Elite,new,14750,14750,USD,50,manufacturer,medium,2026-10-12,https://zyto.com/products/elite,"Official page ~2 years old; updates require active subscription"
+ZYTO,Certified ZYTO Specialist (training + cradle + 5 mo Balance),kit,1200,1200,USD,,training provider,low,2026-10-12,https://www.trinityschool.org/program/czs,Page ~3 years old
+BICOM,optima (new),new,8000,12000,USD,,third-party estimate,low,2026-10-12,https://bioresonance.org/therapy-machine-2/,Manufacturer UK seller: price on application; range from aggregator guides only
+BICOM,optima B21,used,3500,3500,USD,,marketplace asking,low,2026-10-12,https://www.ebay.com/itm/376120409900,Asking price or best offer
+BICOM,optima B32,used,15750,15750,GBP,,marketplace asking,low,2026-10-12,https://www.ebay.co.uk/itm/225764747574,Listing ended by seller; production of optima ended
+Asyra / Qest4,Asyra Pro / QEST4 system,new,12500,12500,USD,,competitor claim,low,2026-10-12,https://resofield.app/qest4-vs-resofield/,From a competitor comparison page
+Asyra / Qest4,QEST4 Bluetooth,used,9500,9500,USD,,marketplace asking,low,2026-10-12,https://www.ebay.com/itm/236617007350,Seller claims retail ~$17000
+Rayonex,Rayocomp PS 10 basic,new,5490,5490,GBP,,manufacturer,high,2026-10-12,https://rayonex.co.uk/product/rayocomp-ps-10-basic/,Home-use model
+Rayonex,Rayocomp PS 10 MED Plus,new,8990,8990,GBP,,manufacturer,high,2026-10-12,https://rayonex.co.uk/product/rayocomp-ps-10-med-plus/,Class IIa medical device (EU)
+Rayonex,Rayocomp PS 10 Complete Premium,new,9990,10990,GBP,,manufacturer,medium,2026-10-12,https://rayonex.co.uk/the-new-ps10-complete-premium/,£9990 was a late-2025 launch promo
+NLS,Metatron Hunter 4025 (marketplace),new,560,1362,USD,,marketplace,low,2026-10-12,https://www.aliexpress.com/w/wholesale-metatron-hunter-4025-25d-nls.html,Mostly Chinese clones of the Russian Oberon
+NLS,Metatron Hunter 4025 (UK package),new,1995,3445,GBP,,reseller,low,2026-10-12,https://bioresonancetech.com/,"From £1995 package; £3445 eBay bundle with laptop"
+SCIO,SCIO package (discontinued),new,8999,8999,EUR,,reseller,low,2026-10-12,https://www.qxworld.eu/products/scio-biofeedback-legacy/,Net of VAT; discontinued in favour of QUEST S
+SCIO,SCIO pre-owned,used,12750,12750,USD,,reseller,low,2026-10-12,https://whitedoveglobal.com/shop/quantum-biofeedback-2/pre-owned-systems/preowned-scio-biofeedback-system/,Reduced from $14025
+Indigo,Indigo system,new,17995,17995,USD,,reseller,low,2026-10-12,https://www.healthysolutionservices.com/indigo-device-sales,Laptop and training extra
+Indigo,Indigo V1,used,7495,7495,USD,,reseller,low,2026-10-12,https://quantumwellness.ca/mobile/device-sales-used.html,
+Eductor,Eductor,used,12500,13900,USD,,marketplace asking,low,2026-10-12,https://www.ebay.com/itm/187434962545,New packages quoted up to ~$21995
+AO Scan,AO Scan (software subscription),subscription,0,0,USD,149,third-party,low,2026-10-12,https://scienceinsights.org/what-is-an-ao-scan-how-it-works-and-what-science-says/,Runs on own device; sold via distributor network
+NES Health,miHealth / ProVision,unknown,,,USD,,none,none,2026-10-12,,No public price found
+MORA,MORA Nova,unknown,,,EUR,,none,none,2026-10-12,https://www.medicalexpo.com/medical-manufacturer/inflammation-bioresonance-therapy-unit-55497.html,No public price found
+TimeWaver,TimeWaver Pro / Mobile / Frequency,unknown,,,EUR,,none,none,2026-10-12,,No public price found

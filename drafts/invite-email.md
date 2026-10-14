@@ -38,7 +38,7 @@ Could you take 2 minutes to check it's accurate?
 
 {{claim_url}}
 
-Claiming is free for the first year, no card needed. Claimed profiles show above unclaimed ones in {{city}} results, and you can add your booking link, photos and prices.
+Claiming is free, no card needed. Claimed profiles show above unclaimed ones in {{city}} results, and you can add your booking link, photos and prices.
 
 If you'd rather not be listed, just reply "remove" and I'll take it down the same day.
 

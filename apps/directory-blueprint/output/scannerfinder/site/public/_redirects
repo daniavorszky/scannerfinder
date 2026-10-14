@@ -19,3 +19,4 @@
 /company/romania/ /directory/romania/ 301
 /company/romania/:city/ /directory/romania/:city/ 301
 /directory/south-africa/north-west-province/north-west-province/ /directory/south-africa/north-west-province/rustenburg/ 301
+/directory/romania/bucharest/bucuresti-sector-4/ /directory/romania/bucharest/bucharest/ 301

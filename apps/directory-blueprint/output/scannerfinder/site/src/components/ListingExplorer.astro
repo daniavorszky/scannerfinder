@@ -5,14 +5,21 @@
 // public/vendor/leaflet-1.9.4/, tiles come from OpenStreetMap (attribution on the map).
 import Card from './Card.astro';
 import { attrValue } from '../lib/load.mjs';
-const { site, attributes, listings, citySlug, heading, groupBy = 'town', placeLabel = 'Town' } = Astro.props;
-// Country pages filter by region, region pages by town.
-const placeOf = (l) => (groupBy === 'region' ? l.region : l.city);
+const { site, attributes, listings, citySlug, heading, groupBy = 'town', placeLabel = 'City', placePlural = 'Cities' } = Astro.props;
+// Country pages filter by region, region pages by town, cross-country device/service pages by country.
+const placeOf = (l) => (groupBy === 'country' ? l.country.name : groupBy === 'region' ? l.region : l.city);   // 'country' on device and service pages
+
 const count = (key) => listings.filter((l) => attrValue(l, key) === 'true').length;
 const devices = attributes.filter((a) => a.service?.family === 'devices').map((a) => ({ key: a.key, label: a.label, n: count(a.key) })).filter((x) => x.n > 0).sort((a, b) => b.n - a.n);
 const SERVICE_KEYS = ['remote_sessions', 'free_consultation', 'animal_sessions'];
 const services = attributes.filter((a) => SERVICE_KEYS.includes(a.key)).map((a) => ({ key: a.key, label: a.label, n: count(a.key) })).filter((x) => x.n > 0);
-const towns = [...listings.reduce((m, l) => m.set(placeOf(l), (m.get(placeOf(l)) || 0) + 1), new Map())].map(([name, n]) => ({ name, n })).sort((a, b) => b.n - a.n || a.name.localeCompare(b.name));
+const towns = [...listings.reduce((m, l) => m.set(placeOf(l), (m.get(placeOf(l)) || 0) + 1), new Map())].map(([name, n]) => ({ name, n })).sort((a, b) => a.name.localeCompare(b.name));   // A–Z in the filter (2026-10-14, Dan)
+// Places under site.cityFloor sit behind "View all <places>" (none hidden when no place reaches the floor).
+const placeFloor = site.cityFloor || 3;
+// One A–Z list; places under the floor carry .ex-minor and stay hidden until "View all" (none hidden when no place reaches it).
+const hasMajor = towns.some((t) => t.n >= placeFloor);
+const isMinor = (t) => hasMajor && t.n < placeFloor;
+const minorCount = towns.filter(isMinor).length;
 const hasPins = listings.some((l) => l.lat && l.lng);
 const v = (globalThis.__sfBuild ||= Date.now().toString(36));
 ---
@@ -26,13 +33,13 @@ const v = (globalThis.__sfBuild ||= Date.now().toString(36));
           {devices.length > 0 && (
             <fieldset>
               <legend>Technology</legend>
-              {devices.map((d) => <label class="ex-check"><input type="checkbox" name="attr" value={d.key} /> <span>{d.label}</span> <small>{d.n}</small></label>)}
+              {devices.map((d) => <label class="ex-check"><input type="checkbox" name="attr" value={d.key} data-kind="device" /> <span>{d.label}</span> <small>{d.n}</small></label>)}
             </fieldset>
           )}
           {services.length > 0 && (
             <fieldset>
               <legend>Options</legend>
-              {services.map((d) => <label class="ex-check"><input type="checkbox" name="attr" value={d.key} /> <span>{d.label}</span> <small>{d.n}</small></label>)}
+              {services.map((d) => <label class="ex-check"><input type="checkbox" name="attr" value={d.key} data-kind="option" /> <span>{d.label}</span> <small>{d.n}</small></label>)}
             </fieldset>
           )}
           <fieldset>
@@ -47,8 +54,9 @@ const v = (globalThis.__sfBuild ||= Date.now().toString(36));
             <fieldset>
               <legend>{placeLabel}</legend>
               <div class="ex-towns">
-                {towns.map((t) => <label class="ex-check"><input type="checkbox" name="town" value={t.name} /> <span>{t.name}</span> <small>{t.n}</small></label>)}
+                {towns.map((t) => <label class={isMinor(t) ? 'ex-check ex-minor' : 'ex-check'}><input type="checkbox" name="town" value={t.name} /> <span>{t.name}</span> <small>{t.n}</small></label>)}
               </div>
+              {minorCount > 0 && <button type="button" class="ex-more" aria-expanded="false" data-less={`Show fewer ${placePlural.toLowerCase()}`}>View all {placePlural.toLowerCase()} ({towns.length})</button>}
             </fieldset>
           )}
           <button type="reset" class="ex-reset">Clear all filters</button>
@@ -58,7 +66,7 @@ const v = (globalThis.__sfBuild ||= Date.now().toString(36));
 
     <div class="ex-main">
       <div class="ex-bar">
-        <p class="ex-count" aria-live="polite"><b id="ex-n">{listings.length}</b> of {listings.length} {site.niche.plural}</p>
+        <p class="ex-count" aria-live="polite"><b id="ex-n">{listings.length}</b> {site.niche.plural}<span id="ex-range"></span></p>
         <label class="ex-sort">Sort
           <select id="ex-sort">
             <option value="rec">Recommended</option>
@@ -72,6 +80,7 @@ const v = (globalThis.__sfBuild ||= Date.now().toString(36));
       <!-- copy:skip -->
       <div class="grid" id="ex-grid">{listings.map((l) => <Card l={l} citySlug={citySlug} town={placeOf(l)} />)}</div>
       <!-- /copy:skip -->
+      <nav class="ex-pages" id="ex-pages" aria-label="Pagination" hidden></nav>
       <p class="ex-empty" id="ex-empty" hidden>No practitioners match these filters. <button type="button" class="linkish" id="ex-clear">Clear the filters</button>.</p>
     </div>
   </div>

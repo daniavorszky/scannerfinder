@@ -28,6 +28,7 @@ fs.writeFileSync('./public/_redirects', [`/company /directory/ 301`, `/company/ 
   ...dir.countries.flatMap((c) => [`/company/${c.slug}/ ${c.path} 301`, `/company/${c.slug}/:city/ ${c.path}:city/ 301`]),
   // One-off moves of pages that were live (add here, never in public/_redirects, which this rewrites).
   `/directory/south-africa/north-west-province/north-west-province/ /directory/south-africa/north-west-province/rustenburg/ 301`,   // 2026-10-14, town fixed in data
+  `/directory/romania/bucharest/bucuresti-sector-4/ /directory/romania/bucharest/bucharest/ 301`,   // 2026-10-14, Sector 4 dropped from the address
 ].join('\n') + '\n');
 
 export default defineConfig({

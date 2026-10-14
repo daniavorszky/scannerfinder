@@ -30,7 +30,7 @@ Sales columns the member flips by hand: `featured` (`city` / `county` / `state`)
 - Two listing states: basic (no photos, nofollow website link) and optimized (claimed premium or any featured tier: photos, followed link, embedded map, badge).
 - Launch lean: thin listings (`thin=true`, or under 5 reviews or no description) and the badge, claim, featured and legal pages carry `noindex` and are excluded from the sitemap. Claiming or a paid tier un-thins a page.
 - JSON-LD per page type (WebSite, Organization with founder and publisher, Person on About, CollectionPage + ItemList of the business type on city and service pages, the business type from `niche.schemaType` with hours on listings (no `aggregateRating`: the ratings are Google's, wiki/seo/schema.md), telephone in E.164, FAQPage, BreadcrumbList, Article on resources), `datePublished` from `launchDate` and `dateModified` from the build date.
-- Internal links: every listing page lists four other listings from its city (the next four in the city's order, so every listing is linked from four others) and the service pages it appears on; the home page has a "See all N cities" button under the eight city cards and the footer an "All N cities" link.
+- Internal links: every listing page lists four other listings from its city (the next four in the city's order, so every listing is linked from four others) and the service pages it appears on; the footer has an "All N cities" link.
 - A default favicon (`/favicon.svg`: the brand's first letter on the header color).
 - Design tokens from `site.json` as CSS variables; no eyebrow labels, no colored card borders, cards carry data.
 - Facts as visible text: FAQs, hours and attributes are never in accordions.

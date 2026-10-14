@@ -1,7 +1,6 @@
 ---
 // The directory hub: the sections shared by the home page and /directory/ (wiki/components/page-sections.md):
 // stat cards and the largest cities, the featured band, the highest-rated grid, the claim callout and the A to Z city index.
-import ClaimCta from './ClaimCta.astro';
 import FeaturedBand from './FeaturedBand.astro';
 import { topAttrs, loadDirectory } from '../lib/load.mjs';
 const { site, cities, listings, stats, homeFeatured, statePath } = Astro.props;
@@ -11,7 +10,7 @@ const { devices, features, countries } = loadDirectory();
 const excerpt = (t, n = 28) => { const w = (t || '').split(/\s+/); return w.length > n ? w.slice(0, n).join(' ') + '\u2026' : w.join(' '); };
 const confirmed = (l) => !site.sortAttribute || l.attrs.some((a) => a.key === site.sortAttribute && a.value === 'true');
 const spotlight = [...listings].filter((l) => !l.thin && !l.featured && !homeFeatured.includes(l) && l.rating >= 4.5 && l.reviews >= 25 && confirmed(l))
-  .sort((a, b) => b.score - a.score || b.reviews - a.reviews).slice(0, 6);
+  .sort((a, b) => b.score - a.score || b.reviews - a.reviews).slice(0, 3);   // top 3 on the home page (2026-10-14, Dan)
 // Every city page, grouped by first letter for the city index.
 const cityGroups = [...cities].sort((a, b) => a.name.localeCompare(b.name)).reduce((acc, c) => { const L = c.name[0].toUpperCase(); const g = acc.find((x) => x.letter === L); if (g) g.cities.push(c); else acc.push({ letter: L, cities: [c] }); return acc; }, []);
 ---
@@ -24,12 +23,22 @@ const cityGroups = [...cities].sort((a, b) => a.name.localeCompare(b.name)).redu
         <div><dt>Google reviews</dt><dd>{stats.reviews.toLocaleString('en-US')}</dd></div>
       </dl>
     </div>
+    {devices.length > 0 && (
+      <div id="devices" class="hub-devices">
+        <h2>Find a practitioner by device</h2>
+        <!-- copy:skip -->
+        <ul class="pill-links">{devices.map((s) => <li><a href={s.path}><span class="name">{s.label}</span> <span class="n">{s.count}</span></a></li>)}</ul>
+        <!-- /copy:skip -->
+      </div>
+    )}
     <h2>Find {site.niche.plural} in your country</h2>
+    {/* Rule (2026-10-14, Dan): countries ordered by listing count, most first, A–Z on ties. Computed from listings.csv
+        at every build, so new listings reorder the cards on the next deploy. Do not hard-code this order. */}
     <ul class="city-cards">
-      {countries.map((c) => (
+      {[...countries].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).map((c) => (
         <li><a href={c.path}>
           <h3 class="name">{c.name}</h3>
-          <span class="big"><b>{c.count}</b>{site.niche.plural}</span>
+          <span class="big"><b>{c.count}</b>practitioners</span>
           <span class="small">{c.cities.length ? `${c.cities.length} regions` : `${c.attrCounts[site.sortAttribute] || 0} ${site.confirmedLabel}`}</span>
         </a></li>
       ))}
@@ -61,16 +70,6 @@ const cityGroups = [...cities].sort((a, b) => a.name.localeCompare(b.name)).redu
     </section>
   )}
 
-  <ClaimCta site={site} />
-
-  {devices.length > 0 && (
-    <section id="devices">
-      <h2>Find a practitioner by device</h2>
-      <!-- copy:skip -->
-      <ul class="city-grid svc-grid">{devices.map((s) => <li><a href={s.path}><span class="name">{s.label}</span> <span class="n">{s.count}</span></a></li>)}</ul>
-      <!-- /copy:skip -->
-    </section>
-  )}
   {features.length > 0 && (
     <section id="services">
       <h2>Remote sessions and sessions for animals</h2>

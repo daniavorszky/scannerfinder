@@ -32,7 +32,6 @@ const cityGroups = [...cities].sort((a, b) => a.name.localeCompare(b.name)).redu
         </a></li>
       ))}
     </ul>
-    {cities.length > 8 && <p class="see-all"><a class="btn" href="#cities">See all {cities.length} cities</a></p>}
   </section>
 
   <FeaturedBand site={site} items={homeFeatured} place={site.state.name} price={site.tiers?.city?.price} />

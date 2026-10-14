@@ -46,16 +46,15 @@ const schema = [
       <li>Updated {buildDate}</li>
     </ul>
   </Fragment>
+  {devicesHere.length > 0 && (
+    <section>
+      <h2>Find a practitioner by device in {town.name}</h2>
+      <ul class="pill-links">{devicesHere.map((x) => <li><a href={x.cp ? x.cp.path : x.d.path} data-filter={x.d.key}><span class="name">{x.d.label}</span> <span class="n">{x.n}</span></a></li>)}</ul>
+    </section>
+  )}
   <ListingExplorer site={site} attributes={attributes} listings={cards} citySlug={region.slug} heading={`${site.niche.title} in ${town.name}`} />
 
   <FeaturedBand site={site} items={town.featured} place={town.name} price={site.tiers?.city?.price} />
-
-  {devicesHere.length > 0 && (
-    <section>
-      <h2>Devices used by practitioners in {town.name}</h2>
-      <ul class="city-grid svc-grid">{devicesHere.map((x) => <li><a href={x.cp ? x.cp.path : x.d.path}><span class="name">{x.d.label}</span> <span class="n">{x.n}</span></a></li>)}</ul>
-    </section>
-  )}
 
   {town.nearby.length > 0 && (
     <section>
@@ -66,8 +65,8 @@ const schema = [
       </ul>
     </section>
   )}
-  <ClaimCta site={site} />
 
   <div class="prose loc-text"><p set:html={intro}></p></div>
   {faqs.length > 0 && <Faq items={faqs.map((f) => ({ ...f, html: linkNames(f.a, town.listings) }))} title={`Common questions about ${site.niche.plural} in ${town.name}`} />}
+  <ClaimCta site={site} />
 </Base>

@@ -127,7 +127,7 @@ const schema = [
     <p>By country:</p>
     <ul class="city-grid">{countries.map((c) => <li><a href={c.path}><span class="name">{c.name}</span></a></li>)}</ul>
     <p>By device:</p>
-    <ul class="city-grid svc-grid">{devices.map((x) => <li><a href={x.path}><span class="name">{x.label}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+    <ul class="pill-links">{devices.map((x) => <li><a href={x.path}><span class="name">{x.label}</span> <span class="n">{x.count}</span></a></li>)}</ul>
     <p>Thinking of offering sessions yourself? Read the <a href="/bioresonance-machines/">bioresonance machines buyer's guide</a>.</p>
   </article>
 

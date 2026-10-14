@@ -1,5 +1,6 @@
 // Region page explorer (src/components/ListingExplorer.astro): live filters, sort and a Leaflet map.
 // The cards are already in the page; this only hides, reorders and numbers them, and keeps the pins in step.
+// Results are paged 10 at a time (like mypeptidematch.com/clinics/<state>/<city>); the map shows the current page's pins.
 // On /search/ the explorer starts empty (data-deferred); public/search.js fills the cards and calls window.sfExplorerInit().
 (function () {
   function init() {
@@ -14,6 +15,9 @@
   var mapEl = document.getElementById('ex-map');
   var cards = Array.prototype.slice.call(grid.querySelectorAll('.card'));
   cards.forEach(function (c, i) { c.dataset.order = i; });
+  var rangeEl = document.getElementById('ex-range');
+  var pagesEl = document.getElementById('ex-pages');
+  var PER = 10, page = 1, lastShown = [];
   var map = null, layer = null, markers = {};
 
   // Mobile: the filter panel starts closed so the results come first.
@@ -44,17 +48,43 @@
     return function (a, b) { return a.dataset.order - b.dataset.order; };
   }
 
+  // Filters and sort start again from page 1.
   function apply() {
     var s = state();
-    var shown = cards.filter(function (c) { return matches(c, s); }).sort(sorter(sortSel.value));
-    cards.forEach(function (c) { c.hidden = true; delete c.dataset.pin; });
-    shown.forEach(function (c, i) { c.hidden = false; c.dataset.pin = i + 1; grid.appendChild(c); });
-    cards.filter(function (c) { return c.hidden; }).forEach(function (c) { grid.appendChild(c); });
-    nEl.textContent = shown.length;
-    empty.hidden = shown.length > 0;
+    lastShown = cards.filter(function (c) { return matches(c, s); }).sort(sorter(sortSel.value));
+    lastShown.forEach(function (c, i) { c.dataset.pin = i + 1; grid.appendChild(c); });
+    cards.forEach(function (c) { if (lastShown.indexOf(c) === -1) { delete c.dataset.pin; grid.appendChild(c); } });
+    nEl.textContent = lastShown.length;
+    empty.hidden = lastShown.length > 0;
     var n = s.attrs.length + s.towns.length + (s.rating ? 1 : 0);
     activeEl.hidden = !n; activeEl.textContent = n ? n + ' active' : '';
-    drawPins(shown);
+    showPage(1, false);
+  }
+  function showPage(p, scroll) {
+    var total = Math.max(1, Math.ceil(lastShown.length / PER));
+    page = Math.min(Math.max(1, p), total);
+    var from = (page - 1) * PER, to = Math.min(from + PER, lastShown.length);
+    var onPage = lastShown.slice(from, to);
+    cards.forEach(function (c) { c.hidden = onPage.indexOf(c) === -1; });
+    if (rangeEl) rangeEl.textContent = lastShown.length > PER ? ' · showing ' + (from + 1) + '–' + to : '';
+    renderPager(total);
+    drawPins(onPage);
+    if (scroll) root.querySelector('.ex-bar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  // 1 … 4 5 6 … 12: first, last, and the current page with one neighbour each side.
+  function renderPager(total) {
+    if (!pagesEl) return;
+    pagesEl.hidden = total < 2;
+    if (total < 2) { pagesEl.innerHTML = ''; return; }
+    var nums = [];
+    for (var i = 1; i <= total; i++) if (i === 1 || i === total || Math.abs(i - page) <= 1) nums.push(i);
+    var html = '<button type="button" class="ex-pg ex-pg-step" data-p="' + (page - 1) + '" aria-label="Previous page"' + (page === 1 ? ' disabled' : '') + '>‹</button>';
+    nums.forEach(function (i, k) {
+      if (k && i - nums[k - 1] > 1) html += '<span class="ex-pg-gap" aria-hidden="true">…</span>';
+      html += '<button type="button" class="ex-pg" data-p="' + i + '"' + (i === page ? ' aria-current="page"' : '') + ' aria-label="Page ' + i + '">' + i + '</button>';
+    });
+    html += '<button type="button" class="ex-pg ex-pg-step" data-p="' + (page + 1) + '" aria-label="Next page"' + (page === total ? ' disabled' : '') + '>›</button>';
+    pagesEl.innerHTML = html;
   }
 
   // ---- map ----
@@ -68,7 +98,7 @@
     layer = L.layerGroup().addTo(map);
     map.on('focus', function () { map.scrollWheelZoom.enable(); });
     map.on('blur', function () { map.scrollWheelZoom.disable(); });
-    apply();
+    showPage(page, false);
   }
   function drawPins(shown) {
     if (!map) return;
@@ -89,6 +119,10 @@
     if (pts.length === 1) map.setView(pts[0], 12);
     else if (pts.length) map.fitBounds(pts, { padding: [28, 28], maxZoom: 13 });
   }
+  if (pagesEl) pagesEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-p]'); if (!b || b.disabled) return;
+    showPage(parseInt(b.dataset.p, 10), true);
+  });
   function highlight(card, scroll) {
     cards.forEach(function (c) { c.classList.remove('ex-hot'); });
     card.classList.add('ex-hot');
@@ -112,11 +146,55 @@
     } else start();
   }
 
+  // "View all <places>": the places under the floor (.ex-minor) stay hidden until asked for.
+  var moreBtn = form.querySelector('.ex-more'), moreBox = form.querySelector('.ex-towns');
+  if (moreBtn && moreBox) {
+    var moreLabel = moreBtn.textContent;
+    moreBtn.addEventListener('click', function () {
+      var open = !moreBox.classList.contains('show-all');
+      moreBox.classList.toggle('show-all', open);
+      moreBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      moreBtn.textContent = open ? moreBtn.dataset.less : moreLabel;
+    });
+  }
   form.addEventListener('change', apply);
   form.addEventListener('reset', function () { setTimeout(apply, 0); });
   sortSel.addEventListener('change', apply);
   document.getElementById('ex-clear').addEventListener('click', function () { form.reset(); });
   apply();
+
+  // Preset filters (2026-10-14, Dan). A device pill above the map (data-filter) or a region link on a device page (data-place)
+  // filters this map in place; its href stays a real page for crawlers and no-JS. A link from another page carries
+  // #device=<key>, #option=<key> and/or #place=<name>, and the map opens with those ticked.
+  function box(name, value) {
+    return Array.prototype.find.call(form.elements, function (el) { return el.name === name && el.value === value; }) || null;
+  }
+  function preset(attr, place, scroll) {
+    var a = attr ? box('attr', attr) : null, p = place ? box('town', place) : null;
+    if ((attr && !a) || (place && !p) || (!a && !p)) return false;
+    Array.prototype.forEach.call(form.elements, function (el) {
+      if (el.type === 'checkbox') el.checked = false;
+      if (el.name === 'rating') el.checked = el.value === '0';
+    });
+    if (a) a.checked = true;
+    if (p) { p.checked = true; if (moreBox && p.closest('.ex-minor') && !moreBox.classList.contains('show-all')) moreBtn.click(); }
+    apply();
+    if (scroll) root.scrollIntoView({ behavior: scroll, block: 'start' });
+    var h = [];
+    if (a) h.push((a.dataset.kind || 'device') + '=' + encodeURIComponent(attr));
+    if (p) h.push('place=' + encodeURIComponent(place));
+    history.replaceState(null, '', '#' + h.join('&'));
+    return true;
+  }
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest && e.target.closest('a[data-filter], a[data-place]');
+    if (!link || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    if (preset(link.dataset.filter, link.dataset.place, 'smooth')) e.preventDefault();
+  });
+  if (location.hash.length > 1) {
+    var q = new URLSearchParams(location.hash.slice(1));
+    preset(q.get('device') || q.get('option'), q.get('place'), 'auto');
+  }
   }
   window.sfExplorerInit = init;
   var r0 = document.getElementById('explorer');

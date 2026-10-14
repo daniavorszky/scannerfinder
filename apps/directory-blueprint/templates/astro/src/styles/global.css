@@ -371,7 +371,6 @@ pre.snippet { background: var(--surface); box-shadow: var(--shadow); border-radi
 @media (max-width: 820px) { .split { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; } .page-head.band { padding: 3.25rem 0 4rem; } .page-head.band:has(+ main .stat-cards) { padding-bottom: 1rem; } .stat-cards { gap: 1rem 2rem; padding-top: 2.5rem; } .stat-cards div { padding: 1.1rem 1.1rem 1rem; } }
 @media (max-width: 640px) { body { font-size: 16px; } .cta-band { padding: 1.4rem; } .wrap { padding: 0 1.1rem; } .btn.action, .btn.ghost { width: 100%; text-align: center; } .dir-search { grid-template-columns: 1fr; border-radius: calc(var(--radius) * 1.5); } .dir-search .field + .field::before { display: none; } .dir-search input { background: var(--surface); } }
 /* The link under the eight largest cities, the service links and the related listings on a listing page. */
-.see-all { text-align: center; margin: 1.75rem 0 0; }
 .svc-lead { margin: 1.1rem 0 .3rem; }
 .svc-links a { color: var(--heading); text-decoration: none; }
 .svc-links a:hover { text-decoration: underline; }

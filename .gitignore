@@ -1,5 +1,5 @@
 # ScannerFinder project repo (2026-10-14). Internal data with emails stays out of Git.
-/data/
+/data
 node_modules
 node_modules.nosync
 dist

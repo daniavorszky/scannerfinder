@@ -5,6 +5,7 @@ import Card from '../components/Card.astro';
 import Faq from '../components/Faq.astro';
 import SearchForm from '../components/SearchForm.astro';
 import DirectoryHub from '../components/DirectoryHub.astro';
+import ClaimCta from '../components/ClaimCta.astro';
 import { loadDirectory } from '../lib/load.mjs';
 import { paragraphs } from '../lib/load.mjs';
 const { site, indexCities: cities, listings, stats, homeFeatured, statePath, buildDate, attributes } = loadDirectory();
@@ -69,4 +70,5 @@ const schema = [
   </section>
 
   <Faq items={site.faq || []} />
+  <ClaimCta site={site} />
 </Base>

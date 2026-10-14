@@ -24,10 +24,8 @@ const title = `${site.niche.title} in ${co.inName}: ${co.count} Listed${cities.l
 const description = `${co.count} ${site.niche.plural} in ${co.inName}${cities.length ? `, across ${cities.length} regions` : ''}. Compare devices (ZYTO, BICOM, AO Scan and more), remote sessions, ratings and phone numbers.`;
 const alpha = [...cities].sort((a, b) => a.name.localeCompare(b.name));
 const devicesHere = dir.devices.map((d) => ({ d, n: co.attrCounts[d.key] || 0, cp: d.countryPages.find((x) => x.country.code === co.code) })).filter((x) => x.n > 0).sort((a, b) => b.n - a.n);
-// Country explorer: the first 60 in country order (site.maxCardsPerCity), the rest as plain links underneath.
-const ranked = co.listings.filter((l) => !co.featured.includes(l));
-const explorerListings = ranked.slice(0, site.maxCardsPerCity || 60);
-const rest = ranked.slice(explorerListings.length);
+// Country explorer: every listing as a card, paged 10 at a time by explorer.js (2026-10-14, Dan: no cap, no fold).
+const explorerListings = co.listings.filter((l) => !co.featured.includes(l));
 const topTowns = dir.towns.filter((t) => t.country.code === co.code).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).slice(0, 24);
 const schema = [
   { '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': base + co.path, url: base + co.path, name: title, datePublished: site.launchDate, dateModified: buildDate },
@@ -54,35 +52,28 @@ const faqs = co.copy?.faqs || [
       <li>Updated {buildDate}</li>
     </ul>
   </Fragment>
+  {devicesHere.length > 0 && (
+    <section>
+      <h2>Find a practitioner by device in {co.inName}</h2>
+      <ul class="pill-links">{devicesHere.map((x) => <li><a href={x.cp ? x.cp.path : x.d.path} data-filter={x.d.key}><span class="name">{x.d.label}</span> <span class="n">{x.n}</span></a></li>)}</ul>
+    </section>
+  )}
   {alpha.length > 0 && (
     <section>
       <h2>{regionWordPlural} with listed practitioners</h2>
       <ul class="city-grid">{alpha.map((c) => <li><a href={c.path}>{c.name}</a> <span class="n">{c.count}</span></li>)}</ul>
     </section>
   )}
+  <ListingExplorer site={site} attributes={dir.attributes} listings={explorerListings} heading={`Every ${site.niche.singular} in ${co.inName}`} groupBy="region" placeLabel={regionWord} placePlural={regionWordPlural} />
+  <FeaturedBand site={site} items={co.featured} place={co.name} price={site.tiers?.state?.price} />
+  <StatBlock block={countryBlock(co.code)} />
   {topTowns.length > 0 && (
     <section>
       <h2>Cities with the most practitioners</h2>
       <ul class="city-grid">{topTowns.map((t) => <li><a href={t.path}>{t.name}</a> <span class="n">{t.count}</span></li>)}</ul>
     </section>
   )}
-  <ListingExplorer site={site} attributes={dir.attributes} listings={explorerListings} heading={rest.length ? `Top ${site.niche.plural} in ${co.inName}` : `Every ${site.niche.singular} in ${co.inName}`} groupBy="region" placeLabel={regionWord} />
-  {rest.length > 0 && (
-    <section>
-      <h3 class="more-head">{rest.length} more {site.niche.plural} in {co.inName}</h3>
-      <p class="meta">Listings with the fewest reviews. Every one is also on its {regionWord.toLowerCase()} page.</p>
-      <ul class="more-list">{rest.map((l) => <li><a href={l.path}>{l.name}</a> <span class="meta">{l.city}</span>{l.reviews > 0 && <span class="rt"><i aria-hidden="true">★</i> {l.rating.toFixed(1)} <small>({l.reviews})</small></span>}</li>)}</ul>
-    </section>
-  )}
-  <FeaturedBand site={site} items={co.featured} place={co.name} price={site.tiers?.state?.price} />
-  {devicesHere.length > 0 && (
-    <section>
-      <h2>Find a practitioner by device in {co.inName}</h2>
-      <ul class="city-grid svc-grid">{devicesHere.map((x) => <li><a href={x.cp ? x.cp.path : x.d.path}><span class="name">{x.d.label}</span> <span class="n">{x.n}</span></a></li>)}</ul>
-    </section>
-  )}
-  <ClaimCta site={site} />
-  <StatBlock block={countryBlock(co.code)} />
   {intro && <div class="prose loc-text" set:html={paragraphs(intro)}></div>}
   <Faq items={faqs} title={`Common questions about ${site.niche.plural} in ${co.inName}`} />
+  <ClaimCta site={site} />
 </Base>

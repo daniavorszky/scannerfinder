@@ -5,7 +5,7 @@
 // Props: family ('devices' | 'services'), key (attribute key, '' for the index), countryCode (optional).
 import Base from '../layouts/Base.astro';
 import Breadcrumbs from './Breadcrumbs.astro';
-import Card from './Card.astro';
+import ListingExplorer from './ListingExplorer.astro';
 import ClaimCta from './ClaimCta.astro';
 import Faq from './Faq.astro';
 import StatBlock from './StatBlock.astro';
@@ -30,8 +30,9 @@ const top = list.find((l) => l.reviews > 0);
 const description = guide?.seoDescription ? guide.seoDescription : s
   ? `${list.length} ${site.niche.plural} ${family === 'devices' ? `who use ${s.label}` : `offering ${s.label.toLowerCase()}`} in ${scope}.${top ? ` Top rated: ${top.name} (${top.rating.toFixed(1)}, ${top.reviews} reviews).` : ''} Phone numbers, regions and session details.`
   : `${site.niche.title} grouped by ${family === 'devices' ? 'the scanning device they use: ZYTO, SCIO, AO Scan, Asyra, NLS, BICOM and more' : 'remote sessions and sessions for pets and horses'}.`;
+// Every listing goes into the map explorer (paged by explorer.js, 2026-10-14, Dan); the ItemList schema keeps the first site.maxCardsPerCity.
 const cards = list.slice(0, site.maxCardsPerCity || 60);
-const rest = list.slice(cards.length);
+const placeWord = cp ? ({ US: ['State', 'States'], AU: ['State', 'States'], CA: ['Province', 'Provinces'], ZA: ['Province', 'Provinces'] }[cp.country.code] || ['Region', 'Regions']) : ['Country', 'Countries'];
 const defaultIntro = s ? [
   cp
     ? `${list.length === 1 ? `1 practitioner in ${cp.country.inName} states that they use ${s.label} in their sessions.` : `${list.length} practitioners in ${cp.country.inName} state that they use ${s.label} in their sessions. They are ranked below by Google rating weighted by review count, with featured placements first.`} ${family === 'devices' ? 'Ask on the phone which model they use and how long a session takes.' : ''}`
@@ -41,6 +42,8 @@ const intro = cp ? (cp.intro.length ? cp.intro : defaultIntro) : s ? (s.intro.le
 const regions = s ? (cp ? s.cities.filter((x) => x.city.country.code === countryCode) : s.cities) : [];
 // Listings in regions too small for a page of their own: one "Other regions" entry, so the block adds up to the total.
 const otherRegions = cp ? list.length - regions.reduce((n, x) => n + x.count, 0) : 0;
+// Links from this page into a region or country page preselect this device/option on its map (2026-10-14, Dan).
+const preset = s ? `#${family === 'devices' ? 'device' : 'option'}=${encodeURIComponent(key)}` : '';
 const statBlock = s && family === 'devices' ? (cp ? deviceCountryBlock(key, countryCode) : deviceBlock(key)) : null;
 const crumbs = [{ name: 'Home', href: '/' }, { name: familyName, href: indexPath }, ...(s ? [{ name: s.label, href: s.path }] : []), ...(cp ? [{ name: cp.country.name, href: cp.path }] : [])];
 const schema = [
@@ -74,36 +77,41 @@ if (guide) faqs.unshift(...guide.faqs);
 
   {s ? (
     <>
-      <div class="prose" set:html={paragraphs(intro)}></div>
-      <StatBlock block={statBlock} />
+      {cp ? (
+        <>
+    <div class="prose wide" set:html={paragraphs(intro)}></div>
+          <StatBlock block={statBlock} />
+          {cp && regions.length > 0 && (
+        <details class="towns-fold">   {/* folded like the towns block on region pages (2026-10-14, Dan) */}
+          <summary><h2>{s.label} practitioners by region in {cp.country.inName} <span class="n">{regions.length + (otherRegions > 0 ? 1 : 0)}</span></h2></summary>
+          <!-- copy:skip -->
+          <ul class="city-grid">{regions.map((x) => <li><a href={x.city.path + preset} data-place={x.city.name}><span class="name">{x.city.name}</span> <span class="n">{x.count}</span></a></li>)}{otherRegions > 0 && <li><a href={cp.country.path + preset}><span class="name">Other regions</span> <span class="n">{otherRegions}</span></a></li>}</ul>
+          <!-- /copy:skip -->
+        </details>
+      )}
+          <ListingExplorer site={site} attributes={dir.attributes} listings={list} heading={family === 'devices' ? `Every ${s.label} practitioner${cp ? ` in ${cp.country.inName}` : ''}` : `Every practitioner offering ${s.label.toLowerCase()}`} groupBy={cp ? 'region' : 'country'} placeLabel={placeWord[0]} placePlural={placeWord[1]} />
+        </>
+      ) : (
+        <>
+          {/* Brand pages (2026-10-14, Dan): numbers, then the map, then the intro and guide; by country / by region sit before the FAQ. */}
+          <StatBlock block={statBlock} />
+          <ListingExplorer site={site} attributes={dir.attributes} listings={list} heading={family === 'devices' ? `Every ${s.label} practitioner${cp ? ` in ${cp.country.inName}` : ''}` : `Every practitioner offering ${s.label.toLowerCase()}`} groupBy={cp ? 'region' : 'country'} placeLabel={placeWord[0]} placePlural={placeWord[1]} />
+          <div class="prose wide after-map" set:html={paragraphs(intro)}></div>
       {guide && guide.sections.length > 0 && (
-        <section class="guide prose">
+        <section class="guide prose wide">
           {guide.sections.map((sec) => (<><h2>{sec.h}</h2><Fragment set:html={paragraphs(sec.p)} /></>))}
           {guide.sources.length > 0 && (
             <p class="meta sources">Sources: {guide.sources.map((x, i) => (<>{i > 0 && '; '}<a href={x.url} rel={x.url.startsWith('/') ? undefined : 'nofollow noopener'} target={x.url.startsWith('/') ? undefined : '_blank'}>{x.label}</a></>))}.</p>
           )}
         </section>
       )}
-      {cp && regions.length > 0 && (
-        <section>
-          <h2>{s.label} practitioners by region in {cp.country.inName}</h2>
-          <!-- copy:skip -->
-          <ul class="city-grid">{regions.map((x) => <li><a href={x.city.path}><span class="name">{x.city.name}</span> <span class="n">{x.count}</span></a></li>)}{otherRegions > 0 && <li><a href={cp.country.path}><span class="name">Other regions</span> <span class="n">{otherRegions}</span></a></li>}</ul>
-          <!-- /copy:skip -->
-        </section>
+        </>
       )}
-      <section>
-        <h2>{cards.length < list.length ? `Top ${cards.length} of ${list.length}` : `All ${list.length}`}</h2>
-        <!-- copy:skip -->
-        <div class="grid">{cards.map((l) => <Card l={l} />)}</div>
-        {rest.length > 0 && <ul class="more-list">{rest.map((l) => <li><a href={l.path}>{l.name}</a> <span class="meta">{l.city}</span></li>)}</ul>}
-        <!-- /copy:skip -->
-      </section>
       {!cp && s.byCountry.length > 0 && (
         <section>
           <h2>{s.label} by country</h2>
           <!-- copy:skip -->
-          <ul class="city-grid">{s.byCountry.map((x) => <li><a href={s.countryPages.length ? x.path : x.country.path}><span class="name">{x.country.name}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+          <ul class="city-grid">{s.byCountry.map((x) => <li><a href={s.countryPages.length ? x.path : x.country.path + preset}><span class="name">{x.country.name}</span> <span class="n">{x.count}</span></a></li>)}</ul>
           <!-- /copy:skip -->
         </section>
       )}
@@ -111,7 +119,7 @@ if (guide) faqs.unshift(...guide.faqs);
         <section>
           <h2>{s.label} by region</h2>
           <!-- copy:skip -->
-          <ul class="city-grid">{regions.map((x) => <li><a href={x.city.path}><span class="name">{x.city.name}, {x.city.country.short}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+          <ul class="city-grid">{regions.map((x) => <li><a href={x.city.path + preset}><span class="name">{x.city.name}, {x.city.country.short}</span> <span class="n">{x.count}</span></a></li>)}</ul>
           <!-- /copy:skip -->
         </section>
       )}
@@ -119,13 +127,13 @@ if (guide) faqs.unshift(...guide.faqs);
       <section>
         <h2>Other {family === 'devices' ? 'devices' : 'session types'}</h2>
         <!-- copy:skip -->
-        <ul class="city-grid svc-grid">{all.filter((x) => x !== s).map((x) => <li><a href={x.path}><span class="name">{x.label}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+        <ul class="pill-links">{all.filter((x) => x !== s).map((x) => <li><a href={x.path}><span class="name">{x.label}</span> <span class="n">{x.count}</span></a></li>)}</ul>
         <!-- /copy:skip -->
       </section>
     </>
   ) : (
     <section>
-      <ul class="city-grid svc-grid">{all.map((x) => <li><a href={x.path}><span class="name">{x.title}</span> <span class="n">{x.count}</span></a></li>)}</ul>
+      <ul class="pill-links">{all.map((x) => <li><a href={x.path}><span class="name">{x.title.replace(/\s*practitioners\b/i, "")}</span> <span class="n">{x.count}</span></a></li>)}</ul>
       <p class="meta"><a href="/directory/">Or browse by country and region</a>.</p>
     </section>
   )}

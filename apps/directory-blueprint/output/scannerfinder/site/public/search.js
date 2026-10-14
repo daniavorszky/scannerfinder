@@ -63,18 +63,17 @@
     // The location box offers countries and regions, and a visitor may also type a town: any of the four counts.
     return [l.c, l.t, l.g, l.k].some(function (v) { return norm(v).indexOf(n) === 0; });
   }
-  // Practitioners per country ('k:' + name), region ('g:' + name) and town ('t:' + region + '|' + town) for one technology, cached.
+  // Practitioners per country ('k:' + name) and per region ('g:' + name) for one technology, cached.
   var techCountCache = {};
   function techCounts(t) {
     if (techCountCache[t]) return techCountCache[t];
     var m = {};
-    index.listings.forEach(function (l) { if (l.a.indexOf(t) === -1) return; m['k:' + l.k] = (m['k:' + l.k] || 0) + 1; m['g:' + l.g] = (m['g:' + l.g] || 0) + 1; m['t:' + l.g + '|' + norm(l.c)] = (m['t:' + l.g + '|' + norm(l.c)] || 0) + 1; });
+    index.listings.forEach(function (l) { if (l.a.indexOf(t) === -1) return; m['k:' + l.k] = (m['k:' + l.k] || 0) + 1; m['g:' + l.g] = (m['g:' + l.g] || 0) + 1; });
     return (techCountCache[t] = m);
   }
-  // A place matches when its name or one of its local spellings (c.a: București for Bucharest) starts with the text.
-  function placeMatch(c, q) { var n = norm(q); return [c.n].concat(c.a || []).some(function (v) { return norm(v).indexOf(n) === 0; }); }
   function cityMatches(q) {
-    return index.cities.filter(function (c) { return placeMatch(c, q); }).slice(0, 8);
+    var n = norm(q);
+    return index.cities.filter(function (c) { return norm(c.n).indexOf(n) === 0; }).slice(0, 8);
   }
   function ratingHtml(l) { return l.v ? '<span class="rt"><i aria-hidden="true">\u2605</i> ' + l.r.toFixed(1) + ' <small>(' + l.v + ')</small></span>' : ''; }
 
@@ -105,8 +104,8 @@
     load().then(function () {
       // With a technology picked, each place shows how many practitioners there use it; places with none are left out.
       var t = tech && tech.value, counts = t ? techCounts(t) : null;
-      var pool = q ? index.cities.filter(function (c) { return placeMatch(c, q); }) : index.cities;
-      var key = function (c) { return c.k ? 'k:' + c.n : c.w ? 't:' + c.w + '|' + norm(c.n) : 'g:' + c.n; };
+      var pool = q ? index.cities.filter(function (c) { return norm(c.n).indexOf(norm(q)) === 0; }) : index.cities;
+      var key = function (c) { return (c.k ? 'k:' : 'g:') + c.n; };
       var hits = counts ? pool.filter(function (c) { return counts[key(c)]; }).sort(function (a, b) { return (b.k || 0) - (a.k || 0) || counts[key(b)] - counts[key(a)]; }) : pool;
       hits = hits.slice(0, counts && !q ? 10 : 8);
       var html = '';
@@ -115,7 +114,7 @@
         var n = counts ? counts[key(c)] : c.c;
         // A thin rule between the countries and the regions that follow them.
         var sep = i > 0 && hits[i - 1].k && !c.k ? ' class="sep"' : '';
-        return '<li' + sep + '><button type="button" data-city="' + esc(c.n) + '"><b>' + esc(c.n) + (c.w ? ' <small>' + esc(c.w) + '</small>' : '') + '</b><span>' + n + (counts ? ' with ' + esc(t) : ' listed') + '</span></button></li>';
+        return '<li' + sep + '><button type="button" data-city="' + esc(c.n) + '"><b>' + esc(c.n) + '</b><span>' + n + (counts ? ' with ' + esc(t) : ' listed') + '</span></button></li>';
       }).join('');
       if (counts && !hits.length) html += '<li class="group">No ' + esc(t) + ' practitioners match that place</li>';
       listNear.innerHTML = html; listNear.hidden = false;
@@ -150,75 +149,32 @@
     var ini = l.n.replace(/[^\p{L}\p{N} ]/gu, '').split(/\s+/).filter(function (w) { return w && !/^(the|and|of|llc|ltd|inc)$/i.test(w); }).slice(0, 2).map(function (w) { return w[0].toUpperCase(); }).join('');
     return '<span class="logo-mark mono" aria-hidden="true">' + esc(ini) + '</span>';
   }
-  // Results (search page): the region page's explorer (filters, map, cards; public/explorer.js), with the visitor's
-  // technology and services ticked. The pool is one level wider than the place asked for, with that place ticked in the
-  // place filter, so unticking it widens the search: a town -> its region's towns, a region -> its country's regions.
-  function card(l, group, keyOf) {
-    var keys = l.a.map(function (a) { return keyOf[a]; }).filter(Boolean).join(' ');
-    return '<article class="card" data-attrs="' + esc(keys) + '" data-rating="' + (l.v ? l.r : 0) + '" data-reviews="' + l.v + '" data-town="' + esc(l[group] || '') + '"' +
-      (l.la || l.lo ? ' data-lat="' + l.la + '" data-lng="' + l.lo + '"' : '') + ' data-name="' + esc(l.n) + '" data-path="' + esc(l.p) + '">' +
-      '<div class="card-head">' + logoHtml(l) + '<h3><a href="' + l.p + '">' + esc(l.n) + '</a></h3></div>' +
-      (l.v ? '<p class="rating"><span class="stars" aria-hidden="true">' + stars(l.r) + '</span> ' + l.r.toFixed(1) + ' <span class="meta">(' + l.v + ' reviews on Google)</span></p>' : '<p class="meta">No reviews yet</p>') +
-      '<p class="meta">' + esc(l.c) + (group !== 'c' && l.g && l.g !== l.c ? ', ' + esc(l.g) : '') + (l.t ? ' (based in ' + esc(l.t) + ')' : '') + '</p>' +
-      (l.a.length ? '<ul class="chips">' + chipsFor(l, '', []).map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '') + '</article>';
-  }
-  function renderExplorer(pool, group, legend, tick, q, placeName, fs) {
-    var ex = document.getElementById('explorer'), exForm = document.getElementById('ex-form');
-    var groupOf = function (l) { return l[group] || ''; };
-    var hits = pool.filter(function (l) { return matchFilters(l, fs) && (!tick || norm(groupOf(l)) === norm(tick)); });
+  function render(hits, q, city, fs) {
     var whatText = (q ? '\u201c' + esc(q) + '\u201d' : '') + (fs.length ? (q ? ' with ' : '') + fs.map(esc).join(', ') : '');
-    var head = (hits.length ? hits.length + ' result' + (hits.length === 1 ? '' : 's') + ' for ' : 'No listings match ') + whatText + (placeName ? ' near ' + esc(placeName) : '');
-    results.innerHTML = '<div class="results-head"><h2>' + head + '</h2><button type="button" class="btn ghost small" id="search-clear">Clear</button></div>' +
-      (hits.length ? '' : '<p>Try a shorter word, a different spelling, fewer services, or pick a place from the list.</p>');
-    results.hidden = false;
-    // Matomo Site Search, once per distinct search: zero-result searches are the white-space report (track.js).
-    var sk = [q, placeName, fs.join(', '), tick || ''].join('|');
-    if (window.sfSearch && window.sfLastSearch !== sk) { window.sfLastSearch = sk; window.sfSearch([q, placeName].filter(Boolean).join(' near '), fs.join(', '), hits.length); }
-    if (!hits.length || !ex) { if (ex) ex.hidden = true; return; }
-    // Technology and option boxes: counts within the pool, the searched ones ticked, empty ones hidden.
-    var keyOf = {};
-    Array.prototype.forEach.call(exForm.querySelectorAll('input[name=attr]'), function (i) {
-      keyOf[i.dataset.label] = i.value;
-      var n = pool.filter(function (l) { return l.a.indexOf(i.dataset.label) !== -1; }).length;
-      i.checked = fs.indexOf(i.dataset.label) !== -1;
-      i.parentNode.querySelector('small').textContent = n;
-      i.parentNode.style.display = !n && !i.checked ? 'none' : '';
-    });
-    Array.prototype.forEach.call(exForm.querySelectorAll('fieldset'), function (f) {
-      var ls = f.querySelectorAll('label.ex-check'); if (ls.length) f.style.display = Array.prototype.every.call(ls, function (x) { return x.style.display === 'none'; }) ? 'none' : '';
-    });
-    // Place filter: towns, regions or countries in the pool, the searched place ticked.
-    var counts = {};
-    pool.forEach(function (l) { var g = groupOf(l); if (g) counts[g] = (counts[g] || 0) + 1; });
-    var places = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); });
-    var fsPlace = document.getElementById('ex-place');
-    fsPlace.querySelector('legend').textContent = legend;
-    fsPlace.querySelector('.ex-towns').innerHTML = places.map(function (g) {
-      return '<label class="ex-check"><input type="checkbox" name="town" value="' + esc(g) + '"' + (tick && norm(g) === norm(tick) ? ' checked' : '') + ' /> <span>' + esc(g) + '</span> <small>' + counts[g] + '</small></label>';
-    }).join('');
-    fsPlace.style.display = places.length < 2 && !tick ? 'none' : '';
-    document.getElementById('ex-grid').innerHTML = pool.map(function (l) { return card(l, group, keyOf); }).join('');
-    document.getElementById('ex-total').textContent = pool.length;
-    ex.hidden = false;
-    if (window.sfExplorerInit) window.sfExplorerInit();
+    var head = (hits.length ? hits.length + ' result' + (hits.length === 1 ? '' : 's') + ' for ' : 'No listings match ') + whatText + (city ? ' near ' + esc(city) : '');
+    var html = '<div class="results-head"><h2>' + head + '</h2><button type="button" class="btn ghost small" id="search-clear">Clear</button></div>';
+    if (hits.length) {
+      html += '<div class="grid">' + hits.slice(0, 24).map(function (l) {
+        return '<article class="card"><div class="card-head">' + logoHtml(l) + '<h3><a href="' + l.p + '">' + esc(l.n) + '</a></h3></div>' +
+          (l.v ? '<p class="rating"><span class="stars" aria-hidden="true">' + stars(l.r) + '</span> ' + l.r.toFixed(1) + ' <span class="meta">(' + l.v + ' reviews on Google)</span></p>' : '<p class="meta">No reviews yet</p>') +
+          '<p class="meta">' + esc(l.c) + (l.t ? ' (based in ' + esc(l.t) + ')' : '') + '</p>' +
+          (l.a.length ? '<ul class="chips">' + chipsFor(l, q, fs).map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '') + '</article>';
+      }).join('') + '</div>';
+      if (hits.length > 24) html += '<p class="meta">Showing the first 24. Add a city or a service to narrow it down.</p>';
+    } else {
+      html += '<p>Try a shorter word, a different spelling, fewer services, or pick a city from the list.</p>';
+    }
+    results.innerHTML = html; results.hidden = false;
+    // Matomo Site Search: zero-result searches are the white-space report (track.js).
+    if (window.sfSearch) window.sfSearch([q, city].filter(Boolean).join(' near '), fs.join(', '), hits.length);
   }
   function runSearch(q, n, fs) {
     load().then(function () {
-      // A typed prefix such as "Bucur" is resolved to the place it starts (Bucharest), so the results say "near <that place>".
-      var place = n ? cityMatches(n)[0] || null : null;
-      if (place && place.n !== n) near.value = place.n;
-      var base = index.listings.filter(function (l) { return matchWhat(l, q); });
-      var pool, group = 'c', legend = 'Town', tick = '';
-      if (!place && n) pool = base.filter(function (l) { return matchNear(l, n); });
-      else if (!place) { pool = base; group = 'k'; legend = 'Country'; }
-      else if (place.k) { pool = base.filter(function (l) { return l.k === place.n; }); group = 'g'; legend = 'Region'; }
-      else if (place.w) { pool = base.filter(function (l) { return l.g === place.w; }); tick = place.n; }
-      else {
-        var co = (index.listings.filter(function (l) { return l.g === place.n; })[0] || {}).k;
-        pool = base.filter(function (l) { return l.k === co; }); group = 'g'; legend = 'Region'; tick = place.n;
-      }
-      pool.sort(function (a, b) { return score(b) - score(a); });
-      renderExplorer(pool, group, legend, tick, q, place ? place.n : n, fs);
+      // A typed prefix such as "Den" is resolved to the city it starts, so the results say "near <that city>".
+      var city = n ? (cityMatches(n)[0] || {}).n || n : '';
+      var hits = index.listings.filter(function (l) { return matchWhat(l, q) && matchNear(l, city) && matchFilters(l, fs); }).sort(function (a, b) { return score(b) - score(a); });
+      if (city !== n) near.value = city;
+      render(hits, q, city, fs);
     });
   }
 
@@ -272,7 +228,7 @@
       load().then(function () {
         // Only a city: go to its page.
         if (!q && !fs.length) { var c = cityMatches(n)[0]; if (c) { location.href = c.p; return; } }
-        location.href = '/search/?' + qs.toString();
+        runSearch(q, n, fs); history.replaceState(null, '', '/search/?' + qs.toString());
       });
       return;
     }
@@ -288,7 +244,11 @@
     if (q0 || f0.length) runSearch(q0, n0, f0);
     else if (n0) load().then(function () { var c = cityMatches(n0)[0]; if (c) location.href = c.p; });
     results.addEventListener('click', function (e) {
-      if (e.target.id === 'search-clear') location.href = '/search/';
+      if (e.target.id === 'search-clear') {
+        results.innerHTML = ''; what.value = ''; near.value = '';
+        boxes.forEach(function (i) { i.checked = false; }); if (tech) tech.value = ''; markTech(); renderPicked();
+        history.replaceState(null, '', '/search/'); what.focus();
+      }
     });
   }
 })();

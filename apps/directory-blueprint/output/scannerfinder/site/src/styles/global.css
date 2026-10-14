@@ -49,31 +49,6 @@ img { max-width: 100%; height: auto; display: block; }
   .nav .sub a:hover { background: none; text-decoration: underline; }
   .nav a.nav-cta { margin-top: .75rem; border-top: 0; text-align: center; padding: .8rem 1rem; }
 }
-/* Sticky header as a semi-transparent pill (Dan, 2026-10-14; look taken from automatenexus.com): the header bar
-   sticks with a small margin, the pill blurs what scrolls under it, and a 2px bar on its bottom edge shows how far
-   down the page the reader is (Base.astro script). The page head slides up under the pill so the hero colour
-   reaches the top of the screen. --hdr-h = header height (12px gap + 60px pill + 2px border). */
-:root { --hdr-h: 74px; }
-html { scroll-padding-top: calc(var(--hdr-h) + 1rem); }
-.site-header { position: sticky; top: 0; z-index: 100; background: none; padding: 12px 12px 0; }
-.site-header .wrap { position: relative; min-height: 60px; padding: .4rem .45rem .4rem 1.4rem; border-radius: 999px;
-  background: color-mix(in srgb, var(--header-bg) 88%, transparent);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4); backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid color-mix(in srgb, var(--header-text) 14%, transparent); box-shadow: 0 8px 30px rgba(22, 23, 28, .18); }
-.site-header .nav a.nav-cta { border-radius: 999px; padding: .6rem 1.2rem; }
-/* The logo PNG's wordmark sits 12% below the image's middle (the icon rises above it): lift it so the wordmark is on the pill's axis. */
-.site-header .logo img { transform: translateY(-12%); }
-.hdr-progress { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; pointer-events: none; }
-.hdr-progress i { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--action); transform: scaleX(0); transform-origin: left; }
-.site-header + .page-head { margin-top: calc(-1 * var(--hdr-h)); border-top: var(--hdr-h) solid transparent; background-origin: border-box; }
-@media (max-width: 760px) {
-  .site-header { padding: 8px 8px 0; }
-  :root { --hdr-h: 70px; }
-  .site-header .wrap { padding: .4rem .9rem .4rem 1.1rem; }
-  .site-header.nav-open .wrap { border-radius: 24px; padding-bottom: .9rem; background: color-mix(in srgb, var(--header-bg) 94%, transparent); }
-  .site-header.nav-open .hdr-progress i { display: none; }
-  .site-header.nav-open .nav { flex-wrap: nowrap; max-height: calc(100dvh - 90px); overflow-y: auto; }   /* a sticky header cannot scroll the page, so the open menu scrolls itself */
-}
 /* main is also .wrap, so the vertical padding has to be set with the same weight or .wrap wins. */
 main.wrap { padding-top: 2.75rem; padding-bottom: 4.5rem; }
 main.wrap > :first-child, main.wrap > section:first-child > h2:first-child { margin-top: 0; }
@@ -88,6 +63,8 @@ main.wrap:has(> .after-hero) { padding-top: 0; }
 /* City page: the listings past the card cap, as a compact list under the grid. */
 .more-head { margin: 3rem 0 .25rem; font-size: 1.15rem; }
 .more-head + .meta { margin: 0 0 .75rem; }
+.more-details > summary.more-head { cursor: pointer; margin-bottom: .75rem; }
+.more-details > summary .n { color: var(--muted); font-weight: 400; font-size: .95rem; }
 .more-list { list-style: none; padding: 0; margin: 0; columns: 3; column-gap: 2.5rem; }
 .more-list li { break-inside: avoid; display: flex; justify-content: space-between; align-items: baseline; gap: .6rem; padding: .4rem 0; border-bottom: 1px solid var(--surface); font-size: .95rem; }
 .more-list a { color: var(--heading); text-decoration: none; }
@@ -334,7 +311,7 @@ fieldset.sr-only { min-inline-size: 0; min-width: 0; max-width: 1px; contain: st
 .listing-main > .related { order: 4; margin-top: 0; }
 .listing-main > .disclaimer { order: 5; }
 .listing-main > :first-child { margin-top: 0; }
-.listing-side { display: grid; gap: 1.25rem; position: sticky; top: calc(var(--hdr-h) + 1.25rem); }
+.listing-side { display: grid; gap: 1.25rem; position: sticky; top: 1.25rem; }
 /* The map keeps its height before the iframe loads, on a light grey, so nothing below it moves. */
 .side-map { border-radius: var(--radius); overflow: hidden; line-height: 0; height: 240px; background: #e6ebee; }
 .side-map iframe { display: block; width: 100%; height: 240px; }
@@ -394,6 +371,7 @@ fieldset.sr-only { min-inline-size: 0; min-width: 0; max-width: 1px; contain: st
 .biz-card.featured.open-slot:hover { border-color: var(--gold); }
 .byline { color: var(--muted); font-size: .9rem; margin: -.5rem 0 1.5rem; }
 .prose { max-width: 70ch; }
+.prose.wide { max-width: none; }   /* device and session pages, every level (2026-10-14, Dan) */
 .prose.loc-text { max-width: none; margin-top: 3.25rem; }   /* country, region and town pages: full width, after the listings */
 /* Pricing tiers: equal-height cards, buttons on one line, the top tier framed in gold. */
 .tiers { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: -3.5rem; position: relative; z-index: 1; }
@@ -469,7 +447,6 @@ pre.snippet { background: var(--surface); box-shadow: var(--shadow); border-radi
 @media (max-width: 820px) { .split { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; } .page-head.band { padding: 3.25rem 0 4rem; } .page-head.band:has(+ main .stats-band) { padding-bottom: 1rem; } }
 @media (max-width: 640px) { body { font-size: 16px; } .cta-band { padding: 1.4rem; } .wrap { padding: 0 1.1rem; } .btn.action, .btn.ghost { width: 100%; text-align: center; } .dir-search { grid-template-columns: 1fr; border-radius: calc(var(--radius) * 1.5); } .dir-search .field + .field::before { display: none; } .dir-search input, .dir-search select { background-color: var(--surface); } }
 /* The link under the eight largest cities, the service links and the related listings on a listing page. */
-.see-all { text-align: center; margin: 1.75rem 0 0; }
 .svc-lead { margin: 1.1rem 0 .3rem; }
 .svc-links a { color: var(--heading); text-decoration: none; }
 .svc-links a:hover { text-decoration: underline; }
@@ -491,10 +468,8 @@ form.claim-form[hidden] { display: none; }
 }
 
 /* Region page explorer (ListingExplorer.astro + public/explorer.js): filters left, map + cards right. */
-/* Search page: room between the results heading (with its Clear button) and the explorer below it. */
-#search-results + #explorer { margin-top: 2rem; }
 .explorer-layout { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 2rem; align-items: start; }
-.ex-filters { position: sticky; top: calc(var(--hdr-h) + 1rem); }
+.ex-filters { position: sticky; top: 1rem; }
 .ex-panel { background: var(--surface); border-radius: var(--radius); padding: 1rem 1.15rem 1.1rem; }
 .ex-panel > summary { list-style: none; display: flex; justify-content: space-between; align-items: center; font-family: var(--heading-font); font-weight: 700; font-size: 1.2rem; color: var(--heading); cursor: default; }
 .ex-panel > summary::-webkit-details-marker { display: none; }
@@ -511,12 +486,18 @@ form.claim-form[hidden] { display: none; }
 .ex-pill span { display: inline-block; padding: .35rem .7rem; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 1px #D5D8DE; font-size: 13.5px; font-weight: 600; color: var(--text); cursor: pointer; }
 .ex-pill input:checked + span { background: var(--accent); color: var(--accent-text); box-shadow: none; }
 .ex-pill input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ex-towns .ex-minor { display: none; }
+.ex-towns.show-all .ex-minor, .ex-towns .ex-minor:has(input:checked) { display: flex; }
+.ex-more { margin-top: .5rem; background: none; border: 0; padding: 0; font: inherit; font-size: 14px; font-weight: 600; color: var(--link); text-decoration: underline; cursor: pointer; }
 .ex-reset { margin-top: 1.1rem; background: none; border: 0; padding: 0; font: inherit; font-size: 14px; font-weight: 600; color: var(--link); text-decoration: underline; cursor: pointer; }
 .ex-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: .9rem; }
 .ex-count { margin: 0; color: var(--muted); font-size: 15px; }
 .ex-count b { color: var(--heading); }
 .ex-sort { display: flex; align-items: center; gap: .5rem; font-size: 14px; font-weight: 600; color: var(--muted); }
-.ex-sort select { font: inherit; font-weight: 600; color: var(--text); background: #fff; border: 1px solid #D5D8DE; border-radius: var(--radius); padding: .4rem .6rem; }
+.ex-sort select { font: inherit; font-weight: 600; color: var(--text); border: 1px solid #D5D8DE; border-radius: var(--radius); padding: .4rem 2.4rem .4rem .6rem;
+  -webkit-appearance: none; appearance: none; cursor: pointer;
+  /* Own chevron so the gap to its right equals the gap above and below it (2026-10-14, Dan). */
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' fill='none' stroke='%233B414C' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center / 12px 12px; }
 .ex-map { height: 340px; border-radius: var(--radius); border: 1px solid #E3E5E9; background: var(--surface); margin-bottom: 1.4rem; z-index: 0; }
 .ex-pin { background: none; border: 0; }
 .ex-pin span { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--accent); box-shadow: 0 2px 6px rgba(0, 0, 0, .3); border: 2px solid #fff; transition: transform .15s; }
@@ -529,6 +510,13 @@ form.claim-form[hidden] { display: none; }
 .card[hidden] { display: none; }
 .card.ex-hot { box-shadow: 0 0 0 2px var(--accent), var(--shadow); }
 .ex-empty { padding: 1.5rem; background: var(--surface); border-radius: var(--radius); }
+.ex-pages { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .3rem; padding-top: 1.5rem; }
+.ex-pg { min-width: 2.25rem; height: 2.25rem; padding: 0 .5rem; border: 1px solid #E3E5E9; border-radius: var(--radius); background: #fff; color: var(--text); font: inherit; font-size: .9rem; font-weight: 500; cursor: pointer; }
+.ex-pg:hover:not(:disabled) { background: var(--surface); }
+.ex-pg[aria-current="page"] { background: var(--heading); border-color: var(--heading); color: #fff; font-weight: 700; }
+.ex-pg:disabled { opacity: .4; cursor: not-allowed; }
+.ex-pg-step { font-size: 1.1rem; line-height: 1; }
+.ex-pg-gap { min-width: 1.5rem; text-align: center; color: var(--muted); }
 .linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--link); text-decoration: underline; cursor: pointer; }
 .explorer .grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 @media (max-width: 860px) {
@@ -599,8 +587,8 @@ form.claim-form[hidden] { display: none; }
 .key-takeaways h2 { margin: 0 0 .6rem; font-size: 1.35rem; }
 .key-takeaways ul { margin: 0; padding-left: 1.2rem; }
 .key-takeaways li { margin: .35rem 0; }
-.post-content h2 { margin-top: 2.5rem; scroll-margin-top: calc(var(--hdr-h) + 1rem); }
-.post-content h3 { margin-top: 1.8rem; scroll-margin-top: calc(var(--hdr-h) + 1rem); }
+.post-content h2 { margin-top: 2.5rem; scroll-margin-top: 1rem; }
+.post-content h3 { margin-top: 1.8rem; scroll-margin-top: 1rem; }
 .post-content blockquote { margin: 1.5rem 0; padding: .8rem 1.2rem; border-left: 3px solid var(--accent); background: var(--surface); border-radius: var(--radius); color: var(--heading); }
 .post-content ul, .post-content ol { padding-left: 1.3rem; }
 .post-content li { margin: .3rem 0; }
@@ -613,7 +601,7 @@ form.claim-form[hidden] { display: none; }
 .post-cta { margin-top: 2.5rem; }
 .post-faq { margin-top: 2.5rem; }
 .post-faq .faq-grid { grid-template-columns: minmax(0, 1fr); }
-.post-toc { position: sticky; top: calc(var(--hdr-h) + 1rem); padding: 1.1rem 1.2rem; background: var(--surface); border-radius: var(--radius); max-height: calc(100vh - var(--hdr-h) - 2rem); overflow-y: auto; }
+.post-toc { position: sticky; top: 1rem; padding: 1.1rem 1.2rem; background: var(--surface); border-radius: var(--radius); max-height: calc(100vh - 2rem); overflow-y: auto; }
 .post-toc h3 { margin: 0 0 .6rem; font-family: var(--body-font); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
 .post-toc ol { list-style: none; margin: 0; padding: 0; }
 .post-toc li { margin: 0; }
@@ -683,6 +671,29 @@ form.claim-form[hidden] { display: none; }
 .stat-block p { margin: 0; font-size: 15px; }
 @media (max-width: 760px) { .stat-block-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
+/* Device links at the top of country, region and town pages (2026-10-14, Dan): pill buttons. */
+.pill-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem; }
+.pill-links a { display: inline-flex; align-items: center; gap: .45rem; padding: .45rem .95rem; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 1px #D5D8DE; font-size: 14.5px; font-weight: 600; color: var(--heading); text-decoration: none; }
+.pill-links a:hover { background: var(--accent); color: var(--accent-text); box-shadow: none; }
+.pill-links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pill-links .n { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.pill-links a:hover .n { color: inherit; opacity: .85; }
+.hub-devices { margin-bottom: 2.5rem; text-align: center; }
+.hub-devices h2 { margin-top: 72px; }   /* 48px + 50% (2026-10-14, Dan) */
+.hub-devices .pill-links { display: grid; grid-template-columns: repeat(5, auto); justify-content: center; margin-top: 2.25rem; }   /* 5 a row; same gap under the title as the country grid */
+.hub-devices .pill-links a { width: 100%; justify-content: center; white-space: nowrap; }
+@media (max-width: 760px) { .hub-devices .pill-links { display: flex; } .hub-devices .pill-links a { width: auto; } }
+.pill-links + .meta { margin-top: 1.25rem; }
+.towns-fold { margin-top: 2.5rem; }
+.towns-fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: .6rem; }
+.towns-fold > summary::-webkit-details-marker { display: none; }
+.towns-fold > summary h2 { margin: 0; }
+.towns-fold > summary h2 .n { color: var(--muted); font-weight: 400; font-size: .7em; }
+.towns-fold > summary::after { content: ''; flex: none; width: 10px; height: 10px; border-right: 2px solid var(--heading); border-bottom: 2px solid var(--heading); transform: rotate(45deg) translateY(-3px); transition: transform .15s; }
+.towns-fold[open] > summary::after { transform: rotate(-135deg) translate(-2px, -2px); }
+.towns-fold > .city-grid { margin-top: 1.25rem; }
+.prose.after-map { margin-top: 3rem; }   /* brand device pages: map, then intro; same 48px gap as between the guide blocks */
+
 /* Claim flow (2026-10-14): steps, pickers, fieldsets, found-price note. */
 .claim-steps { display: flex; gap: .5rem; list-style: none; padding: 0; margin: 0 0 1.4rem; counter-reset: st; flex-wrap: wrap; }
 .claim-steps li { counter-increment: st; font-size: .9rem; color: var(--muted, #6b7280); padding: .35rem .8rem; border-radius: 999px; background: var(--tint); }
@@ -717,7 +728,6 @@ form.claim-form fieldset.price-vis .check { display: grid; }
 .from-owner h2 { margin-top: 0; }
 .from-owner ul { margin: 0 0 1rem; padding-left: 1.1rem; }
 .from-owner .meta { margin: .8rem 0 0; }
-
 /* Benchmark (2026-10-14): range bars = middle half of the group, median tick, your marker. */
 .bm { display: grid; gap: 1.2rem; max-width: 760px; }
 .bm[hidden] { display: none; }

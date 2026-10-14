@@ -113,6 +113,9 @@ const schema = [{
   #roiForm .row label { white-space: nowrap; font-size: .86rem; }
   .unit { font-size: .76rem; font-weight: 600; color: var(--muted); }
   input, select { width: 100%; background: #fff; color: var(--text); border: 1px solid #D5D8DE; border-radius: var(--radius); padding: .6rem .75rem; font: inherit; }
+  /* Own chevron so the gap to its right matches the gap above and below it, same as .ex-sort (Dan). */
+  select { padding-right: 2.4rem; -webkit-appearance: none; appearance: none; cursor: pointer;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' fill='none' stroke='%233B414C' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center / 12px 12px; }
   input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; }
   .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: .9rem; }

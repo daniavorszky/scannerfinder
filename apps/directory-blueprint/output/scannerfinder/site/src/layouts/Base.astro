@@ -72,8 +72,7 @@ const siteSchema = path === '/' ? [
   <body>
     <header class="site-header">
       <div class="wrap">
-        <span class="hdr-progress" aria-hidden="true"><i></i></span>
-        <a class="logo" href="/">{d.logoImage ? <img src={d.logoImage} alt={site.brand} width="160" height="28" style="height:28px;width:auto;display:block" /> : (d.logoText || site.brand)}</a>
+        <a class="logo" href="/">{d.logoImage ? <img src={d.logoImage} alt={site.brand} width="180" height="32" style="height:32px;width:auto;display:block" /> : (d.logoText || site.brand)}</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" aria-label="Menu">
           <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path class="i-open" d="M3 6h18M3 12h18M3 18h18" /><path class="i-close" d="M5 5l14 14M19 5L5 19" /></svg>
         </button>
@@ -112,18 +111,6 @@ const siteSchema = path === '/' ? [
           t.setAttribute('aria-expanded', String(open));
           t.closest('.site-header')?.classList.toggle('nav-open', open);
         });
-        // Reading progress on the pill's bottom edge.
-        const bar = document.querySelector('.hdr-progress i') as HTMLElement | null;
-        if (bar) {
-          let raf = 0;
-          const update = () => {
-            raf = 0;
-            const el = document.documentElement, max = el.scrollHeight - el.clientHeight;
-            bar.style.transform = `scaleX(${max > 0 ? Math.min(1, el.scrollTop / max) : 0})`;
-          };
-          addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(update); }, { passive: true });
-          update();
-        }
       </script>
     </header>
     {hasHead && (

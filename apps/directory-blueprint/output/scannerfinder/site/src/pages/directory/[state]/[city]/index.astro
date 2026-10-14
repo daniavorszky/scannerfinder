@@ -22,8 +22,11 @@ const base = `https://${site.domain}`;
 const title = `${site.niche.title} in ${city.name}, ${co.short} (${city.count} Listed) | ${site.brand}`;
 const top = city.listings.find((l) => l.reviews > 0);
 const description = `${city.count} ${site.niche.plural} in ${city.name}, ${co.short}, ranked by rating and reviews.${top ? ` Top rated: ${top.name} (${top.rating.toFixed(1)}, ${top.reviews} reviews).` : ''} Phone numbers and services for each.`;
-const cards = city.listings.slice(0, site.maxCardsPerCity || 60);
-const rest = city.listings.slice(cards.length);
+// Every listing is a card in the explorer (paged by explorer.js); the ItemList schema keeps the first site.maxCardsPerCity.
+// Bucharest is one city split into areas, not towns (2026-10-14, Dan).
+const townsWord = ({ bucharest: 'Areas' })[city.slug] || 'Towns';
+const cards = city.listings;
+const schemaCards = cards.slice(0, site.maxCardsPerCity || 60);
 const intro = city.copy?.intro || [
   `${city.count} ${site.niche.plural} are listed in ${city.name}, ${co.name}, with ${city.totalReviews} Google reviews between them${city.avgRating ? ` and an average rating of ${city.avgRating.toFixed(1)}` : ''}. The list below puts featured businesses first, then paid best-of positions, then everyone else by rating and review count.`,
 ];
@@ -31,7 +34,7 @@ const faqs = city.copy?.faqs || attributeFaqs(city, site, attributes);
 const schema = [
   { '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': base + city.path, url: base + city.path, name: title, datePublished: site.launchDate, dateModified: buildDate },
   { '@context': 'https://schema.org', '@type': 'ItemList', name: `Best ${site.niche.plural} in ${city.name}, ${co.short}`, numberOfItems: city.count,
-    itemListElement: cards.map((l, i) => ({ '@type': 'ListItem', position: i + 1, item: {
+    itemListElement: schemaCards.map((l, i) => ({ '@type': 'ListItem', position: i + 1, item: {
       '@type': businessType(site), '@id': `${base}${l.path}#business`, name: l.name, url: base + l.path, telephone: e164(l.phone),
       address: { '@type': 'PostalAddress', streetAddress: l.areaService ? undefined : (l.street || undefined), addressLocality: l.city, addressRegion: l.stateCode, postalCode: l.postalCode || undefined, addressCountry: l.stateCode },
     } })) },
@@ -48,28 +51,22 @@ const schema = [
       <li>Updated {buildDate}</li>
     </ul>
   </Fragment>
-  <section>
-    <h2>Towns in {city.name}</h2>
-    <ul class="city-grid">{city.towns.map((t) => <li><a href={t.path}>{t.name}</a> <span class="n">{t.count}</span></li>)}</ul>
-  </section>
-
-  <ListingExplorer site={site} attributes={attributes} listings={cards.filter((l) => !city.featured.includes(l))} citySlug={city.slug} heading={`Best ${site.niche.plural} in ${city.name}`} />
-  {rest.length > 0 && (
-    <section>
-      <h3 class="more-head">{rest.length} more {site.niche.plural} in {city.name}</h3>
-      <p class="meta">Listings with the fewest reviews.</p>
-      <ul class="more-list">{rest.map((l) => <li><a href={l.path}>{l.name}</a>{l.reviews > 0 && <span class="rt"><i aria-hidden="true">★</i> {l.rating.toFixed(1)} <small>({l.reviews})</small></span>}</li>)}</ul>
-    </section>
-  )}
-
-  <FeaturedBand site={site} items={city.featured} place={city.name} price={site.tiers?.city?.price} />
-
   {devicesHere.length > 0 && (
     <section>
-      <h2>Devices used by practitioners in {city.name}</h2>
-      <ul class="city-grid svc-grid">{devicesHere.map((x) => <li><a href={x.cp ? x.cp.path : x.d.path}><span class="name">{x.d.label}</span> <span class="n">{x.n}</span></a></li>)}</ul>
+      <h2>Find a practitioner by device in {city.name}</h2>
+      <ul class="pill-links">{devicesHere.map((x) => <li><a href={x.cp ? x.cp.path : x.d.path} data-filter={x.d.key}><span class="name">{x.d.label}</span> <span class="n">{x.n}</span></a></li>)}</ul>
     </section>
   )}
+
+  {/* Folded (2026-10-14, Dan): a region can have 90+ towns, which pushed the map off the first screen. */}
+  <details class="towns-fold">
+    <summary><h2>{townsWord} in {city.name} with listed practitioners <span class="n">{city.towns.length}</span></h2></summary>
+    <ul class="city-grid">{city.towns.map((t) => <li><a href={t.path}>{t.name}</a> <span class="n">{t.count}</span></li>)}</ul>
+  </details>
+
+  <ListingExplorer site={site} attributes={attributes} listings={cards.filter((l) => !city.featured.includes(l))} citySlug={city.slug} heading={`Best ${site.niche.plural} in ${city.name}`} />
+
+  <FeaturedBand site={site} items={city.featured} place={city.name} price={site.tiers?.city?.price} />
 
   {city.nearby.length > 0 && (
     <section>
@@ -85,8 +82,8 @@ const schema = [
       </ul>
     </section>
   )}
-  <ClaimCta site={site} />
 
   <div class="prose loc-text" set:html={linkedParagraphs(intro, city.listings)}></div>
   <Faq items={faqs.map((f) => ({ ...f, html: linkNames(f.a, city.listings) }))} title={`Common questions about ${site.niche.plural} in ${city.name}`} />
+  <ClaimCta site={site} />
 </Base>

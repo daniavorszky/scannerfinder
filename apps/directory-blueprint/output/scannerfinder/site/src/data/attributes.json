@@ -1,0 +1,1113 @@
+[
+  {
+    "key": "offers_scan",
+    "label": "Offers scan sessions",
+    "faq": "Which {plural} in {city} offer a bioenergetic or bioresonance scan?",
+    "true_when": "offers bioresonance, biofeedback, bioenergetic or device-based wellness scan sessions to clients, stated in words (selling a device or training only is false)",
+    "pattern": "\\bscan(s|ning)?\\b|bio-?resonance|bio-?feedback|bio-?energetic|bio-?communication|zyto|bicom|asyra|rayocomp|metatron|oberon|\\bscio\\b|timewaver|\\bmora\\b|ao[ -]?scan|frequency (scan|assessment|therapy)",
+    "core": true
+  },
+  {
+    "key": "zyto",
+    "label": "ZYTO",
+    "faq": "Which {plural} in {city} use a ZYTO scanner?",
+    "true_when": "uses a ZYTO device (Hand Cradle, Select, Elite, Balance, Evox) in sessions",
+    "pattern": "\\bzyto\\b|\\bevox\\b",
+    "service": {
+      "family": "devices",
+      "slug": "zyto",
+      "title": "ZYTO Scan Practitioners",
+      "intro": [
+        "ZYTO scan sessions are offered by 157 practitioners across 7 countries, and the United States has 131 of them. Romania has 15, Canada 6, Germany 2, and Australia, the United Kingdom and South Africa 1 each.",
+        "Texas has the most listings in any region with 16, followed by Florida with 10 and Colorado with 8. Wellness centres are the largest type with 19, followed by 15 chiropractors, 14 naturopathic practitioners and 13 each for consultants and holistic medicine practitioners. Remote sessions are available from 22 practitioners, a free consultation from 5, and sessions for animals from 4.",
+        "Reviews stand out for Riner Holistic Restoration in Southlake, Texas (5 from 104), Ideal Wellness Center in Juno Beach, Florida (4.9 from 77) and HFS Trichology & Head Spa in Stockton, California (5 from 72)."
+      ],
+      "countryIntro": {
+        "US": [
+          "ZYTO is the device behind {n:US} practitioners in the United States, and the map of where they work is led by Texas with 16, Florida with 10 and Colorado with 8. California and Illinois follow with 6 each, then Ohio, Tennessee, Pennsylvania, North Carolina and Michigan with 5 each.",
+          "Practices are mostly wellness centers (17), chiropractors (15), alternative medicine practitioners (12), naturopathic practitioners (12), health consultants (10) and holistic medicine practitioners (9). Some pair ZYTO with other devices: AO Scan appears at 4 practices, NES Health at 2, and Asyra / Qest4, NLS and SCIO at 1 each.",
+          "Remote sessions are offered by 17, a free consultation by 4, and sessions for animals by 3. Reviews stand out at Bahan Natural Health Center in Rocky River, Ohio (5 from 95), Ideal Wellness Center in Juno Beach, Florida (4.9 from 77) and Clermont Wellness Center in Clermont, Florida (4.6 from 81)."
+        ],
+        "CA": [
+          "Across Canada, ZYTO sessions are offered by {n:CA} practitioners. Ontario is home to 3 of them, while Alberta, Quebec and British Columbia have 1 each. Naturopathic practitioner is the practice type that appears most, at 2, and the others are a Wellness center, a Community health center, a Holistic medicine practitioner and a Health consultant.",
+          "Integrative Health Centre in Calgary is rated 4.9 from 63 reviews. Douce-Nature in Montreal holds 5 from 27 reviews, and NUTRAPURE HEALTH MANAGEMENT CENTRE in Richmond Hill 5 from 10.",
+          "One practitioner offers remote sessions and one works with animals. One also uses a SCIO system alongside ZYTO."
+        ],
+        "RO": [
+          "ZYTO scan sessions are offered by 15 practitioners in Romania. Bucharest and Prahova have 3 each, Ilfov, Constanța and Iași have 2 each, and Arad, Brașov and Timiș have 1 each.",
+          "Psychotherapists, aromatherapy services and holistic medicine practitioners are the most common types, with a family counsellor, a psychologist and a massage spa also listed. Remote sessions are available from 2 practitioners.",
+          "Reviews stand out for Cristina Ciobanu's aromatherapy and ZYTO practice in Bucharest (5 from 54), Bowen Therapy by Ana Simona Pantiru in Iași (5 from 28) and Aromatic Zen in Bucharest (5 from 15)."
+        ]
+      },
+      "guide": {
+        "seoTitle": "ZYTO Scan: What It Is and {n} Practitioners to Book",
+        "seoDescription": "What a ZYTO scan is, how the hand cradle works, what the FDA has and has not cleared, and {n} ZYTO practitioners ranked by rating and reviews.",
+        "sections": [
+          {
+            "h": "What is a ZYTO scan?",
+            "p": [
+              "A ZYTO scan is a session on a system made by ZYTO Technologies, a company based in Lindon, Utah. The client rests one hand on the ZYTO hand cradle, a small device with contact points for the fingertips and palm. The cradle passes a very small electrical current through the skin and records how easily it flows. That reading is called galvanic skin response, or GSR.",
+              "While the hand rests on the cradle, the ZYTO software shows a series of on-screen items and logs the skin response to each one. ZYTO calls them virtual items and calls the whole process biocommunication. Those terms are the company's own. They do not name an established scientific method."
+            ]
+          },
+          {
+            "h": "What happens in a ZYTO session",
+            "p": [
+              "Most sessions follow the same pattern. A short conversation about what the client wants from the session, a few minutes with one hand on the cradle while the scan runs on the practitioner's computer, then a walk through the report. The practitioner usually talks about lifestyle, nutrition or wellness products in light of that report. Practitioners name several ZYTO systems, among them Select, Elite, Balance and Evox, and a session can look different on each one.",
+              "Some practitioners on ScannerFinder also run sessions at a distance. Before you book, ask whether you need to be there in person, how long the session takes, what it costs and whether any products are sold afterwards."
+            ]
+          },
+          {
+            "h": "What the FDA has cleared, and what it has not",
+            "p": [
+              "The FDA cleared the ZYTO Hand Cradle in August 2011 (510(k) K111308) as a Class II device for one use: measuring galvanic skin response. The clearance covers that measurement and nothing more.",
+              "The FDA sent ZYTO Technologies warning letters in May 2015 and June 2023. The 2023 letter said the company was again promoting the device beyond that clearance, including linking scan results to named conditions, and that it had not validated the device or its software for those claims. So read a ZYTO session as a wellness session. It is not a medical test, and a scan report is no basis for health decisions. Talk to a licensed healthcare professional about any health concern."
+            ]
+          },
+          {
+            "h": "What the evidence does not show",
+            "p": [
+              "We found no peer-reviewed study showing that ZYTO readings can be used to choose supplements or to judge someone's health. Skin response changes with sweat, skin moisture and how firmly the hand rests on the cradle, which is one reason independent reviewers such as Science-Based Medicine have criticised scanning built on it."
+            ]
+          },
+          {
+            "h": "How to choose a ZYTO practitioner",
+            "p": [
+              "The {n} ZYTO practitioners listed here are mostly wellness centers, chiropractors, naturopathic practitioners and health consultants, and a few are supplement shops. Three questions are worth asking on the first call: which ZYTO system they use, what the session includes and costs, and whether you are expected to buy products after the scan. A practice that answers all three plainly is a good place to start."
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is a ZYTO scan?",
+            "a": "A ZYTO scan is a wellness session in which the client rests a hand on the ZYTO hand cradle while software records galvanic skin response, a measure of how easily a tiny electrical current passes through the skin, against a series of on-screen items."
+          },
+          {
+            "q": "Is the ZYTO hand cradle FDA approved?",
+            "a": "The FDA cleared the ZYTO Hand Cradle in 2011 (K111308) only to measure galvanic skin response. It has not cleared it for anything beyond that measurement, and it sent the company warning letters in 2015 and 2023 for promoting it for other uses."
+          },
+          {
+            "q": "How much does a ZYTO scan cost?",
+            "a": "Each practice sets its own price, and ScannerFinder shows a price only once the practitioner confirms it. Ask on the phone what the session includes, how long it lasts and whether products are sold afterwards."
+          }
+        ],
+        "sources": [
+          {
+            "label": "FDA 510(k) K111308",
+            "url": "https://www.accessdata.fda.gov/scripts/cdrh/cfdocs/cfpmn/pmn.cfm?ID=K111308"
+          },
+          {
+            "label": "FDA warning letter to ZYTO Technologies, 21 June 2023",
+            "url": "https://www.fda.gov/inspections-compliance-enforcement-and-criminal-investigations/warning-letters/zyto-technologies-inc-652316-06212023"
+          },
+          {
+            "label": "RAPS, 11 July 2023",
+            "url": "https://www.raps.org/resource/utah-wellness-firm-warned-a-second-time-for-promot.html"
+          },
+          {
+            "label": "Science-Based Medicine",
+            "url": "https://sciencebasedmedicine.org/zyto-a-quack-electrodermal-diagnostic-device-is-tested-and-fails-miserably/"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "key": "bicom",
+    "label": "BICOM",
+    "faq": "Which {plural} in {city} use BICOM bioresonance?",
+    "true_when": "uses a BICOM device (BICOM optima, BICOM 2000) or Regumed bioresonance in sessions",
+    "pattern": "\\bbicom\\b|regumed",
+    "service": {
+      "family": "devices",
+      "slug": "bicom",
+      "title": "BICOM Bioresonance Practitioners",
+      "intro": [
+        "BICOM bioresonance sessions are offered by 124 practitioners across 8 countries. Germany has 98, far ahead of the United Kingdom with 13, Canada with 4, New Zealand with 3, Australia and the United States with 2 each, and Ireland and Romania with 1 each.",
+        "Bavaria has the most listings in any region with 30, followed by North Rhine-Westphalia with 19 and Baden-Württemberg with 14. Alternative medicine practitioners and naturopathic practitioners are the largest groups, with 10 Heilpraktiker (state-licensed alternative practitioner) among them. Remote sessions are available from 13 practitioners, a free consultation from 8, and sessions for animals from 11.",
+        "Reviews stand out for Naturheilpraxis Karlsruhe in Germany (4.9 from 109), the Helix Vital chiropractic practice in Langenfeld (5 from 68) and Markus Schürmann's practice in Einbeck (5 from 66)."
+      ],
+      "countryIntro": {
+        "GB": [
+          "Bioresonance sessions on a BICOM device are offered by 13 practitioners across the United Kingdom, and the South East of England has the most with 4. London follows with 3, Yorkshire and the Humber and the East of England have 2 each, and the North East and the South West have 1 each.",
+          "Health consultants make up 5 of the practices, holistic medicine practitioners 4, alternative medicine practitioners 3 and one is a Nutritionist. Remote sessions are available from 3, a free consultation from 3, and animal sessions from 1.",
+          "Reviews stand out for BioForma Lifestyle & Beauty Clinic in Farnborough (5 from 47), McQueen Health Clinic in High Wycombe (4.9 from 31), Bicom London (4.5 from 23) and Bioresonance4you - London (5 from 17)."
+        ],
+        "CA": [
+          "BICOM bioresonance in Canada is concentrated in one province: all 4 practitioners work in Ontario. The practices include 2 Biofeedback therapists, a Holistic medicine practitioner and a Health spa, and 2 of the 4 also offer sessions for animals.",
+          "Ecohealth & Wellness in Mississauga is rated 4.8 from 6 reviews, Bio-Care Bioresonance Therapy in Thornhill 5 from 5, and Bioresonance Therapy in East Gwillimbury 5 from 4.",
+          "Remote sessions are available from 2 of them. Some combine BICOM with other devices: Asyra / Qest4, NLS and SCIO each appear at 1 practice."
+        ],
+        "NZ": [
+          "New Zealand has 3 practitioners who work with BICOM: 2 in Canterbury and 1 in the Bay of Plenty. Their practices are a Chiropractor, a Naturopathic practitioner and a Health consultant.",
+          "Infinity Health & Wellness in Christchurch combines chiropractic and kinesiology with Bicom bioresonance and is rated 5 from 14 reviews. Naturopathy Inbalance, based in Kaiapoi and serving North Canterbury and Christchurch, holds 5 from 6 and pairs BICOM sessions with herbal consultations. The third practice, BioHealth Rotorua in the Bay of Plenty, uses a Bicom machine for non-invasive bioresonance sessions."
+        ],
+        "DE": [
+          "BICOM bioresonance sessions are offered by 98 practitioners in Germany, which makes it the most common device in the German listings. Bavaria has the most with 30, North Rhine-Westphalia follows with 19, and Baden-Württemberg has 14.",
+          "Alternative medicine practitioners and naturopathic practitioners make up most of the group, with 10 Heilpraktiker (state-licensed alternative practitioner), osteopaths and a few chiropractors. Remote sessions are available from 7 practitioners, a free consultation from 4, and sessions for animals from 6.",
+          "Reviews stand out for Naturheilpraxis Karlsruhe, run by Elke Gerhardt (4.9 from 109), the Helix Vital chiropractic practice in Langenfeld (5 from 68), Markus Schürmann's practice in Einbeck (5 from 66) and Naturheilpraxis Besler in Berlin (4.9 from 59)."
+        ]
+      },
+      "guide": {
+        "seoTitle": "BICOM Bioresonance: What It Is and {n} Practitioners to Book",
+        "seoDescription": "What BICOM bioresonance is, who makes it, how a session works, what regulators in the UK and Australia have said, and {n} BICOM practitioners ranked by rating.",
+        "sections": [
+          {
+            "h": "What is BICOM bioresonance?",
+            "p": [
+              "BICOM is a bioresonance device made by Regumed in Germany. It grew out of the MORA method that the physician Franz Morell and the engineer Erich Rasche developed in 1977. The client is connected through hand electrodes or applicators. According to the maker and its users, the device picks up the body's own oscillations, changes them by amplifying, weakening or inverting them, and sends them back.",
+              "That is how the method is described by those who sell and use it. A BICOM practice handbook itself says the method rests on years of experience rather than on generally accepted science."
+            ]
+          },
+          {
+            "h": "What happens in a BICOM session",
+            "p": [
+              "A session usually has two parts. First a test phase, in which the practitioner works through the device's programs. Then a balancing phase, in which the device is said to send adjusted signals back through the electrodes or applicators. Ask how many sessions the practitioner expects and what they cost in total before you start."
+            ]
+          },
+          {
+            "h": "What regulators have said",
+            "p": [
+              "In the United Kingdom, the Advertising Standards Authority has upheld complaints against bioresonance advertisers, including Bicom UK LLP and clinics using the method. In one 2018 ruling it said that a device being CE marked did not on its own show that it worked. In Australia, according to the group Friends of Science in Medicine, the last bioresonance devices were removed from the national register of therapeutic goods in 2020."
+            ]
+          },
+          {
+            "h": "What the evidence does not show",
+            "p": [
+              "The best-known controlled trial of bioresonance, in children with eczema in 1997, found no effect beyond sham sessions. We found no independent study showing that BICOM readings are meaningful. Read a BICOM session as a wellness session, not a medical test, and talk to a licensed healthcare professional about any health concern."
+            ]
+          },
+          {
+            "h": "How to choose a BICOM practitioner",
+            "p": [
+              "Ask which BICOM model they use, whether they trained with the maker, how many sessions they expect, and what the full course costs. The {n} BICOM practitioners listed here are ranked by Google rating weighted by review count."
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is BICOM bioresonance?",
+            "a": "BICOM is a bioresonance device made by Regumed in Germany. Its makers say it picks up the body's own oscillations, changes them and sends them back through electrodes. There is no accepted scientific evidence that it does."
+          },
+          {
+            "q": "Who makes BICOM?",
+            "a": "BICOM devices are made by Regumed, a German company. The method grew out of the MORA bioresonance work of Franz Morell and Erich Rasche in 1977."
+          },
+          {
+            "q": "Is BICOM an approved medical device?",
+            "a": "Being registered or CE marked is not evidence that a device works, as the UK Advertising Standards Authority has pointed out. No regulator has accepted BICOM as a way to assess health."
+          },
+          {
+            "q": "How much does a BICOM session cost?",
+            "a": "Each practice sets its own price, and ScannerFinder shows a price only once the practitioner confirms it. Ask on the phone what the session includes, how long it lasts and whether products are sold afterwards."
+          }
+        ],
+        "sources": [
+          {
+            "label": "ASA advice: Bioresonance therapy",
+            "url": "https://www.asa.org.uk/advice-online/bioresonance-therapy.html"
+          },
+          {
+            "label": "ASA ruling: Wayne Hardwick (Body Resonance)",
+            "url": "https://asa.org.uk/rulings/wayne-hardwick-a18-468020.html"
+          },
+          {
+            "label": "Nightingale Collaboration on Bicom UK and the ASA",
+            "url": "https://www.nightingale-collaboration.org/news/170-treating-ebola-with-bioresonance.html"
+          },
+          {
+            "label": "Friends of Science in Medicine via Edzard Ernst, May 2020",
+            "url": "https://edzardernst.com/2020/05/australia-cancels-all-bioresonance-devices/"
+          },
+          {
+            "label": "ScannerFinder: does bioresonance work?",
+            "url": "/bioresonance/does-it-work/"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "key": "asyra",
+    "label": "Asyra / Qest4",
+    "faq": "Which {plural} in {city} use Asyra or Qest4?",
+    "true_when": "uses an Asyra or Qest4 device in sessions",
+    "pattern": "\\basyra\\b|qest ?4",
+    "service": {
+      "family": "devices",
+      "slug": "asyra",
+      "title": "Asyra and Qest4 Practitioners",
+      "intro": [
+        "A scan session with an Asyra or Qest4 device is a biofeedback wellness session. The device is used by 62 practitioners: 43 in the United States, 14 in the United Kingdom, 2 each in Canada and Australia, and 1 in New Zealand.",
+        "California has 6, the South West of England 5, and Florida, the South East of England and Utah 4 each. Practices run from Health consultant (10) and Alternative medicine practitioner (9) to Wellness center (9), Holistic medicine practitioner (8), Naturopathic practitioner (6) and Chiropractor (2).",
+        "Remote sessions are offered by 29, a free consultation by 10 and sessions for animals by 12. Parkside Health & Wellness Center Dr. Joseph Bogart in Parkland, Florida, is rated 4.9 from 290 reviews, Holistic Haven Nutrition in Sarasota 4.9 from 60, and IVdrips&more in Newburgh, New York, 5 from 45."
+      ],
+      "countryIntro": {
+        "US": [
+          "Across the United States, Asyra and Qest4 are used by 43 practitioners, led by California with 6, Florida and Utah with 4 each, and New York and Wisconsin with 3 each. Connecticut, Arkansas, Massachusetts, Iowa and Pennsylvania have 2 each.",
+          "Alternative medicine practitioner and Wellness center are the most frequent practice types at 8 each, then Health consultant at 7, Holistic medicine practitioner at 6, Naturopathic practitioner at 4 and Chiropractor at 2. Remote sessions are offered by 19 and animal sessions by 7, and 7 give a free consultation.",
+          "Luxe Integrative Medicine in New Hope, Pennsylvania, is rated 5 from 33 reviews. Divine Health Alliance in Weddington, North Carolina, holds 4.9 from 33, and Vitalgate Health UES in New York 5 from 30."
+        ],
+        "GB": [
+          "Asyra and Qest4 sessions have a strong base in the south of England, where the South West has 5 of the 14 United Kingdom practitioners and the South East 4. London has 3, and the East of England and Yorkshire and the Humber have 1 each.",
+          "The practices are varied: 2 Health consultants, 2 Naturopaths, an Acupuncture clinic, a Skin care clinic, a Homeopath and a Health counselor. Remote sessions are offered by 8, while 3 give a free consultation and 2 work with animals.",
+          "The Happy Gut Clinic in Frome is rated 5 from 31 reviews, Carley Harrison Bespoke Health & Skincare in Slough 5 from 24, and Japanese Acupuncture - Bioresonance & Supportive Therapies in London 4.9 from 44."
+        ]
+      },
+      "guide": {
+        "seoTitle": "Asyra and QEST4 Scan: What It Is and {n} Practitioners to Book",
+        "seoDescription": "What an Asyra or QEST4 scan is, how a session works, what is and is not established about it, and {n} Asyra practitioners ranked by rating and reviews.",
+        "sections": [
+          {
+            "h": "What is an Asyra scan?",
+            "p": [
+              "Asyra is a computer-based scanning system, and its current version is sold as QEST4. In a session the client holds hand electrodes connected to the device while the software works through a long list of items, and the system records the body's electrical response to each one.",
+              "Critics describe it as a galvanic skin response device: it measures how easily a very small current passes through the skin. Sellers describe it differently, as presenting questions to the body through signals and reading the answers. That is the seller's account, not a tested mechanism."
+            ]
+          },
+          {
+            "h": "What happens in an Asyra session",
+            "p": [
+              "A typical session starts with a conversation, then a few minutes with the hand electrodes while the scan runs on the practitioner's screen. The report groups its results by body system, and the practitioner usually talks about lifestyle, nutrition or wellness products in light of it.",
+              "Asyra is one of the devices named most often by practitioners on ScannerFinder who also offer remote sessions. The standard scan needs hand contact, so ask how a remote session works before you book."
+            ]
+          },
+          {
+            "h": "Regulatory status",
+            "p": [
+              "Critics report that the Asyra was cleared by the FDA in 2003 only for measuring galvanic skin resistance. We could not confirm that clearance in the FDA's database. Either way, no regulator has accepted the Asyra or QEST4 as a way to assess health. Read a session as a wellness session, not a medical test, and talk to a licensed healthcare professional about any health concern."
+            ]
+          },
+          {
+            "h": "What the evidence does not show",
+            "p": [
+              "We found no peer-reviewed study showing that Asyra readings are repeatable or that they can be used to judge someone's health. Skin response changes with sweat, skin moisture and how the electrodes are held, which is the main reason scientists doubt scanning built on it. The page on whether bioresonance works covers the research in more detail."
+            ]
+          },
+          {
+            "h": "How to choose an Asyra practitioner",
+            "p": [
+              "Ask which version they use (Asyra Pro or QEST4), what the session includes and costs, and whether you are expected to buy products after the scan. The {n} Asyra practitioners listed here are ranked by Google rating weighted by review count."
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is an Asyra scan?",
+            "a": "An Asyra scan is a wellness session in which the client holds hand electrodes while software records the body's electrical response to a long list of items. Critics describe it as a galvanic skin response device."
+          },
+          {
+            "q": "Is QEST4 the same as Asyra?",
+            "a": "QEST4 is the current generation of the Asyra system, and practitioners use both names. Ask which version a practice uses."
+          },
+          {
+            "q": "Does the Asyra machine really work?",
+            "a": "No study has shown that its readings are repeatable or accurate as a way to assess health, and no regulator has accepted it for that. Treat a session as a wellness session."
+          },
+          {
+            "q": "How much does an Asyra session cost?",
+            "a": "Each practice sets its own price, and ScannerFinder shows a price only once the practitioner confirms it. Ask on the phone what the session includes, how long it lasts and whether products are sold afterwards."
+          }
+        ],
+        "sources": [
+          {
+            "label": "Science-Based Medicine: galvanic skin response pseudoscience",
+            "url": "https://sciencebasedmedicine.org/galvanic-skin-response-pseudoscience/"
+          },
+          {
+            "label": "ScannerFinder: does bioresonance work?",
+            "url": "/bioresonance/does-it-work/"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "key": "nes_health",
+    "label": "NES Health",
+    "faq": "Which {plural} in {city} use the NES Health scan?",
+    "true_when": "uses NES Health (miHealth, NES ProVision, Infoceuticals) or its Energy For Life successor in sessions",
+    "pattern": "\\bnes\\b|mihealth|infoceutical|provision scan|energy for life|\\be4l\\b",
+    "service": {
+      "family": "devices",
+      "slug": "nes-health",
+      "title": "NES Health Scan Practitioners",
+      "intro": [
+        "NES Health sessions are bioenergetic wellness scans, offered in person or remotely. The 23 practitioners are based in the United States (13), Canada (4), Australia (4), South Africa (1) and New Zealand (1).",
+        "California has 4, Queensland 3, and North Carolina and Ontario 2 each. Alternative medicine practitioner is the most common practice type at 7, followed by Naturopathic practitioner at 4 and Health consultant at 3. Remote sessions are available from 10 practitioners, a free consultation from 4 and animal sessions from 1.",
+        "Sinclair McCracken, MD in Newport News, Virginia, is rated 4.7 from 90 reviews. Wholelistix in Knysna, South Africa, holds 5 from 29, and Divine Health Alliance in Weddington, North Carolina, 4.9 from 33."
+      ],
+      "countryIntro": {
+        "US": [
+          "NES Health reaches 13 practitioners in the United States. California leads with 4, North Carolina has 2, and Virginia, New York, Missouri, Tennessee, Minnesota, Maryland and Maine have 1 each.",
+          "Alternative medicine practitioner is the most frequent practice type at 4. The rest include 2 Holistic medicine practitioners, 2 Health consultants, a Family practice physician, an Acupuncturist and a Health spa. Remote sessions come from 4 of them and a free consultation from 1. A few also use ZYTO or Asyra / Qest4, 2 each.",
+          "Sinclair McCracken, MD in Newport News is rated 4.7 from 90 reviews, Ozark Mountain Natural Health, LLC in Springfield, Missouri, 4.8 from 17, and InTENNtional Wellness in Franklin, Tennessee, 5 from 14."
+        ],
+        "CA": [
+          "Canada’s NES Health practitioners number 4: 2 in Ontario, 1 in Alberta and 1 in British Columbia. Alternative medicine practitioner appears twice among the practice types, alongside a Naturopathic practitioner and a Health consultant.",
+          "Energy Over Matter - Bio Resonance Scan, Hypnotherapy, Sound Healing, NLP, PEMF in Newmarket is rated 5 from 19 reviews, and Dr. Julie Chan - Markham Naturopathic Doctor and Acupuncturist at Liberty Wellness Clinic 4.9 from 7.",
+          "Remote sessions are common in this group, offered by 3 of the 4, and 2 give a free consultation."
+        ],
+        "AU": [
+          "In Australia, NES Health is offered by 4 practitioners, 3 in Queensland and 1 in Victoria. Two are Naturopathic practitioners, and the others are a Homeopath and a Biofeedback therapist.",
+          "Eliza Blackwood Naturopath in Eerwah Vale, on the Sunshine Coast, is rated 5 from 6 reviews. Michelle Cose Naturopath in Maroochydore has 5 from 2. Jane Lindsay - Registered Homeopath in Bardon and Ariston Health - Alternative Health Services in Sunbury, Victoria, each hold 5 from 1 review, and the Sunbury practice offers bioenergetics sessions for both pets and humans.",
+          "Remote sessions are available from 2 of the 4, a free consultation from 1 and animal sessions from 1."
+        ]
+      },
+      "guide": {
+        "seoTitle": "NES Health Scan: What It Is and {n} Practitioners to Book",
+        "seoDescription": "What an NES Health body-field scan is, how it relates to Energy4Life, miHealth and Infoceuticals, what the evidence shows, and {n} NES Health practitioners.",
+        "sections": [
+          {
+            "h": "What is an NES Health scan?",
+            "p": [
+              "NES Health, short for Nutri-Energetics Systems, was set up in the early 2000s by the Australian researcher Peter Fraser and the British entrepreneur Harry Massey. Its scan is described as a reading of the human body-field, an energy field the company says surrounds and organises the body. The company now trades as Energy4Life, and neshealth.com redirects there.",
+              "The scan is a software program, and the company describes a version that runs from a short voice recording. The idea of a body-field that can be read this way is the company's own. It is not an established scientific concept."
+            ]
+          },
+          {
+            "h": "miHealth and Infoceuticals",
+            "p": [
+              "NES practitioners often work with two other products from the same company. miHealth is a handheld device that the company describes as combining several kinds of electrical and magnetic stimulation with its own signals. Infoceuticals are liquid drops that the company says carry encoded information. A practitioner may suggest either one after a scan."
+            ]
+          },
+          {
+            "h": "What happens in an NES session",
+            "p": [
+              "Many NES practitioners work at a distance, because the scan does not need the client in the room. A session usually covers the scan, a walk through the report, and suggestions for lifestyle, miHealth sessions or Infoceuticals. Ask before you book whether products are part of the plan and what they cost."
+            ]
+          },
+          {
+            "h": "What the evidence does not show",
+            "p": [
+              "The company points to its own research. We found no independent peer-reviewed study showing that the scan reads anything meaningful about the body. Science-Based Medicine has criticised the model of scanning the body-field and then selling products to correct what the scan finds. No regulator has accepted the scan as a way to assess health, so read a session as a wellness session and talk to a licensed healthcare professional about any health concern."
+            ]
+          },
+          {
+            "h": "How to choose an NES Health practitioner",
+            "p": [
+              "Ask whether the session is in person or remote, which NES or Energy4Life products they use, and whether a package of Infoceuticals or miHealth sessions is expected. The {n} NES Health practitioners listed here are ranked by Google rating weighted by review count."
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is an NES Health scan?",
+            "a": "It is a wellness scan that the company describes as a reading of the human body-field. It runs as software and can be done from a short voice recording, so many sessions are remote."
+          },
+          {
+            "q": "Is NES Health the same as Energy4Life?",
+            "a": "Yes. NES Health now trades as Energy4Life, and neshealth.com redirects to the Energy4Life site. Practitioners may use either name."
+          },
+          {
+            "q": "What are Infoceuticals?",
+            "a": "Infoceuticals are liquid drops sold by NES Health that the company says carry encoded information. There is no independent evidence that they do anything specific."
+          },
+          {
+            "q": "How much does an NES Health session cost?",
+            "a": "Each practice sets its own price, and ScannerFinder shows a price only once the practitioner confirms it. Ask on the phone what the session includes, how long it lasts and whether products are sold afterwards."
+          }
+        ],
+        "sources": [
+          {
+            "label": "Science-Based Medicine on NES Health",
+            "url": "https://sciencebasedmedicine.org/nes-health-tooth-fairy-marketing/"
+          },
+          {
+            "label": "Energy4Life (formerly NES Health)",
+            "url": "https://www.e4l.com/"
+          },
+          {
+            "label": "Fraser and Massey, Decoding the Human Body-Field (publisher page)",
+            "url": "https://simonandschuster.co.uk/books/Decoding-the-Human-Body-Field/Peter-H-Fraser/9781594779688"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "key": "rayonex",
+    "label": "Rayonex",
+    "faq": "Which {plural} in {city} use Rayonex bioresonance?",
+    "true_when": "uses a Rayonex device (Rayocomp PS 10, PS 1000) or bioresonance after Paul Schmidt",
+    "pattern": "rayonex|rayocomp|paul schmidt",
+    "service": {
+      "family": "devices",
+      "slug": "rayonex",
+      "title": "Rayonex Bioresonance Practitioners",
+      "intro": [
+        "Rayonex bioresonance sessions are offered by 77 practitioners across 4 countries. Germany has 59, the United Kingdom has 12, Canada 4 and the United States 2.",
+        "North Rhine-Westphalia has the most listings in any region with 14, followed by Baden-Württemberg with 10 and Lower Saxony with 7. Alternative medicine practitioners and naturopathic practitioners are the largest groups, with 20 each, and 6 are Heilpraktiker (state-licensed alternative practitioner). Remote sessions are available from 12 practitioners, a free consultation from 5, and sessions for animals from 6.",
+        "Reviews stand out for Naturheilpraxis Kranz & Freund in Kroppach (5 from 55), Torus Tree in Dunkeld, Scotland (5 from 50) and ANANIA Wellness Clinic in Winnipeg (5 from 49)."
+      ],
+      "countryIntro": {
+        "GB": [
+          "Of the 12 Rayonex practitioners in the United Kingdom, 6 work in the North West of England. Scotland, the East Midlands, the North East, the West Midlands, the East of England and Yorkshire and the Humber have 1 each.",
+          "Holistic medicine practitioner is the most common practice type at 3, followed by Health consultant and Nutritionist at 2 each. Remote sessions are available from 4 and a free consultation from 2.",
+          "Conscious Nutrition appears in both Alderley Edge (4.8 from 19 reviews) and Manchester (5 from 11). Wellness Bioresonance in Southwell holds 5 from 19, and Bio-Wellbeing - Bioresonance Clinic 5 from 10."
+        ],
+        "CA": [
+          "Rayonex bioresonance in Canada is a prairie and western affair: 2 practitioners work in Manitoba and 1 each in Alberta and British Columbia. Their practices are 2 Health consultants, a Holistic medicine practitioner and one other type.",
+          "ANANIA Wellness Clinic in Winnipeg is rated 5 from 49 reviews, and Bioresonance Therapy Winnipeg 5 from 13, so both Manitoba practices are in the same city. Buffaloberry Bioresonance in Bow Island, Alberta, and Allergy Elimination Centre Shuswap in Sorrento, British Columbia, also run Rayonex sessions. One of the 4 practitioners offers a free consultation."
+        ],
+        "DE": [
+          "Rayonex bioresonance sessions are offered by 59 practitioners in Germany. North Rhine-Westphalia has the most with 14, Baden-Württemberg follows with 10, and Lower Saxony has 7. Smaller groups are in Bavaria, Schleswig-Holstein and Hesse.",
+          "Naturopathic practitioners and alternative medicine practitioners make up most of the group, along with 6 Heilpraktiker (state-licensed alternative practitioner), osteopaths and counsellors. Remote sessions are available from 6 practitioners, a free consultation from 1, and sessions for animals from 5.",
+          "Reviews stand out for Naturheilpraxis Kranz & Freund in Kroppach (5 from 55), Osteopathie Praxis Ratingen (4.9 from 50) and Naturheilpraxis Kempter in Aidlingen (5 from 36)."
+        ]
+      },
+      "guide": {
+        "seoTitle": "Rayonex Bioresonance: What It Is and {n} Practitioners to Book",
+        "seoDescription": "What Rayonex bioresonance according to Paul Schmidt is, the Rayocomp devices, their EU device class, what the evidence shows, and {n} Rayonex practitioners.",
+        "sections": [
+          {
+            "h": "What is Rayonex bioresonance?",
+            "p": [
+              "Rayonex Biomedical is a German company based in Lennestadt, founded in 1982. Its method is called bioresonance according to Paul Schmidt, after the engineer who founded the company. The company describes it as working with frequencies applied to the body through electrodes or applicators.",
+              "The main devices are the Rayocomp PS 1000 polar, used in practices, and the smaller Rayocomp PS 10, which is also sold for use at home. That makes Rayonex one of the few brands that clients can buy for themselves."
+            ]
+          },
+          {
+            "h": "Device class in the EU",
+            "p": [
+              "Rayonex sells some Rayocomp models in the European Union as class IIa medical devices, and the company is certified to the ISO 13485 quality standard. A device class describes how a product is regulated and made. It does not show that the method works for any purpose that a seller or practitioner advertises."
+            ]
+          },
+          {
+            "h": "What the evidence does not show",
+            "p": [
+              "Rayonex cites a double-blind, placebo-controlled study of its method in people with chronic neck complaints. That study is published or promoted by the company, and we found no independent trial that confirms it. More broadly, controlled research on bioresonance has not found an effect beyond placebo. Read a Rayonex session as a wellness session, not a medical test, and talk to a licensed healthcare professional about any health concern."
+            ]
+          },
+          {
+            "h": "How to choose a Rayonex practitioner",
+            "p": [
+              "Ask which Rayocomp device they use, what the session includes, and whether they will suggest buying a home device. Public prices for Rayocomp devices are on the bioresonance machines page. The {n} Rayonex practitioners listed here are ranked by Google rating weighted by review count."
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is Rayonex bioresonance?",
+            "a": "It is the bioresonance method of Rayonex Biomedical, a German company founded in 1982, called bioresonance according to Paul Schmidt after its founder. Sessions use Rayocomp devices that the company describes as working with frequencies."
+          },
+          {
+            "q": "Is Rayonex a medical device?",
+            "a": "Some Rayocomp models are sold in the EU as class IIa medical devices. That classification is about how the device is regulated, not proof that the method works."
+          },
+          {
+            "q": "Can I buy a Rayonex device for home use?",
+            "a": "Yes. The Rayocomp PS 10 is sold for home use. Public prices are listed on the ScannerFinder bioresonance machines page."
+          },
+          {
+            "q": "How much does a Rayonex session cost?",
+            "a": "Each practice sets its own price, and ScannerFinder shows a price only once the practitioner confirms it. Ask on the phone what the session includes, how long it lasts and whether products are sold afterwards."
+          }
+        ],
+        "sources": [
+          {
+            "label": "Rayonex: Rayocomp PS 10 MED Plus",
+            "url": "https://rayonex.co.uk/product/rayocomp-ps-10-med-plus/"
+          },
+          {
+            "label": "Rayonex Biomedical GmbH, exhibitor profile",
+            "url": "https://medic-west-africa.german-pavilion.com/en/sites/exhibitors/98477"
+          },
+          {
+            "label": "ScannerFinder: bioresonance machines",
+            "url": "/bioresonance-machines/"
+          },
+          {
+            "label": "ScannerFinder: does bioresonance work?",
+            "url": "/bioresonance/does-it-work/"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "key": "nls",
+    "label": "NLS (Metatron, Oberon)",
+    "faq": "Which {plural} in {city} use an NLS scanner such as Metatron or Oberon?",
+    "true_when": "uses an NLS device (Metatron, Oberon, Hunter 4025, Diacom) in sessions",
+    "pattern": "\\bnls\\b|metatron|oberon|hunter[ -]?4025|diacom|non-?linear (system|analys)",
+    "service": {
+      "family": "devices",
+      "slug": "nls",
+      "title": "NLS Scan Practitioners (Metatron, Oberon)",
+      "intro": [
+        "NLS sessions, on devices such as Metatron and Oberon, are offered by 70 practitioners across 8 countries. Germany has 22, Romania 14, the United Kingdom 12, the United States 9, South Africa 5, Australia 4, Ireland 3 and Canada 1.",
+        "Bavaria has the most listings in any region with 8. Alternative medicine practitioners are the largest type with 28, followed by 8 consultants, 6 wellness centres, 5 holistic medicine practitioners and 4 biofeedback therapists. Remote sessions are available from 18 practitioners, a free consultation from 4, and sessions for animals from 5.",
+        "Reviews stand out for Naturheilpraxis Rauch in Augsburg (4.9 from 54) and for a Bucharest practice with 117 reviews (4.1)."
+      ],
+      "countryIntro": {
+        "US": [
+          "Nine practitioners across the United States offer NLS scans, with Nevada and California at 2 each and New York, Wisconsin, Texas, Michigan and Illinois at 1 each. Wellness center is the practice type that appears most, at 3.",
+          "Healing Waters in Las Vegas, a wellness center that also offers the Oberon scan, is rated 4.9 from 67 reviews. The Holistic Healing Center in Madison, Wisconsin, holds 5 from 41, Alternative Health Services in League City, Texas, 5 from 14, and Smoochie’s Natural Health in Howell, Michigan, 5 from 8.",
+          "Remote sessions come from 4 of the 9, and 2 work with animals. A handful use several devices, including SCIO at 2 practices and ZYTO, BICOM, Rayonex and TimeWaver at 1 each."
+        ],
+        "GB": [
+          "NLS systems are in use at 12 practitioners across the United Kingdom, with Northern Ireland and London at 3 each, the South East of England and Yorkshire and the Humber at 2 each, and the South West and North West at 1 each.",
+          "Practice types are Holistic medicine practitioner (3), Health consultant (3), and one each of Acupuncture clinic, Alternative medicine practitioner, Naturopath and Hypnotherapy service. Remote sessions are offered by 7 of the 12, and 2 give a free consultation.",
+          "Holistic Doctor in Belfast is rated 5 from 79 reviews, Japanese Acupuncture - Bioresonance & Supportive Therapies in London 4.9 from 44, and Flourish Bioresonance in Ashford 4.9 from 7."
+        ],
+        "AU": [
+          "Four Australian practitioners offer NLS scan sessions, 2 in New South Wales and 2 in Queensland. They work as 2 Health consultants, a Nutritionist and a Wellness center.",
+          "Lotus Centre in Mullumbimby, New South Wales, is rated 5 from 2 reviews and offers sessions with a Redragon Metatron device alongside osteopathic consultations. Bioresonance Scan Byron Bay works from Bay Osteopathy and Wholistic Health, and Pure Rebalance in Glass House Mountains on the Sunshine Coast runs Oberon biofeedback sessions. Healing Syndicate in Tallebudgera pairs a biofeedback scan with an emailed report.",
+          "One practitioner offers remote sessions, one gives a free first appointment and one works with animals."
+        ],
+        "ZA": [
+          "South Africa has 5 NLS practitioners, 3 in the Western Cape and 2 in Gauteng. Two are Health consultants, 2 are Wellness centers and 1 is an Alternative medicine practitioner.",
+          "SoundWaves Health Clinic in Gordon's Bay is rated 4.9 from 30 reviews, with clients wearing headphones in a therapy chair during the scan. ResetMe Wellness South Africa in Somerset West holds 4.8 from 20, and Maritza Victor Holistic Wellness in Meyerton 5 from 7.",
+          "Remote sessions are offered by 3 of the 5."
+        ],
+        "IE": [
+          "HolisticOaks in Newbridge, Bioresonance Therapy in Wexford and Biorezonans Waterford are the 3 Irish practices working with NLS systems, one each in Kildare, Wexford and Waterford. They practise as a Holistic medicine practitioner, an Alternative medicine practitioner and a Naturopathic practitioner.",
+          "HolisticOaks offers Hunter Bio-Resonance NLS sessions alongside Reiki and bodywork and is rated 5 from 4 reviews. Bioresonance Therapy in Wexford holds 5 from 3, with sessions in which the client sits or lies down wearing headphones connected to the device. Biorezonans Waterford offers bioresonance sessions on BICOM and NLS HUNTER equipment, and one practitioner in the group works with BICOM."
+        ],
+        "DE": [
+          "NLS bioresonance sessions, on devices such as Metatron and Oberon, are offered by 22 practitioners in Germany. Bavaria has the most with 8, North Rhine-Westphalia follows with 4, and Baden-Württemberg has 3.",
+          "Most of the group are alternative medicine practitioners, with 16 listings, plus a few naturopathic practitioners, a Heilpraktiker (state-licensed alternative practitioner), a life coach and a counsellor. Remote sessions are available from 1 practitioner and sessions for animals from 2.",
+          "Reviews stand out for Naturheilpraxis Rauch in Augsburg (4.9 from 54), a Naturheilpraxis and massage practice in Munich (5 from 36) and Naturheilpraxis Fehmel in Boppard (5 from 18)."
+        ],
+        "RO": [
+          "NLS sessions, on devices such as Metatron and Oberon, are offered by 14 practitioners in Romania. The group is spread across the country: Cluj has 2, and Alba, Bucharest, Constanța, Hunedoara, Iași, Bihor, Argeș, Prahova and Maramureș have 1 each.",
+          "Alternative medicine practitioners are the largest type with 7, followed by 3 biofeedback therapists and a holistic medicine practitioner. Remote sessions are available from 1 practitioner.",
+          "Reviews stand out for Biorezonanta Pitești (5 from 38), Nutritie si Biorezonanta in Târgoviște (5 from 23) and Asociatia de Terapii Holistice in Huedin (5 from 8)."
+        ]
+      },
+      "guide": {
+        "seoTitle": "NLS Scan (Metatron, Oberon): What It Is and {n} Practitioners",
+        "seoDescription": "What an NLS scan with a Metatron or Oberon device is, how a session works, where the devices come from, what the evidence shows, and {n} NLS practitioners.",
+        "sections": [
+          {
+            "h": "What is an NLS scan?",
+            "p": [
+              "NLS stands for non-linear system, a scanning method that began in Russia. The best-known developer is the Institute of Practical Psychophysics in Omsk, founded in 1990, and devices are sold under names such as Oberon, Metatron and Hunter 4025. In a session the client wears headphones with built-in sensors while a computer runs the scan and shows images of organs and body systems on screen.",
+              "The sellers describe the device as reading the magnetic field of the body and comparing it with stored patterns. No published research shows that a device can do this."
+            ]
+          },
+          {
+            "h": "Where the devices come from",
+            "p": [
+              "Original Russian systems are sold alongside many copies. Many of the Metatron Hunter 4025 devices sold on online marketplaces are made in China, and public prices run from a few hundred to a few thousand dollars. A low device price is one reason NLS scans are common in small practices."
+            ]
+          },
+          {
+            "h": "What happens in an NLS session",
+            "p": [
+              "The client sits with the headphones on for the scan, which runs through body systems one by one on the practitioner's screen. Some practitioners follow the scan with a balancing program on the same device. Many NLS practitioners on ScannerFinder also offer remote sessions; ask how a remote session works, since the standard scan needs the headphones."
+            ]
+          },
+          {
+            "h": "What the evidence does not show",
+            "p": [
+              "We found no independent peer-reviewed study showing that NLS scans are accurate or repeatable. The images on screen are produced by software and do not show your own organs. Read a session as a wellness session, not a medical test, and talk to a licensed healthcare professional about any health concern."
+            ]
+          },
+          {
+            "h": "How to choose an NLS practitioner",
+            "p": [
+              "Ask which device they use (Oberon, Metatron or another NLS system), what the session includes and costs, and whether you are expected to buy products. The {n} NLS practitioners listed here are ranked by Google rating weighted by review count."
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is an NLS scan?",
+            "a": "An NLS (non-linear system) scan is a wellness session in which the client wears headphones with sensors while software runs a scan and shows images of body systems. The method began in Russia."
+          },
+          {
+            "q": "What is the difference between Metatron and Oberon?",
+            "a": "Both are names for NLS scanning devices. Oberon is associated with the original Russian systems, and many Metatron Hunter 4025 devices sold online are lower-cost copies."
+          },
+          {
+            "q": "Does an NLS scan show my organs?",
+            "a": "No. The images on screen are generated by the software. They are not imaging of your body, and no study has shown the scan reads anything meaningful."
+          },
+          {
+            "q": "How much does an NLS session cost?",
+            "a": "Each practice sets its own price, and ScannerFinder shows a price only once the practitioner confirms it. Ask on the phone what the session includes, how long it lasts and whether products are sold afterwards."
+          }
+        ],
+        "sources": [
+          {
+            "label": "The Institute of Practical Psychophysics (company profile)",
+            "url": "https://healthmanagement.org/site/p/the-institute-of-practical-psychophysics-llc"
+          },
+          {
+            "label": "ScannerFinder: bioresonance machines",
+            "url": "/bioresonance-machines/"
+          },
+          {
+            "label": "ScannerFinder: does bioresonance work?",
+            "url": "/bioresonance/does-it-work/"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "key": "scio",
+    "label": "SCIO / Indigo / Eductor",
+    "faq": "Which {plural} in {city} use SCIO, Indigo or Eductor biofeedback?",
+    "true_when": "uses a SCIO, Indigo, Eductor or QXCI device, or quantum biofeedback named as that system",
+    "pattern": "\\bscio\\b|\\bindigo (biofeedback|device|system|session)|eductor|qxci|quantum biofeedback",
+    "service": {
+      "family": "devices",
+      "slug": "scio",
+      "title": "SCIO and Indigo Biofeedback Practitioners",
+      "intro": [
+        "SCIO, Indigo and Eductor sessions are offered by 102 practitioners across 8 countries. The United States has 33, South Africa 27, Romania 14, Germany 9, Canada 8, the United Kingdom 6, New Zealand 3 and Australia 2.",
+        "Gauteng and the Western Cape have 12 listings each, the most of any region, and California follows with 8. Wellness centres are the largest type with 16, followed by 15 biofeedback therapists, 14 consultants, 9 alternative medicine practitioners and 8 holistic medicine practitioners. Remote sessions are available from 27 practitioners, a free consultation from 7, and sessions for animals from 13.",
+        "Reviews stand out for Well Being Owasso in Oklahoma (5 from 62), Meraki in Motion Wellness Center in Alberton, South Africa (4.8 from 71) and Amparo in Montreal (5 from 55)."
+      ],
+      "countryIntro": {
+        "US": [
+          "The United States has 33 SCIO and Indigo practitioners, with California at 8, Florida at 5, Oregon and Texas at 3 each and Oklahoma at 2. New York, Minnesota, South Carolina, Arizona and Massachusetts have 1 each.",
+          "Wellness center is the most common practice type at 7, then Biofeedback therapist at 5 and Holistic medicine practitioner at 4. Remote sessions come from 9, animal sessions from 5 and a free consultation from 3.",
+          "Ashland, Oregon, has two practices with strong review histories: Ashland Natural Medicine (4.8 from 43) and NATASHA SOL - Energy Alchemy (5 from 35). Tranquility Zone in Bloomington, Minnesota, holds 4.4 from 46."
+        ],
+        "GB": [
+          "Six practitioners in the United Kingdom work with SCIO: 3 in the South East of England, 2 in the South West and 1 in Scotland. The practices include 2 Health consultants, a Physiotherapist, a Nutritionist, a Hypnotherapy service and a Homeopath.",
+          "Adam Hardyman in Bournemouth is rated 5 from 14 reviews and combines homeopathy with bioresonance from a clinic established in the town for over 40 years. Jan de Vries Blythswood in Glasgow holds 4.9 from 9.",
+          "Remote sessions are available from 2 of the 6, and 1 gives a free consultation."
+        ],
+        "CA": [
+          "SCIO biofeedback in Canada is offered by 8 practitioners, 4 of them in Ontario, 2 in British Columbia and 1 each in Quebec and Saskatchewan. Practice types include 2 Wellness centers, 2 Health consultants, a Massage therapist, a Mental health service and a Biofeedback therapist.",
+          "Amparo ૐ massage & soins énergétiques in Montreal is rated 5 from 55 reviews. Enhance Studio Medi & Wellness Spa Ltd in Vernon holds 4.6 from 31, and Community Health & Prevention Care - Mental Health Counselling Scarborough 5 from 22.",
+          "Two practitioners offer remote sessions and 2 offer sessions for animals. One combines SCIO with ZYTO and one with BICOM."
+        ],
+        "ZA": [
+          "Of the 27 SCIO practitioners in South Africa, 12 are in Gauteng and 12 in the Western Cape, with 2 in North West Province and 1 in KwaZulu-Natal. Health consultant is the most common practice type at 7, followed by Wellness center at 6 and Biofeedback therapist at 5.",
+          "Meraki in Motion Wellness Center, Conferencing and Studio in Alberton, where many practitioners share a space, is rated 4.8 from 71 reviews. Scio Healthy Living in Cape Town holds 4.9 from 15 and has a section for horse owners, and Well, Naturally, Mossel Bay 4.7 from 15.",
+          "Remote sessions are offered by 5 practitioners and sessions for animals by 4."
+        ],
+        "NZ": [
+          "Every SCIO practitioner in New Zealand offers remote sessions: all 3, with one each in Auckland, Wellington and Canterbury. Their practice types are Holistic medicine practitioner, Alternative medicine practitioner and Health consultant.",
+          "SoulfulSync - Holistic Studio in Orewa is rated 5 from 11 reviews, and The Inner Shift Ltd (Sarah Ashill) in Lower Hutt 5 from 4. Between them they cover the Auckland, Wellington and Canterbury regions. Energy Health in St Albans, Christchurch, offers quantum biofeedback alongside Qigong and tea sessions, and holds 5 from 2."
+        ],
+        "DE": [
+          "SCIO, Indigo and Eductor sessions are offered by 9 practitioners in Germany, a small group spread across the country. Baden-Württemberg, Bavaria and North Rhine-Westphalia have 2 each, and Hesse, Mecklenburg-Vorpommern and Lower Saxony have 1 each.",
+          "Naturopathic practitioners and alternative medicine practitioners make up 2 each, with a counsellor, a psychologist and a feng shui consultant among the rest. Remote sessions are available from 2 practitioners and a free consultation from 1.",
+          "Reviews stand out for a Naturheilpraxis and massage practice in Munich (5 from 36), Heilpraktiker Dieter Hermann Lucas in Kaarst (5 from 11) and Heilpraktikerpraxis Menne-Wita in Freiburg im Breisgau (5 from 9). A Heilpraktiker is a state-licensed alternative practitioner, not a doctor."
+        ],
+        "RO": [
+          "SCIO, Indigo and Eductor sessions are offered by 14 practitioners in Romania. Timiș has the most with 3, Brașov, Bucharest and Cluj have 2 each, and Bacău, Constanța, Sibiu, Bihor and Argeș have 1 each.",
+          "Biofeedback therapists are the largest type with 4, followed by a psychologist, a nutritionist and a counsellor. Remote sessions are available from 4 practitioners, a free consultation from 1, and sessions for animals from 2.",
+          "Reviews stand out for Biorezonanta Pitești (5 from 38), a wellness cabinet in Timișoara (5 from 33) and Cabinet Nutrition run by Coralia Capusan in Cluj-Napoca (5 from 8)."
+        ]
+      },
+      "guide": {
+        "seoTitle": "SCIO, Indigo and Eductor Biofeedback: What It Is and {n} Practitioners",
+        "seoDescription": "What SCIO, Indigo and Eductor biofeedback is, where the devices come from, their FDA history, what the evidence shows, and {n} practitioners ranked by rating.",
+        "sections": [
+          {
+            "h": "What are SCIO, Indigo and Eductor?",
+            "p": [
+              "SCIO, Indigo and Eductor are generations of one family of devices that began in the 1980s as the EPFX, also sold as the QXCI. The client is linked to the device through electrodes, usually on the wrists, ankles and forehead, and software runs through a large library of frequencies. According to the sellers, the device reads the body's reactions to those frequencies and sends others back.",
+              "That is the sellers' account. Critics class the device as radionics, a method with no basis in physics. Practitioners sell sessions under names such as quantum biofeedback, SCIO biofeedback or Indigo biofeedback."
+            ]
+          },
+          {
+            "h": "Where the devices come from",
+            "p": [
+              "The original device was invented by William Nelson, who registered his company with the FDA in 1989 as a maker of biofeedback machines, a category that allows sales only as a relaxation or stress tool. In 1992 the FDA warned him over claims that went far beyond that. In 1996 he was indicted in the United States on fraud charges and moved to Budapest, where the devices continued to be made.",
+              "In 2004 a Seattle Times investigation reported cases of people who had relied on the device instead of medical care. The FDA then opened a compliance investigation and issued an import alert against new shipments. The SCIO has since been discontinued in favour of newer models, and used systems are still sold."
+            ]
+          },
+          {
+            "h": "What happens in a session",
+            "p": [
+              "In a session the client sits or lies down with the electrodes on, the software runs a scan, and the practitioner then runs programs that the device is said to use to balance the body. Many SCIO and Indigo practitioners also offer remote sessions and sessions for animals. Ask how those work before you book."
+            ]
+          },
+          {
+            "h": "What the evidence does not show",
+            "p": [
+              "We found no peer-reviewed study showing that SCIO, Indigo or Eductor readings are accurate or repeatable, or that the programs do anything beyond a relaxing appointment. Read a session as a wellness session, not a medical test, and talk to a licensed healthcare professional about any health concern."
+            ]
+          },
+          {
+            "h": "How to choose a practitioner",
+            "p": [
+              "Ask which device and software version they use, how long a session lasts, what a full course costs, and whether you are expected to buy products. The {n} practitioners listed here are ranked by Google rating weighted by review count."
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is SCIO biofeedback?",
+            "a": "SCIO is a device from the EPFX and QXCI family. The client is linked to it through electrodes while software runs through a library of frequencies. Its sellers say it reads the body's reactions and sends back balancing frequencies; critics class it as radionics."
+          },
+          {
+            "q": "Is Indigo the same as SCIO?",
+            "a": "Indigo and Eductor are later devices in the same family as the SCIO, which has been discontinued. Practitioners often use the names interchangeably."
+          },
+          {
+            "q": "Is SCIO FDA approved?",
+            "a": "No. The maker registered it as a biofeedback device for relaxation only, the FDA warned against wider claims in 1992, and in 2004 it issued an import alert against new shipments."
+          },
+          {
+            "q": "How much does a SCIO or Indigo session cost?",
+            "a": "Each practice sets its own price, and ScannerFinder shows a price only once the practitioner confirms it. Ask on the phone what the session includes, how long it lasts and whether products are sold afterwards."
+          }
+        ],
+        "sources": [
+          {
+            "label": "Wikipedia: Electro Physiological Feedback Xrroid",
+            "url": "https://en.wikipedia.org/wiki/Electro_Physiological_Feedback_Xrroid"
+          },
+          {
+            "label": "Seattle Times, Miracle Machines (2004)",
+            "url": "https://special.seattletimes.com/o/html/health/2004061364_miracle09m.html"
+          },
+          {
+            "label": "Seattle Times, FDA and Congress act (2004)",
+            "url": "https://special.seattletimes.com/o/html/nationworld/2004153060_device30.html"
+          },
+          {
+            "label": "ScannerFinder: bioresonance machines",
+            "url": "/bioresonance-machines/"
+          },
+          {
+            "label": "ScannerFinder: does bioresonance work?",
+            "url": "/bioresonance/does-it-work/"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "key": "mora",
+    "label": "MORA",
+    "faq": "Which {plural} in {city} use MORA bioresonance?",
+    "true_when": "uses a MORA device (MORA Nova, MORA Super) or MORA therapy in sessions",
+    "pattern": "\\bmora (nova|super|iii|therapy|bioresonance|device)|med-?tronik",
+    "service": {
+      "family": "devices",
+      "slug": "mora",
+      "title": "MORA Bioresonance Practitioners",
+      "intro": [
+        "MORA sessions are offered by 17 practitioners across 7 countries. Germany has 6, Australia and the United States 3 each, Romania 2, and the United Kingdom, New Zealand and South Africa 1 each.",
+        "Naturopathic practitioners are the largest type with 4, followed by 3 alternative medicine practitioners and 2 acupuncture practices. Remote sessions are available from 2 practitioners, a free consultation from 1, and sessions for animals from 1.",
+        "Reviews stand out for Centrul Vestea Bună in Galați, Romania (5 from 63), Naturheilpraxis Heike Jülkenbeck in Unna (4.8 from 25), a holistic practice in Orange, New South Wales (4.9 from 19) and Naturopath Australia in Queensland (4.8 from 17)."
+      ],
+      "countryIntro": {
+        "US": [
+          "Three United States practitioners work with MORA, in Indiana, Montana and Nevada. They are a Health consultant, a Sports massage therapist and a Wellness center.",
+          "Life's Little Treasures in Auburn, Indiana, is rated 5 from 3 reviews and offers bio-resonance scanning and Mora sessions. Stress Therapy Studio LLC in Billings, Montana, has 5 from 1 review, and Enlightenment Wellness Center in Las Vegas 1 from 1. Stress Therapy Studio LLC offers therapeutic massage with biofeedback sessions using SCENAR, BRT and MORA, while Life's Little Treasures adds nutritional education and guidance to its scanning."
+        ],
+        "AU": [
+          "In Australia, MORA sessions are offered by 3 practitioners: 2 in Queensland and 1 in New South Wales. They work as a Massage therapist, a Naturopathic practitioner and an Acupuncture clinic.",
+          "Holistic Healing Choices in Orange has 4.9 from 19 reviews and offers MORA bioresonance alongside remedial massage. Naturopath Australia, a naturopathy and homeopathy clinic in Mermaid Beach on the Gold Coast, holds 4.8 from 17, and Mora Therapy in Noosa 4.5 from 8.",
+          "One of the 3 offers remote sessions, one a free consultation and one sessions for animals."
+        ],
+        "DE": [
+          "MORA sessions are offered by 6 practitioners in Germany, so the group is small. Baden-Württemberg and North Rhine-Westphalia have 2 each, and Schleswig-Holstein and Hesse have 1 each.",
+          "Naturopathic practitioners are the most common type with 3, followed by 2 alternative medicine practitioners and an acupuncture practice. Remote sessions are available from 1 practitioner.",
+          "Reviews stand out for Naturheilpraxis Heike Jülkenbeck in Unna (4.8 from 25). Heilpraktikerin Annette Ullrich in Langen, Heilpraktikerin Katja Drescher in Grömitz and Britta Rast in Großbottwar are also listed. A Heilpraktiker is a state-licensed alternative practitioner, not a doctor."
+        ]
+      },
+      "guide": {
+        "seoTitle": "MORA Bioresonance: What It Is and {n} Practitioners to Book",
+        "seoDescription": "What MORA bioresonance is, the 1977 origin of the method, who makes MORA devices today, what the evidence shows, and {n} MORA practitioners ranked by rating.",
+        "sections": [
+          {
+            "h": "What is MORA bioresonance?",
+            "p": [
+              "MORA is the original bioresonance method. It was developed in Germany in 1977, and its name comes from the first letters of the surnames of the physician Franz Morell and the engineer Erich Rasche. Later bioresonance devices, including BICOM, grew out of the same work.",
+              "MORA devices are made today by Med-Tronik, a German company that holds the MORA trademarks, including the current MORA-Nova. The client is connected through hand electrodes or applicators, and according to its makers the device picks up the body's oscillations and sends adjusted ones back."
+            ]
+          },
+          {
+            "h": "What happens in a MORA session",
+            "p": [
+              "A session usually combines a test phase and a balancing phase with the device, often over a series of appointments. MORA is one of the least common devices in this directory: {n} practitioners, spread across several countries. Ask how many sessions they expect and what the full course costs."
+            ]
+          },
+          {
+            "h": "What the evidence does not show",
+            "p": [
+              "Controlled research on bioresonance has not found an effect beyond placebo, and we found no independent study of MORA devices that shows otherwise. Med-Tronik describes the method as free of side effects; that is the maker's claim, not an independent finding. Read a session as a wellness session, not a medical test, and talk to a licensed healthcare professional about any health concern."
+            ]
+          },
+          {
+            "h": "How to choose a MORA practitioner",
+            "p": [
+              "Ask which MORA device they use, whether they trained with the maker, how many sessions they expect, and what the full course costs. The {n} MORA practitioners listed here are ranked by Google rating weighted by review count."
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is MORA therapy?",
+            "a": "MORA is the original bioresonance method, developed in Germany in 1977 by Franz Morell and Erich Rasche. Its name comes from their surnames. There is no accepted scientific evidence that it works."
+          },
+          {
+            "q": "Who makes MORA devices?",
+            "a": "MORA devices, including the MORA-Nova, are made by Med-Tronik, a German company that holds the MORA trademarks."
+          },
+          {
+            "q": "Is MORA the same as BICOM?",
+            "a": "They share the same roots. BICOM grew out of the MORA work of 1977, but the two are made by different companies."
+          },
+          {
+            "q": "How much does a MORA session cost?",
+            "a": "Each practice sets its own price, and ScannerFinder shows a price only once the practitioner confirms it. Ask on the phone what the session includes, how long it lasts and whether products are sold afterwards."
+          }
+        ],
+        "sources": [
+          {
+            "label": "Helsana: Bioresonance, explanation and costs",
+            "url": "https://www.helsana.ch/en/individuals/knowledge-centre/complementary-medicine/bioresonance.html"
+          },
+          {
+            "label": "MORA trademarks held by Med-Tronik GmbH",
+            "url": "https://trademarks.justia.com/owners/med-tronik-gmbh-forschung-und-entwicklung-medizinisch-biophysikalischer-gerte-3258278"
+          },
+          {
+            "label": "ScannerFinder: what is bioresonance?",
+            "url": "/bioresonance/"
+          },
+          {
+            "label": "ScannerFinder: does bioresonance work?",
+            "url": "/bioresonance/does-it-work/"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "key": "timewaver",
+    "label": "TimeWaver",
+    "faq": "Which {plural} in {city} use TimeWaver?",
+    "true_when": "uses a TimeWaver system in sessions",
+    "pattern": "time ?waver",
+    "service": {
+      "family": "devices",
+      "slug": "timewaver",
+      "title": "TimeWaver Practitioners",
+      "intro": [
+        "TimeWaver sessions are offered by 39 practitioners across 4 countries. Germany has 33, and Canada, the United Kingdom and the United States have 2 each.",
+        "Baden-Württemberg has the most listings in any region with 9, followed by Bavaria with 7 and Hesse with 5. Alternative medicine practitioners are the largest type with 10, and life coaches come next with 6, ahead of naturopathic practitioners, coaching centres and consultants. Remote sessions are available from 13 practitioners, a free consultation from 8, and sessions for animals from 7.",
+        "Reviews stand out for Miriam Kaufmann's coaching practice in Delmenhorst, Germany, and Naturheilpraxis Katja Winter in Vellmar."
+      ],
+      "countryIntro": {
+        "DE": [
+          "TimeWaver sessions are offered by 33 practitioners in Germany. Baden-Württemberg has the most with 9, Bavaria follows with 7, and Hesse has 5.",
+          "This group differs from the other devices in Germany. Alternative medicine practitioners are the largest type with 10, but life coaches come next with 6, followed by naturopathic practitioners, coaching centres and consultants. Coaching and consulting practices are well represented. Remote sessions are available from 10 practitioners, a free consultation from 7, and sessions for animals from 7.",
+          "Reviews stand out for Miriam Kaufmann's coaching practice in Delmenhorst (5 from 21), Naturheilpraxis Katja Winter in Vellmar (4.9 from 16) and quantum aid in Bad Schönborn (4.7 from 15)."
+        ]
+      },
+      "guide": {
+        "seoTitle": "TimeWaver: What It Is and {n} Practitioners to Book",
+        "seoDescription": "What a TimeWaver session is, how the system is described, why many sessions run at a distance, what the evidence shows, and {n} TimeWaver practitioners.",
+        "sections": [
+          {
+            "h": "What is TimeWaver?",
+            "p": [
+              "TimeWaver is a German system developed by Marcus Schmieke. Its makers describe it as working with an information field, a concept they say connects people, events and their environment. The system runs as software with its own hardware, and it is sold in several versions for practitioners and for home use.",
+              "The information field is the makers' own idea. It is not a concept recognised in physics, and no published study shows that the system reads or changes anything."
+            ]
+          },
+          {
+            "h": "Why many TimeWaver sessions are remote",
+            "p": [
+              "Because the system is described as working with information rather than with signals from the body, many practitioners run TimeWaver sessions at a distance, sometimes without the client present at all. Ask what you will actually experience in a session and what you are paying for."
+            ]
+          },
+          {
+            "h": "What the evidence does not show",
+            "p": [
+              "We found no independent peer-reviewed study of TimeWaver. Read a session as a wellness session, not a medical test, and talk to a licensed healthcare professional about any health concern."
+            ]
+          },
+          {
+            "h": "How to choose a TimeWaver practitioner",
+            "p": [
+              "Ask which TimeWaver version they use, whether the session is live or carried out without you, what it costs, and whether follow-up sessions or products are expected. The {n} TimeWaver practitioners listed here are ranked by Google rating weighted by review count."
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is TimeWaver?",
+            "a": "TimeWaver is a German software and hardware system that its makers describe as working with an information field. There is no scientific evidence for that idea or for the system."
+          },
+          {
+            "q": "Can a TimeWaver session be done remotely?",
+            "a": "Yes. Many practitioners run TimeWaver sessions at a distance, because the system is not described as needing contact with the body."
+          },
+          {
+            "q": "Does TimeWaver work?",
+            "a": "We found no independent study of TimeWaver. Treat a session as a wellness session, not a medical test."
+          },
+          {
+            "q": "How much does a TimeWaver session cost?",
+            "a": "Each practice sets its own price, and ScannerFinder shows a price only once the practitioner confirms it. Ask on the phone what the session includes, how long it lasts and whether products are sold afterwards."
+          }
+        ],
+        "sources": [
+          {
+            "label": "ScannerFinder: bioresonance machines",
+            "url": "/bioresonance-machines/"
+          },
+          {
+            "label": "ScannerFinder: does bioresonance work?",
+            "url": "/bioresonance/does-it-work/"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "key": "ao_scan",
+    "label": "AO Scan",
+    "faq": "Which {plural} in {city} offer the AO Scan?",
+    "true_when": "uses the AO Scan (Solex) device, Vitals, Comprehensive or Inner Voice scan in sessions",
+    "pattern": "ao[ -]?scan|\\bsolex\\b|inner voice scan|vitals scan",
+    "service": {
+      "family": "devices",
+      "slug": "ao-scan",
+      "title": "AO Scan Practitioners",
+      "intro": [
+        "An AO Scan session is a wellness session with an AO Scan system, and some practitioners run it from a voice sample. Practitioners offering it number 63: 49 in the United States, 8 in Canada, 5 in Australia and 1 in New Zealand.",
+        "Texas has 7, Florida 5, and Alabama and Ontario 4 each, with Utah, Arizona, Queensland, Colorado, Tennessee and Missouri at 3 each. Wellness center is the most common practice type at 14, then Health consultant at 13 and Alternative medicine practitioner at 10.",
+        "Remote sessions are available from 23 practitioners, sessions for animals from 11 and a free consultation from 6. Reenew Wellness Center in Bountiful, Utah, is rated 4.9 from 227 reviews, Karen's Holistic in Antioch, Illinois, 5 from 180, and Fire & Ice Holistic Health in Matthews, North Carolina, 5 from 172."
+      ],
+      "countryIntro": {
+        "US": [
+          "AO Scan has 49 practitioners in the United States, led by Texas with 7 and Florida with 5. Alabama has 4, and Utah, Arizona, Colorado, Tennessee and Missouri have 3 each, while Illinois and Michigan have 2 each.",
+          "Wellness centers are the largest group at 13, with Health consultants at 8, Alternative medicine practitioners at 7, Massage therapists at 5 and Naturopathic practitioners at 4. Remote sessions are offered by 14 practitioners, animal sessions by 7 and a free consultation by 4. A few also use ZYTO (4 practices).",
+          "East of Eden Wellness Spa Center in Muskegon, Michigan, is rated 4.7 from 130 reviews, and Banner Harvest CBD in Leesburg, Florida, 5 from 107. Compass Healing, Quantum Healing Center in St. George, Utah, holds 5 from 140."
+        ],
+        "CA": [
+          "AO Scan practitioners in Canada number 8, and Ontario has 4 of them, with New Brunswick, Saskatchewan, Quebec and British Columbia at 1 each. Health consultant is the most common practice type at 4, with 2 Alternative medicine practitioners, a Psychotherapist and a Wellness center.",
+          "Pure Vibes by Christina in Beeton is rated 5 from 41 reviews and Karen Jay-Moore Soul Path Psychotherapy & Holistic Services in Orillia 5 from 30. Sosa Academy in Bathurst, New Brunswick, holds 5 from 4.",
+          "Remote sessions come from 5 of the 8, sessions for animals from 3 and a free consultation from 2."
+        ],
+        "AU": [
+          "Five Australian practitioners offer AO Scan sessions, 3 in Queensland and 2 in New South Wales. Two are Naturopathic practitioners, and the others are a Kinesiologist, a Health consultant and an Alternative medicine practitioner.",
+          "Empowering Health - Kinesiology, Bioresonance, Energy Healing in Winmalee, in the Blue Mountains, is rated 5 from 61 reviews. VURV THYROID CLINIC in Labrador holds 4.7 from 34, Samadhi Hart Bioresonance in West End, Brisbane, 4.9 from 30, and Megan Clarke Natural Health in Woy Woy 5 from 10.",
+          "Three of the 5 offer remote sessions."
+        ]
+      },
+      "guide": {
+        "seoTitle": "AO Scan: What It Is and {n} Practitioners to Book",
+        "seoDescription": "What an AO Scan session is, how the Inner Voice, Vitals and Comprehensive scans are described, its regulatory status, and {n} AO Scan practitioners ranked by rating.",
+        "sections": [
+          {
+            "h": "What is an AO Scan?",
+            "p": [
+              "AO Scan is a wellness technology sold by the company Solex. It runs through the AO Scan app, and practitioners and individuals use it on a monthly subscription. The seller and its distributors describe it in terms of frequencies: the scan is said to compare the body against a library of frequency signatures and to play back balancing frequencies.",
+              "Those descriptions come from the seller. Words such as quantum resonance and scalar waves appear in AO Scan material, but they do not describe how the device works in any way that has been tested."
+            ]
+          },
+          {
+            "h": "The three AO Scans",
+            "p": [
+              "Inner Voice records a short voice sample and plays back a sound built from it. Practitioners use it in relaxation and focus sessions, and it is one reason some AO Scan sessions run from a voice recording alone.",
+              "Vitals and Comprehensive produce reports. Comprehensive covers a long list of organs and body systems and scores each one on a scale of 1 to 9, where 5 is described as balanced."
+            ]
+          },
+          {
+            "h": "Regulatory status",
+            "p": [
+              "We could not find an FDA clearance for the AO Scan. Distributor materials state that AO Scan Technology is not a medical device and that its statements have not been evaluated by the FDA. ScannerFinder lists AO Scan sessions on the same terms: as wellness sessions, not medical tests. Talk to a licensed healthcare professional about any health concern."
+            ]
+          },
+          {
+            "h": "What the evidence does not show",
+            "p": [
+              "We found no peer-reviewed study of the AO Scan. Scientists and physicians who have looked at biofrequency devices of this kind, such as the authors of the NeuroLogica blog, describe their claims as unsupported."
+            ]
+          },
+          {
+            "h": "AO Scan or ZYTO?",
+            "p": [
+              "Both are wellness scans, and they work differently. ZYTO records skin response through a hand cradle, and the FDA has cleared that cradle to measure skin response and nothing more. AO Scan is app-based, is described in terms of frequencies and has no FDA clearance. Remote sessions are more common with AO Scan, and a few practices on ScannerFinder use both."
+            ]
+          },
+          {
+            "h": "How to choose an AO Scan practitioner",
+            "p": [
+              "AO Scan is also sold through distributors, and some practitioners are distributors as well. So ask on the first call whether the session comes with a subscription or product offer. Also ask whether you need to attend in person, which scans the session includes and what it costs."
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "q": "What is an AO Scan?",
+            "a": "An AO Scan is a wellness session run through the AO Scan app from Solex. The seller describes it in terms of frequencies, and its three scans are Inner Voice, Vitals and Comprehensive."
+          },
+          {
+            "q": "Is the AO Scan FDA approved?",
+            "a": "We could not find an FDA clearance for the AO Scan. Distributor materials state that it is not a medical device and that its statements have not been evaluated by the FDA."
+          },
+          {
+            "q": "What is the AO Scan Inner Voice?",
+            "a": "Inner Voice records a short voice sample and plays back a sound built from it. Practitioners use it in relaxation and focus sessions, and it can be run from a recording."
+          },
+          {
+            "q": "How much does an AO Scan session cost?",
+            "a": "Each practice sets its own price, and ScannerFinder shows a price only once the practitioner confirms it. Ask on the phone what the session includes, how long it lasts and whether products are sold afterwards."
+          }
+        ],
+        "sources": [
+          {
+            "label": "AO Scan features summary (distributor PDF)",
+            "url": "https://holistichealth4unme.abmp.com/files/AO%20SCAN%20Features%20Summarized(d).pdf"
+          },
+          {
+            "label": "NeuroLogica, 16 Feb 2024",
+            "url": "https://theness.com/neurologicablog/biofrequency-gadgets-are-a-total-scam/"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "key": "remote_sessions",
+    "label": "Remote sessions",
+    "faq": "Which {plural} near {city} offer remote or online scan sessions?",
+    "true_when": "offers sessions or scans at a distance (remote, online, by phone or video), stated in words",
+    "pattern": "\\bremote(ly)?\\b|distance (session|scan|healing|balancing)|\\bonline (session|scan|consult|appointment)|virtual (session|consult|scan|appointment)|via zoom|\\bzoom\\b|by video|over the phone|from (the comfort of )?your (own )?home",
+    "service": {
+      "family": "services",
+      "slug": "remote-sessions",
+      "title": "Remote Scan Sessions",
+      "intro": [
+        "Remote scan sessions are offered by 176 practitioners, and the United States has 75 of them. The United Kingdom has 42, Australia 20, Canada 16, South Africa 14 and New Zealand 9.",
+        "Queensland, Ontario, California and the Western Cape have 9, 8, 8 and 8, the South West of England has 7, Victoria and the South East of England 6 each, and the East of England, Utah and New York 5 each. Health consultant is the most frequent practice type at 31, with Naturopathic practitioner at 22 and Holistic medicine practitioner, Wellness center and Alternative medicine practitioner at 21 each.",
+        "Asyra / Qest4 is the device used most among remote practitioners at 29, then AO Scan at 23, SCIO at 21, ZYTO at 19, NLS at 16, NES Health at 10, BICOM and Rayonex at 6 each, TimeWaver at 3 and MORA at 1. Of these practitioners, 29 also give a free consultation and 35 work with animals.",
+        "Reviews stand out at Compass Healing, Quantum Healing Center in St. George, Utah (5 from 140), Bahan Natural Health Center in Rocky River, Ohio (5 from 95) and Ease and Balance Acupuncture in New York (5 from 81)."
+      ]
+    }
+  },
+  {
+    "key": "free_consultation",
+    "label": "Free first consultation",
+    "faq": "Which {plural} in {city} offer a free first consultation?",
+    "true_when": "offers a free or complimentary consultation, discovery call or first session",
+    "pattern": "free (consult|consultation|discovery|initial|first|intro|introductory|\\d+ ?min)|complimentary (consult|session|call|scan|discovery)|no[- ](cost|charge) (consult|call)"
+  },
+  {
+    "key": "animal_sessions",
+    "label": "Sessions for animals",
+    "faq": "Which {plural} in {city} offer scans for pets or horses?",
+    "true_when": "offers scans or sessions for animals (pets, horses), stated in words",
+    "pattern": "\\bpets?\\b|\\banimals?\\b|\\bhorses?\\b|equine|\\bdogs?\\b|\\bcats?\\b|canine|feline",
+    "service": {
+      "family": "services",
+      "slug": "pets-and-horses",
+      "title": "Scan Sessions for Pets and Horses",
+      "intro": [
+        "Scan sessions for pets and horses are offered by 61 practitioners. The United States has 27, the United Kingdom 11, Australia 9, Canada 8, South Africa 4 and New Zealand 2.",
+        "California has 6, Victoria 5, and Ontario 4, with the South West of England, Queensland and Texas at 3 each. Wellness center is the practice type that appears most at 11, then Health consultant at 10, and Alternative medicine practitioner and Biofeedback therapist at 8 each. Of the 61, 35 also offer remote sessions and 8 a free consultation.",
+        "By device, Asyra / Qest4 is used by 12, SCIO and AO Scan by 11 each, BICOM by 5, ZYTO by 4, NLS by 3, and NES Health, Rayonex and MORA by 1 each.",
+        "East of Eden Wellness Spa Center in Muskegon, Michigan, is rated 4.7 from 130 reviews. Quantum Healing & Wellness in Bedford Hills, New York, holds 5 from 48, Harmonic Egg Ottawa 5 from 39, and Kathy Houghton in Nelson, New Zealand, 5 from 35."
+      ]
+    }
+  }
+]

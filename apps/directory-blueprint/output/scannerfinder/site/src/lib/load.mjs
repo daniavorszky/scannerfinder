@@ -313,7 +313,8 @@ export function loadDirectory() {
 
   // Launch lean: what stays out of the sitemap and gets noindex
   const noindexPaths = new Set();
-  for (const l of listings) if (l.thin && !l.claimed && !l.optimized) noindexPaths.add(l.path);
+  // Listing pages are indexed once they carry a description (Dan, 2026-10-20); thin still keeps them out of the top-rated lists.
+  for (const l of listings) if (!l.description && !l.claimed && !l.optimized) noindexPaths.add(l.path);
   for (const l of listings) if (l.premium || l.bestOfRank) noindexPaths.add(`/badge/${l.slug}/`);
   for (const s of services) for (const cp of s.countryPages) if (cp.thin) noindexPaths.add(cp.path);
   for (const c of cities) if (c.thin) noindexPaths.add(c.path);

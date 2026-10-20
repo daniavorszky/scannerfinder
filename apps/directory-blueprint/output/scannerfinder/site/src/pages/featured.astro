@@ -29,7 +29,7 @@ const tiers = [
           <p class="price">{x.price}</p>
         </div>
         <p>{x.what}</p>
-        {x.link ? <a class="btn action" href={x.link} rel="nofollow noopener">Buy {x.name.toLowerCase()}</a> : <a class="btn action" href={`/claim/?tier=${x.key}&position=${encodeURIComponent(x.name)}`}>Ask about availability</a>}
+        {x.link ? <a class="btn action" href={x.link} rel="nofollow noopener">Buy {x.name.toLowerCase()}</a> : <a class="btn action" href={`/claim/?tier=${x.key}&position=${encodeURIComponent(x.name)}`} rel="nofollow">Ask about availability</a>}
       </div>
     ))}
   </div>

@@ -50,6 +50,7 @@ const schema = [{
 }, { '@context': 'https://schema.org', '@type': 'WebPage', '@id': base + l.path, url: base + l.path, name: title, datePublished: site.launchDate, dateModified: buildDate, about: { '@id': base + l.path + '#business' } }];
 // Directions through the Google Maps URL scheme, no key needed. Not shown for service-area businesses without an address.
 const directions = !l.areaService && l.lat && l.lng ? `https://www.google.com/maps/dir/?api=1&destination=${l.lat},${l.lng}` : '';
+// Claim links carry a query per listing and land on a noindex page, so crawlers skip them (rel=nofollow).
 const claimHref = `/claim/?listing=${encodeURIComponent(l.slug)}&business=${encodeURIComponent(l.name)}`;
 const disclaimer = site.disclaimer || `${site.brand} is a free directory compiled from public sources. Every business listed is independent, and a listing is not an endorsement. ${site.brand} does not verify licenses, insurance or the quality of any work. Check the license with your state's licensing board and confirm insurance before you hire.`;
 const mark = l.featured ? 'Featured listing' : l.bestOfRank ? `Best of ${l.city} #${l.bestOfRank}` : l.premium ? 'Premium listing' : '';
@@ -153,7 +154,7 @@ const mark = l.featured ? 'Featured listing' : l.bestOfRank ? `Best of ${l.city}
       {l.claimed
         ? <p>The practitioner confirmed these details. <a href="/claim/profile/">Update your profile</a>.</p>
         : <p>Claiming is free. Correct details, add photos and hear about featured placement in {l.city}.</p>}
-      {!l.claimed && <a data-sf="claim" class="btn action side-btn" href={claimHref}>Claim this listing</a>}
+      {!l.claimed && <a data-sf="claim" class="btn action side-btn" href={claimHref} rel="nofollow">Claim this listing</a>}
       <p class="meta"><a href="/featured/">Get featured</a> at the top of the {l.city} page.</p>
     </div>
     <div class="side-card disclaimer-card">

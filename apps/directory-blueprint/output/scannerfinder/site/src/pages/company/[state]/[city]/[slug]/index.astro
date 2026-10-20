@@ -18,8 +18,14 @@ const l = dir.listings.find((x) => x.slug === slug);
 const regionPage = dir.cityBySlug[l.citySlug];
 const city = regionPage ? { ...regionPage, isRegion: true } : { name: l.country.name, path: l.country.path, count: dir.countryBySlug[l.country.slug].count, isRegion: false };
 const base = `https://${site.domain}`;
-const title = `${l.name} | ${site.niche.title} in ${l.city}, ${l.country.short}`;
-const description = (l.description.split(/(?<=\.)\s/)[0] || `${l.name}, a ${site.niche.singular} in ${l.city}, ${l.country.name}.`).slice(0, 160);
+// The longest title that fits in 60 characters; very long business names are cut at a word.
+const title = [`${l.name} | ${site.niche.title} in ${l.city}, ${l.country.short}`, `${l.name} | ${site.niche.title} in ${l.city}`, `${l.name} | ${site.niche.title.split(' ')[0]} in ${l.city}`, `${l.name}, ${l.city}`].find((t) => t.length <= 60)
+  || l.name.slice(0, 59).replace(/[\s,;:.\-–|]+\S*$/, '') + '…';
+// Whole sentences up to 160 characters, topped up with the listing's place and contents when short.
+const sentences = l.description.split(/(?<=[a-z]{2}\.)(?<!\b[Mm]ed\.)\s/).filter(Boolean); // skips initials like "M." and "Dr."
+let description = sentences[0] || `${l.name}, a ${site.niche.singular} in ${l.city}, ${l.country.name}.`;
+for (const s of sentences.slice(1)) { if ((description + ' ' + s).length > 160) break; description += ' ' + s; }
+if (description.length < 110) description += ` Contact details, devices and services on ${site.brand}.`;
 const noindex = dir.noindexPaths.has(l.path);
 // The services the business confirms on its own site: H3s under "Services and details" and Offers in the schema.
 const services = l.attrs.filter((a) => a.value === 'true');

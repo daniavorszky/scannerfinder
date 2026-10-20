@@ -7,10 +7,14 @@ import { loadDirectory } from '../lib/load.mjs';
 import tools from '../data/tools.json';
 const dir = loadDirectory();
 const { site, indexCities: cities, services, devices, features, countries, statePath, buildDate } = dir;
-const { title, description, path, noindex = false, schema = [], ogType = 'website', headTone = 'tint', headImage = '' } = Astro.props;
+const { title: rawTitle, description: rawDescription, path, noindex = false, schema = [], ogType = 'website', headTone = 'tint', headImage = '' } = Astro.props;
 // A hero photograph sits under a flat overlay of the band color, so the text keeps its contrast.
 const headStyle = headImage ? `background-image:linear-gradient(var(--band-overlay),var(--band-overlay)),url(${headImage});` : undefined;
 const hasHead = Astro.slots.has('head');
+// Search results cut titles past ~60 characters and descriptions past ~160; Google adds the site name itself.
+const brandSuffix = ` | ${site.brand}`;
+const title = rawTitle.length > 60 && rawTitle.endsWith(brandSuffix) ? rawTitle.slice(0, -brandSuffix.length) : rawTitle;
+const description = rawDescription.length > 160 ? rawDescription.slice(0, 157).replace(/[\s,;:.]+\S*$/, '') + '…' : rawDescription;
 const base = `https://${site.domain}`;
 const canonical = base + path;
 const d = site.design;
@@ -40,7 +44,7 @@ const hasResources = Object.keys(import.meta.glob('../pages/resources/*.md')).fi
 const siteSchema = path === '/' ? [
   { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${base}/#website`, url: base + '/', name: site.brand, publisher: { '@id': orgId } },
   { '@context': 'https://schema.org', '@type': 'Organization', '@id': orgId, name: site.brand, url: base + '/', email: site.contact.email,
-    founder: { '@id': personId }, publisher: { '@id': personId }, sameAs: (site.publisher.sameAs || []).filter(Boolean) },
+    founder: { '@id': personId }, sameAs: (site.publisher.sameAs || []).filter(Boolean) },
   { '@context': 'https://schema.org', '@type': site.publisher.type || 'Person', '@id': personId, name: site.publisher.name, legalName: site.publisher.legalName || undefined, url: site.publisher.url || undefined,
     [site.publisher.type === 'Organization' ? 'logo' : 'image']: site.publisher.image ? base + site.publisher.image : undefined, sameAs: (site.publisher.sameAs || []).filter(Boolean) },
 ] : [];
@@ -60,7 +64,11 @@ const siteSchema = path === '/' ? [
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={site.brand} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={`${base}/images/og-default.png`} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={`${base}/images/og-default.png`} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <link rel="sitemap" href="/sitemap-index.xml" />
@@ -70,6 +78,8 @@ const siteSchema = path === '/' ? [
     <script is:inline src="/track.js" defer></script>
   </head>
   <body>
+    {/* Cloudflare email obfuscation rewrites mailto links to /cdn-cgi/l/email-protection, which crawlers see as a 404. */}
+    <!--email_off-->
     <header class="site-header">
       <div class="wrap">
         <span class="hdr-progress" aria-hidden="true"><i></i></span>
@@ -194,5 +204,6 @@ const siteSchema = path === '/' ? [
         </div>
       </div>
     </footer>
+    <!--email_on-->
   </body>
 </html>

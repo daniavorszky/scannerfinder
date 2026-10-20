@@ -40,7 +40,7 @@ export default defineConfig({
     sitemap({
       filter: (page) => {
         const path = new URL(page).pathname;
-        return !noindex.has(path);
+        return !noindex.has(path) && !path.startsWith('/claim/');
       },
     }),
   ]

@@ -36,7 +36,7 @@ const citation = `${site.brand}. "Bioresonance Practitioner Statistics ${year}."
 const schema = [{
   '@context': 'https://schema.org', '@type': 'Dataset', name: `Bioresonance practitioner statistics ${year}`, description,
   url: base + path, creator: { '@id': `${base}/#publisher` }, dateModified: buildDate, license: 'https://creativecommons.org/licenses/by/4.0/',
-  isAccessibleForFree: true, spatialCoverage: S.countries.map((c) => c.co.name), variableMeasured: ['practitioners per device and country', 'share offering remote sessions', 'share naming their device', 'practice type', 'median published session price (USD)'],
+  isAccessibleForFree: true, spatialCoverage: S.countries.map((c) => ({ '@type': 'Country', name: c.co.name })), variableMeasured: ['practitioners per device and country', 'share offering remote sessions', 'share naming their device', 'practice type', 'median published session price (USD)'],
   distribution: [{ '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: `${base}/statistics.csv` }],
 }];
 const maxRemote = Math.max(...S.countries.map((c) => c.remotePct), 1);

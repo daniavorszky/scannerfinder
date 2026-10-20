@@ -12,7 +12,7 @@ const description = `${site.brand} is published by ${p.name}. Why it exists, how
 const schema = [
   { '@context': 'https://schema.org', '@type': 'AboutPage', '@id': base + '/about/', url: base + '/about/', name: title, datePublished: site.launchDate, dateModified: buildDate, mainEntity: { '@id': `${base}/#person` } },
   { '@context': 'https://schema.org', '@type': p.type || 'Person', '@id': `${base}/#person`, name: p.name, legalName: p.legalName || undefined, url: p.url || undefined, email: p.email || undefined,
-    [p.type === 'Organization' ? 'logo' : 'image']: p.image ? base + p.image : undefined, description: p.bio, sameAs: (p.sameAs || []).filter(Boolean), owns: { '@type': 'Organization', '@id': `${base}/#publisher`, name: site.brand, url: base + '/' } },
+    [p.type === 'Organization' ? 'logo' : 'image']: p.image ? base + p.image : undefined, description: p.bio, sameAs: (p.sameAs || []).filter(Boolean) },
 ];
 ---
 <Base title={title} description={description} path="/about/" schema={schema}>

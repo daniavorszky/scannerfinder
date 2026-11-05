@@ -1,6 +1,7 @@
 // Matomo (self-hosted, EU: stats.mkstack.com, site 3). Cookieless, so no consent banner.
 // Listing clicks → events  Listing / <phone|website|directions|maps|claim> / <slug>.
 // Searches → Matomo Site Search (keyword, technology as category, result count; 0 = white space).
+// Calls made after load use window._paq: matomo.js replaces it on load, so pushes to the local array would be lost.
 // Only scannerfinder.com sends hits; other hosts fill _paq without loading Matomo (for testing).
 (function () {
   var _paq = window._paq = window._paq || [];
@@ -15,7 +16,7 @@
   var searchPage = location.pathname === '/search/' && (q.get('s') || q.getAll('f').length);
   if (!searchPage) _paq.push(['trackPageView']);
   window.sfSearch = function (keyword, tech, results) {
-    _paq.push(['trackSiteSearch', keyword || '(technology only)', tech || false, results]);
+    window._paq.push(['trackSiteSearch', keyword || '(technology only)', tech || false, results]);
   };
   var el = document.querySelector('[data-sf-listing]');
   if (el) {
@@ -24,7 +25,7 @@
       var a = e.target.closest && e.target.closest('a[href]');
       if (!a) return;
       var type = a.getAttribute('data-sf') || (a.getAttribute('href').indexOf('tel:') === 0 ? 'phone' : '');
-      if (type) _paq.push(['trackEvent', 'Listing', type, slug]);
+      if (type) window._paq.push(['trackEvent', 'Listing', type, slug]);
     });
   }
   if (!live) return;

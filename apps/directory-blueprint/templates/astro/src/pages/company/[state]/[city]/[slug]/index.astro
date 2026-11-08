@@ -123,12 +123,12 @@ const mark = l.featured ? 'Featured listing' : l.bestOfRank ? `Best of ${l.city}
         {l.mapLink && <li><a href={l.mapLink} rel="nofollow noopener" target="_blank">View on Google Maps</a></li>}
       </ul>
     </div>
-    <div class="side-card claim">
+    {!l.claimed && <div class="side-card claim">
       <h2>Is this your business?</h2>
       <p>Claiming is free. Correct details, add photos and hear about featured placement in {l.city}.</p>
       <a class="btn action side-btn" href={claimHref}>Claim this listing</a>
       <p class="meta"><a href="/featured/">Get featured</a> at the top of the {l.city} page.</p>
-    </div>
+    </div>}
     <div class="side-card disclaimer-card">
       <h2>Disclaimer</h2>
       <p>{disclaimer}</p>

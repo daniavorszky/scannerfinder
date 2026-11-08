@@ -21,7 +21,7 @@ The ladder from the video plus receipts from operators in the community, with wh
 | Influence | always | keep the audience; do not over-monetize early |
 
 ## The claim flow
-Every listing page carries "Is this your business? Claim it." The claim form (no backend, `templates/claim-form.html`) captures business, contact, proof (website email domain or a phone call), and the wish list (fix details, add photos). Claiming is free. A claimed listing gets `claimed=true` in the CSV and a "Claimed" mark. Claim requests are the featured-listing sales pipeline.
+Every **unclaimed** listing page carries "Is this your business? Claim it." Once `claimed=true`, the claim card is hidden on that page (rule for all directories, Dan 2026-11-08; FirmeTermopane keys it on `confirmata`). The correction/removal line in the footer stays on every page. The claim form (no backend, `templates/claim-form.html`) captures business, contact, proof (website email domain or a phone call), and the wish list (fix details, add photos). Claiming is free. A claimed listing gets `claimed=true` in the CSV and a "Claimed" mark. Claim requests are the featured-listing sales pipeline.
 
 **Verify before anything changes.** No owner logins in v1 (spam outran real signups on mature directories). Each claim is checked by hand: a real local business, not a lead-gen site or aggregator; email domain matches the website; phone matches the Maps row. Then edit the CSV and rebuild ([[refresh-and-upkeep]]).
 
